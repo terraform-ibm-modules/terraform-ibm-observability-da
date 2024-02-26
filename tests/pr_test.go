@@ -2,44 +2,54 @@
 package test
 
 import (
+	"log"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 )
 
-// Use existing resource group
-const resourceGroup = "geretain-test-resources"
-const completeExampleDir = "examples/complete"
+const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
+const resourceGroup = "geretain-test-observability-instances"
+const solutionInstanceTerraformDir = "solutions/instances"
+
+var sharedInfoSvc *cloudinfo.CloudInfoService
+var permanentResources map[string]interface{}
+
+func TestMain(m *testing.M) {
+	sharedInfoSvc, _ = cloudinfo.NewCloudInfoServiceFromEnv("TF_VAR_ibmcloud_api_key", cloudinfo.CloudInfoServiceOptions{})
+
+	// Read the YAML file contents
+	var err error
+	permanentResources, err = common.LoadMapFromYaml(yamlLocation)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	os.Exit(m.Run())
+}
 
 func setupOptions(t *testing.T, prefix string, dir string) *testhelper.TestOptions {
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:       t,
-		TerraformDir:  dir,
-		Prefix:        prefix,
-		ResourceGroup: resourceGroup,
+		Testing:                       t,
+		TerraformDir:                  dir,
+		Prefix:                        prefix,
+		ResourceGroup:                 resourceGroup,
+		CloudInfoService:              sharedInfoSvc,
+		ExcludeActivityTrackerRegions: true,
 	})
+
 	return options
 }
 
-func TestRunCompleteExample(t *testing.T) {
+func TestRunInstanceSolution(t *testing.T) {
 	t.Parallel()
 
-	options := setupOptions(t, "mod-template", completeExampleDir)
-
+	options := setupOptions(t, "obs-instance-da", solutionInstanceTerraformDir)
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
-}
-
-func TestRunUpgradeExample(t *testing.T) {
-	t.Parallel()
-
-	options := setupOptions(t, "mod-template-upg", completeExampleDir)
-
-	output, err := options.RunTestUpgrade()
-	if !options.UpgradeTestSkipped {
-		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output, "Expected some output")
-	}
 }
