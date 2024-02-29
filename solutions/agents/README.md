@@ -1,6 +1,9 @@
-# Add observability agents to a RedHat OpenShift Cluster
+# Deploy observability agents on a RedHat OpenShift Cluster
 
-This architecture deploys observability agents (log analysis and cloud monitoring agent) on a RedHat OpenShift Cluster.
+This architecture deploys the following observability agents on a RedHat OpenShift Cluster.
+
+* Log analysis agent
+* Cloud monitoring agent
 
 ## Before you begin
 
