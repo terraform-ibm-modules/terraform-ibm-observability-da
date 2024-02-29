@@ -7,13 +7,13 @@ variable "ibmcloud_api_key" {
 variable "resource_group" {
   type        = string
   description = "An existing resource group name to use for this example, if unset a new resource group will be created"
-  default     = null
+  default     = "Default"
 }
 
 variable "prefix" {
   type        = string
   description = "Prefix for the resource group"
-  default     = "observability-agents"
+  default     = "sm-obs-agents"
 }
 
 ##############################################################################
@@ -30,16 +30,16 @@ variable "cluster_resource_group_id" {
   description = "The Resource Group ID of the cluster"
 }
 
-# variable "cluster_config_endpoint_type" {
-#   description = "Specify which type of endpoint to use for for cluster config access: 'default', 'private', 'vpe', 'link'. 'default' value will use the default endpoint of the cluster."
-#   type        = string
-#   default     = "default"
-#   nullable    = false # use default if null is passed in
-#   validation {
-#     error_message = "Invalid Endpoint Type! Valid values are 'default', 'private', 'vpe', or 'link'"
-#     condition     = contains(["default", "private", "vpe", "link"], var.cluster_config_endpoint_type)
-#   }
-# }
+variable "cluster_config_endpoint_type" {
+  description = "Specify which type of endpoint to use for for cluster config access: 'default', 'private', 'vpe', 'link'. 'default' value will use the default endpoint of the cluster."
+  type        = string
+  default     = "default"
+  nullable    = false # use default if null is passed in
+  validation {
+    error_message = "Invalid Endpoint Type! Valid values are 'default', 'private', 'vpe', or 'link'"
+    condition     = contains(["default", "private", "vpe", "link"], var.cluster_config_endpoint_type)
+  }
+}
 
 ##############################################################################
 # Log Analysis variables
@@ -69,7 +69,6 @@ variable "log_analysis_ingestion_key" {
   type        = string
   description = "Ingestion key for the IBM Cloud Logging agent to communicate with the instance"
   sensitive   = true
-  default     = null
 }
 
 variable "log_analysis_secret_name" {
@@ -82,7 +81,7 @@ variable "log_analysis_secret_name" {
 variable "log_analysis_instance_region" {
   type        = string
   description = "The IBM Log Analysis instance region. Used to construct the ingestion endpoint."
-  default     = null
+  default     = "us-south"
 }
 
 variable "log_analysis_endpoint_type" {
@@ -149,7 +148,6 @@ variable "cloud_monitoring_access_key" {
   type        = string
   description = "Access key used by the IBM Cloud Monitoring agent to communicate with the instance"
   sensitive   = true
-  default     = null
 }
 
 variable "cloud_monitoring_secret_name" {
@@ -162,7 +160,7 @@ variable "cloud_monitoring_secret_name" {
 variable "cloud_monitoring_instance_region" {
   type        = string
   description = "The IBM Cloud Monitoring instance region. Used to construct the ingestion endpoint."
-  default     = null
+  default     = "us-south"
 }
 
 variable "cloud_monitoring_endpoint_type" {
