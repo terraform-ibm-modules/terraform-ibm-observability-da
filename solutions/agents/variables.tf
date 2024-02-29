@@ -4,18 +4,6 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
-variable "resource_group" {
-  type        = string
-  description = "An existing resource group name to use for this example, if unset a new resource group will be created"
-  default     = "Default"
-}
-
-variable "prefix" {
-  type        = string
-  description = "Prefix for the resource group"
-  default     = "sm-obs-agents"
-}
-
 ##############################################################################
 # Cluster variables
 ##############################################################################
