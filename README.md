@@ -20,9 +20,6 @@ TODO: Replace me with description of the module(s) in this repo
 <!-- BEGIN OVERVIEW HOOK -->
 ## Overview
 * [terraform-ibm-observability-da](#terraform-ibm-observability-da)
-* [Examples](./examples)
-    * [Basic example](./examples/basic)
-    * [Complete example](./examples/complete)
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
@@ -86,9 +83,7 @@ statement instead the previous block.
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ### Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0, <1.7.0 |
+No requirements.
 
 ### Modules
 

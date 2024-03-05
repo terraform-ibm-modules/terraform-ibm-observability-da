@@ -22,12 +22,12 @@ output "cloud_monitoring_guid" {
   description = "The guid of the provisioned IBM cloud monitoring instance."
 }
 
-output "activity_tracker_crn" {
-  value       = module.observability_instance.activity_tracker_crn
-  description = "The id of the provisioned Activity Tracker instance."
-}
+# output "activity_tracker_crn" {
+#   value       = module.observability_instance.activity_tracker_crn
+#   description = "The id of the provisioned Activity Tracker instance."
+# }
 
-output "activity_tracker_guid" {
-  value       = module.observability_instance.activity_tracker_guid
-  description = "The guid of the provisioned Activity Tracker instance."
-}
+# output "activity_tracker_guid" {
+#   value       = module.observability_instance.activity_tracker_guid
+#   description = "The guid of the provisioned Activity Tracker instance."
+# }
