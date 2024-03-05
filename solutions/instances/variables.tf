@@ -28,7 +28,7 @@ variable "region" {
 variable "enable_archive" {
   type        = bool
   description = "Enable archive on log analysis and activity tracker instances"
-  default     = false
+  default     = true
 }
 
 variable "archive_api_key" {

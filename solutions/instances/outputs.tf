@@ -22,6 +22,12 @@ output "cloud_monitoring_guid" {
   description = "The guid of the provisioned IBM cloud monitoring instance."
 }
 
+output "cos_bucket_details" {
+  value       = module.cos[0].buckets
+  sensitive   = true
+  description = "The details of the buckets created for storing log archive."
+}
+
 # output "activity_tracker_crn" {
 #   value       = module.observability_instance.activity_tracker_crn
 #   description = "The id of the provisioned Activity Tracker instance."
