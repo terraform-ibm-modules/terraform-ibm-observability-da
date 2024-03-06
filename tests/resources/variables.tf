@@ -13,7 +13,7 @@ variable "region" {
 variable "prefix" {
   type        = string
   description = "Prefix to append to all resources created by this example."
-  default     = "obs-da-5"
+  default     = "obs-da-12"
 }
 
 variable "resource_tags" {
