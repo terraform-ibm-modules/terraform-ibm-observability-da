@@ -1,6 +1,6 @@
 variable "ibmcloud_api_key" {
   type        = string
-  description = "The IBM Cloud api token"
+  description = "The IBM Cloud api key"
   sensitive   = true
 }
 
@@ -57,6 +57,7 @@ variable "log_analysis_ingestion_key" {
   type        = string
   description = "Ingestion key for the IBM Cloud Logging agent to communicate with the instance"
   sensitive   = true
+  default     = null
 }
 
 variable "log_analysis_secret_name" {
@@ -136,6 +137,7 @@ variable "cloud_monitoring_access_key" {
   type        = string
   description = "Access key used by the IBM Cloud Monitoring agent to communicate with the instance"
   sensitive   = true
+  default     = null
 }
 
 variable "cloud_monitoring_secret_name" {
