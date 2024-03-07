@@ -21,3 +21,8 @@ variable "resource_tags" {
   description = "Optional list of tags to be added to created resources."
   default     = []
 }
+
+variable "cluster_config_endpoint_type" {
+  type    = string
+  default = "private"
+}
