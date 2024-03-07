@@ -45,10 +45,10 @@ locals {
 #   resource_group_id = local.cluster_resource_group_id
 # }
 
-# output "cluster_data" {
-#   value       = module.landing_zone.cluster_data
-#   description = "workload cluster data."
-# }
+output "cluster_data" {
+  value       = module.landing_zone.cluster_data
+  description = "workload cluster data."
+}
 
 module "observability_agent" {
   # source      = "../../solutions/agents"
@@ -59,5 +59,5 @@ module "observability_agent" {
   cluster_resource_group_id    = local.cluster_resource_group_id
   log_analysis_ingestion_key   = module.observability_instances.log_analysis_ingestion_key
   cloud_monitoring_access_key  = module.observability_instances.cloud_monitoring_access_key
-  cluster_config_endpoint_type = "vpe"
+  cluster_config_endpoint_type = "private"
 }
