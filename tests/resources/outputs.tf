@@ -33,7 +33,7 @@ output "workload_cluster_resource_group_id" {
   description = "workload cluster resource group ID."
 }
 
-output "cluster_data" {
-  value       = module.landing_zone.cluster_data
-  description = "workload cluster data."
-}
+# output "cluster_data" {
+#   value       = module.landing_zone.cluster_data
+#   description = "workload cluster data."
+# }

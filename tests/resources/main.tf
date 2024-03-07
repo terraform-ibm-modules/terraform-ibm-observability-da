@@ -45,8 +45,14 @@ locals {
 #   resource_group_id = local.cluster_resource_group_id
 # }
 
+# output "cluster_data" {
+#   value       = module.landing_zone.cluster_data
+#   description = "workload cluster data."
+# }
+
 module "observability_agent" {
   # source      = "../../solutions/agents"
+  # depends_on = [module.landing_zone]
   ibmcloud_api_key             = var.ibmcloud_api_key
   source                       = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-da//solutions//agents?ref=sm-7651"
   cluster_id                   = local.cluster_id
