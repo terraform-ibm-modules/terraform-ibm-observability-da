@@ -40,24 +40,24 @@ locals {
   cluster_resource_group_id = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "resource_group_id", "")
 }
 
-# data "ibm_container_cluster_config" "cluster_config" {
-#   cluster_name_id   = local.cluster_id
-#   resource_group_id = local.cluster_resource_group_id
-# }
+data "ibm_container_cluster_config" "cluster_config" {
+   cluster_name_id   = local.cluster_id
+   resource_group_id = local.cluster_resource_group_id
+}
 
 output "cluster_data" {
   value       = module.landing_zone.cluster_data
   description = "workload cluster data."
 }
 
-module "observability_agent" {
+# module "observability_agent" {
   # source      = "../../solutions/agents"
   # depends_on = [module.landing_zone]
-  ibmcloud_api_key             = var.ibmcloud_api_key
-  source                       = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-da//solutions//agents?ref=sm-7651"
-  cluster_id                   = local.cluster_id
-  cluster_resource_group_id    = local.cluster_resource_group_id
-  log_analysis_ingestion_key   = module.observability_instances.log_analysis_ingestion_key
-  cloud_monitoring_access_key  = module.observability_instances.cloud_monitoring_access_key
-  cluster_config_endpoint_type = "private"
-}
+  #ibmcloud_api_key             = var.ibmcloud_api_key
+  #source                       = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-da//solutions//agents?ref=sm-7651"
+  #cluster_id                   = local.cluster_id
+  #cluster_resource_group_id    = local.cluster_resource_group_id
+  #log_analysis_ingestion_key   = module.observability_instances.log_analysis_ingestion_key
+  #cloud_monitoring_access_key  = module.observability_instances.cloud_monitoring_access_key
+  #cluster_config_endpoint_type = "private"
+#}
