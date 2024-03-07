@@ -43,6 +43,8 @@ locals {
 data "ibm_container_cluster_config" "cluster_config" {
    cluster_name_id   = local.cluster_id
    resource_group_id = local.cluster_resource_group_id
+   config_dir        = "${path.module}/kubeconfig"
+   endpoint_type     = var.cluster_config_endpoint_type != "default" ? var.cluster_config_endpoint_type : null
 }
 
 output "cluster_data" {
