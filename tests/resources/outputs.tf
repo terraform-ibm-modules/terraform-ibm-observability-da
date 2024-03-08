@@ -12,28 +12,17 @@ output "region" {
   description = "Region where SLZ ROKS Cluster is deployed."
 }
 
-output "management_cluster_id" {
-  value = lookup(
-    [for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "management")][0], "id", ""
-  )
-  description = "management cluster ID."
+output "cluster_data" {
+  value       = module.landing_zone.cluster_data
+  description = "Details of OCP cluster."
 }
 
-output "workload_cluster_id" {
-  value = lookup(
-    [for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "id", ""
-  )
-  description = "workload cluster ID."
+output "log_analysis_name" {
+  value       = module.observability_instances.log_analysis_name
+  description = "The name of the provisioned Log Analysis instance."
 }
 
-output "workload_cluster_resource_group_id" {
-  value = lookup(
-    [for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "resource_group_id", ""
-  )
-  description = "workload cluster resource group ID."
+output "cloud_monitoring_name" {
+  value       = module.observability_instances.cloud_monitoring_name
+  description = "The name of the provisioned IBM cloud monitoring instance."
 }
-
-# output "cluster_data" {
-#   value       = module.landing_zone.cluster_data
-#   description = "workload cluster data."
-# }

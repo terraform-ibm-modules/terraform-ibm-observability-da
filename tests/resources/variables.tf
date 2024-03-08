@@ -13,7 +13,7 @@ variable "region" {
 variable "prefix" {
   type        = string
   description = "Prefix to append to all resources created by this example."
-  default     = "obs-da-12"
+  default     = "obs-agent-da"
 }
 
 variable "resource_tags" {
@@ -23,6 +23,7 @@ variable "resource_tags" {
 }
 
 variable "cluster_config_endpoint_type" {
-  type    = string
-  default = "private"
+  type        = string
+  description = "Specify which type of endpoint to use for for cluster config access: 'default', 'private', 'vpe', 'link'."
+  default     = "private"
 }

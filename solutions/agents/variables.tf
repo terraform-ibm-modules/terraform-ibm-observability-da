@@ -1,6 +1,6 @@
 variable "ibmcloud_api_key" {
   type        = string
-  description = "The IBM Cloud api key"
+  description = "The IBM Cloud api key."
   sensitive   = true
 }
 
@@ -10,12 +10,12 @@ variable "ibmcloud_api_key" {
 
 variable "cluster_id" {
   type        = string
-  description = "The ID of the cluster you wish to deploy the agents in"
+  description = "The ID of the cluster you wish to deploy the agents in."
 }
 
 variable "cluster_resource_group_id" {
   type        = string
-  description = "The Resource Group ID of the cluster"
+  description = "The resource group ID of the cluster."
 }
 
 variable "cluster_config_endpoint_type" {
@@ -35,7 +35,7 @@ variable "cluster_config_endpoint_type" {
 
 variable "log_analysis_enabled" {
   type        = bool
-  description = "Deploy IBM Cloud Logging agent"
+  description = "Deploy IBM Cloud Logging agent if set as true."
   default     = true
 }
 
@@ -55,7 +55,7 @@ variable "log_analysis_add_cluster_name" {
 
 variable "log_analysis_ingestion_key" {
   type        = string
-  description = "Ingestion key for the IBM Cloud Logging agent to communicate with the instance"
+  description = "Ingestion key for the IBM Cloud Logging agent to communicate with the instance."
   sensitive   = true
   default     = null
 }
@@ -104,7 +104,7 @@ variable "log_analysis_agent_name" {
 
 variable "log_analysis_agent_namespace" {
   type        = string
-  description = "Namespace where to deploy the Log Analysis agent. Default value is 'ibm-observe'"
+  description = "Namespace where to deploy the Log Analysis agent. Default value is 'ibm-observe'."
   default     = "ibm-observe"
   nullable    = false
 }
@@ -129,13 +129,13 @@ variable "log_analysis_agent_tolerations" {
 
 variable "cloud_monitoring_enabled" {
   type        = bool
-  description = "Deploy IBM Cloud Monitoring agent"
+  description = "Deploy IBM Cloud Monitoring agent if set as true."
   default     = true
 }
 
 variable "cloud_monitoring_access_key" {
   type        = string
-  description = "Access key used by the IBM Cloud Monitoring agent to communicate with the instance"
+  description = "Access key used by the IBM Cloud Monitoring agent to communicate with the instance."
   sensitive   = true
   default     = null
 }
@@ -197,7 +197,7 @@ variable "cloud_monitoring_agent_name" {
 
 variable "cloud_monitoring_agent_namespace" {
   type        = string
-  description = "Namespace where to deploy the Cloud Monitoring agent. Default value is 'ibm-observe'"
+  description = "Namespace where to deploy the Cloud Monitoring agent. Default value is 'ibm-observe'."
   default     = "ibm-observe"
   nullable    = false
 }
