@@ -20,7 +20,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
-		Prefix:  "obs-agents-da1",
+		Prefix:  "prtest-agents",
 		TarIncludePatterns: []string{
 			"*.tf",
 			testAgentsResourcesDir + "/*.tf",
