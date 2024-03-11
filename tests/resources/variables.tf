@@ -19,11 +19,11 @@ variable "prefix" {
 variable "resource_tags" {
   type        = list(string)
   description = "Optional list of tags to be added to created resources."
-  default     = []
+  default     = ["obs-agent-ocp"]
 }
 
-variable "cluster_config_endpoint_type" {
-  type        = string
-  description = "Specify which type of endpoint to use for for cluster config access: 'default', 'private', 'vpe', 'link'."
-  default     = "private"
-}
+# variable "cluster_config_endpoint_type" {
+#   type        = string
+#   description = "Specify which type of endpoint to use for for cluster config access: 'default', 'private', 'vpe', 'link'."
+#   default     = "private"
+# }
