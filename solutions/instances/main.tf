@@ -4,9 +4,10 @@
 locals {
   archive_api_key = var.archive_api_key == null ? var.ibmcloud_api_key : var.archive_api_key
 
-  cos_instance_crn = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
-  cos_bucket_name  = var.existing_cos_bucket_name != null ? var.existing_cos_bucket_name : module.cos[0].buckets[var.cos_bucket_name].bucket_name
-  cos_kms_key_crn  = var.existing_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
+  cos_instance_crn    = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
+  cos_bucket_name     = var.existing_cos_bucket_name != null ? var.existing_cos_bucket_name : module.cos[0].buckets[var.cos_bucket_name].bucket_name
+  cos_bucket_endpoint = var.existing_cos_bucket_endpoint != null ? var.existing_cos_bucket_endpoint : module.cos[0].buckets[var.cos_bucket_name].s3_endpoint_private
+  cos_kms_key_crn     = var.existing_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
 }
 
 #######################################################################################################################
@@ -32,15 +33,14 @@ module "observability_instance" {
   enable_archive    = var.enable_archive
   ibmcloud_api_key  = local.archive_api_key
   # Log Analysis
-  log_analysis_provision         = true
-  log_analysis_instance_name     = var.log_analysis_instance_name
-  log_analysis_plan              = var.log_analysis_plan
-  log_analysis_tags              = var.log_analysis_tags
-  log_analysis_service_endpoints = var.log_analysis_service_endpoints
-  # enable_platform_logs           = var.enable_platform_logs
+  log_analysis_provision           = true
+  log_analysis_instance_name       = var.log_analysis_instance_name
+  log_analysis_plan                = var.log_analysis_plan
+  log_analysis_tags                = var.log_analysis_tags
+  log_analysis_service_endpoints   = var.log_analysis_service_endpoints
   log_analysis_cos_instance_id     = module.cos[0].cos_instance_id
   log_analysis_cos_bucket_name     = local.cos_bucket_name
-  log_analysis_cos_bucket_endpoint = module.cos[0].buckets[var.cos_bucket_name].s3_endpoint_private
+  log_analysis_cos_bucket_endpoint = local.cos_bucket_endpoint
   # Todo: Need to get the s3_endpoing exposed in the fscloud COS module
   # IBM Cloud Monitoring
   cloud_monitoring_provision         = true
@@ -51,11 +51,28 @@ module "observability_instance" {
 
   # Activity Tracker
   activity_tracker_provision = false
-  # activity_tracker_instance_name     = local.activity_tracker_instance_name
-  # activity_tracker_plan              = var.activity_tracker_plan
-  # activity_tracker_tags              = var.activity_tracker_tags
-  # activity_tracker_service_endpoints = var.activity_tracker_service_endpoints
-  # enable_platform_metrics            = var.enable_platform_metrics
+  cos_targets = [
+    {
+      bucket_name                       = local.cos_bucket_name
+      endpoint                          = local.cos_bucket_endpoint
+      instance_id                       = local.cos_instance_crn
+      target_region                     = var.cos_region
+      target_name                       = "cos-target"
+      skip_atracker_cos_iam_auth_policy = false
+      service_to_service_enabled        = true
+    }
+  ]
+
+  # Routes
+  activity_tracker_routes = [
+    {
+      route_name = "at-route"
+      locations  = ["*", "global"]
+      target_ids = [
+        module.observability_instance.activity_tracker_targets["cos-target"].id
+      ]
+    }
+  ]
 }
 
 #######################################################################################################################
@@ -131,61 +148,3 @@ module "cos" {
     metrics_monitoring            = null
   }]
 }
-
-#######################################################################################################################
-# Activity Tracker Event Routing
-#######################################################################################################################
-
-# module "activity_tracker" {
-#   source            = "terraform-ibm-modules/observability-instances/ibm//modules/log_analysis"
-#   version           = "2.11.0"
-#   providers = {
-#     logdna.at = logdna.at
-#   }
-
-#   # Activity Tracker
-#   existing_activity_tracker_crn = var.existing_activity_tracker_crn
-#   existing_activity_tracker_key_name = var.existing_activity_tracker_key_name
-#   existing_activity_tracker_region = var.existing_activity_tracker_region
-
-
-#   # Targets
-#   cos_targets = [
-#     {
-#       bucket_name                       = module.cos_bucket_1.bucket_name
-#       endpoint                          = module.cos_bucket_1.s3_endpoint_private
-#       instance_id                       = module.cos_bucket_1.cos_instance_id
-#       target_region                     = local.cos_target_region
-#       target_name                       = "${var.prefix}-cos-target-1"
-#       skip_atracker_cos_iam_auth_policy = false
-#       service_to_service_enabled        = true
-#     }
-#   ]
-
-#   # Routes
-#   activity_tracker_routes = [
-#     {
-#       route_name = "${var.prefix}-route-1"
-#       locations  = ["*", "global"]
-#       target_ids = [
-#         module.activity_tracker.activity_tracker_targets["${var.prefix}-cos-target-1"].id
-#       ]
-#     }
-#   ]
-
-#   # Global Settings
-#   global_event_routing_settings = {
-#     default_targets           = [module.activity_tracker.activity_tracker_targets["${var.prefix}-cos-target-1"].id]
-#     permitted_target_regions  = var.permitted_target_regions
-#     metadata_region_primary   = var.metadata_region_primary
-#     metadata_region_backup    = var.metadata_region_backup
-#     private_api_endpoint_only = var.private_api_endpoint_only
-#   }
-
-# }
-
-
-# data "ibm_resource_key" "at_resource_key" {
-#   name                 = var.activity_tracker_key_name
-#   resource_instance_id = local.activity_tracker_crn
-# }

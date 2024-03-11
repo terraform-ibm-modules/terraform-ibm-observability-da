@@ -25,19 +25,6 @@ variable "region" {
   default     = "us-south"
 }
 
-variable "enable_archive" {
-  type        = bool
-  description = "Enable archive on log analysis and activity tracker instances"
-  default     = true
-}
-
-variable "archive_api_key" {
-  type        = string
-  description = "Limited IBM Cloud API key for Log Analysis archiving to COS"
-  sensitive   = true
-  default     = null
-}
-
 ##############################################################################
 # Log Analysis Variables
 ##############################################################################
@@ -75,11 +62,18 @@ variable "log_analysis_tags" {
   default     = []
 }
 
-# variable "enable_platform_logs" {
-#   type        = bool
-#   description = "Receive platform logs in the provisioned IBM Cloud Logging instance."
-#   default     = false
-# }
+variable "enable_archive" {
+  type        = bool
+  description = "Enable archive on log analysis and activity tracker instances"
+  default     = true
+}
+
+variable "archive_api_key" {
+  type        = string
+  description = "Limited IBM Cloud API key for Log Analysis archiving to COS"
+  sensitive   = true
+  default     = null
+}
 
 ##############################################################################
 # Cloud Monitoring Variables
@@ -117,49 +111,6 @@ variable "cloud_monitoring_service_endpoints" {
     error_message = "The specified service_endpoints is not a valid selection"
   }
 }
-
-# variable "enable_platform_metrics" {
-#   type        = bool
-#   description = "Receive platform metrics in the provisioned IBM Cloud Monitoring instance."
-#   default     = true
-# }
-
-##############################################################################
-# Activity Tracker Variables
-##############################################################################
-
-# variable "activity_tracker_instance_name" {
-#   type        = string
-#   description = "The name of the Activity Tracker instance to create. Defaults to 'activity-tracker-<region>'"
-#   default     = "activity-tracker"
-# }
-
-# variable "activity_tracker_plan" {
-#   type        = string
-#   description = "The Activity Tracker plan to provision. Available: lite, 7-day, 14-day, 30-day, hipaa-30-day"
-#   default     = "7-day"
-
-#   validation {
-#     condition     = can(regex("^lite$|^7-day$|^14-day$|^30-day$|^hipaa-30-day$", var.activity_tracker_plan))
-#     error_message = "The activity_tracker_plan value must be one of the following: lite, 7-day, 14-day, 30-day, hipaa-30-day."
-#   }
-# }
-
-# variable "activity_tracker_tags" {
-#   type        = list(string)
-#   description = "Tags associated with the Activity Tracker instance (Optional, array of strings)."
-#   default     = []
-# }
-
-# variable "activity_tracker_service_endpoints" {
-#   description = "The type of the service endpoint that will be set for the activity tracker instance."
-#   type        = string
-#   default     = "private"
-#   validation {
-#     condition     = contains(["public", "private", "public-and-private"], var.activity_tracker_service_endpoints)
-#     error_message = "The specified service_endpoints is not a valid selection"
-#   }
-# }
 
 ########################################################################################################################
 # COS variables
@@ -222,7 +173,14 @@ variable "existing_cos_bucket_name" {
   type        = string
   nullable    = true
   default     = null
-  description = "The name of an existing bucket inside the existing Cloud Object Storage instance to use for SCC. If not supplied, a new bucket will be created."
+  description = "The name of an existing bucket inside the existing Cloud Object Storage instance to use for storing log archive. If not supplied, a new bucket will be created."
+}
+
+variable "existing_cos_bucket_endpoint" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The name of an existing cos bucket endpoint to use for storing log archive. If not supplied, the endpoint of the new bucket will be used."
 }
 
 variable "skip_cos_kms_auth_policy" {
@@ -253,7 +211,7 @@ variable "kms_region" {
 
 variable "existing_kms_guid" {
   type        = string
-  default     = "e6dce284-e80f-46e1-a3c1-830f7adff7a9" # Make it null
+  default     = null # Make it null
   description = "The GUID of of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
 }
 
