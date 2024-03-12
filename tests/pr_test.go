@@ -15,6 +15,7 @@ import (
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
 const resourceGroup = "geretain-test-observability-instances"
 const solutionInstanceTerraformDir = "solutions/instances"
+const region = "us-south"
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 var permanentResources map[string]interface{}
@@ -32,23 +33,23 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func setupOptions(t *testing.T, prefix string, dir string) *testhelper.TestOptions {
-	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:                       t,
-		TerraformDir:                  dir,
-		Prefix:                        prefix,
-		ResourceGroup:                 resourceGroup,
-		CloudInfoService:              sharedInfoSvc,
-		ExcludeActivityTrackerRegions: true,
-	})
-
-	return options
-}
-
 func TestRunInstanceSolution(t *testing.T) {
 	t.Parallel()
 
-	options := setupOptions(t, "obs-instance-da", solutionInstanceTerraformDir)
+	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
+		Testing:       t,
+		TerraformDir:  solutionInstanceTerraformDir,
+		Region:        region,
+		ResourceGroup: resourceGroup,
+	})
+
+	options.TerraformVars = map[string]interface{}{
+		"cos_instance_access_tags": permanentResources["accessTags"],
+		"existing_kms_guid":        permanentResources["hpcs_south"],
+		"existing_resource_group":  true,
+		"resource_group_name":      options.ResourceGroup,
+	}
+
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")

@@ -118,7 +118,7 @@ variable "cloud_monitoring_service_endpoints" {
 
 variable "add_bucket_name_suffix" {
   type        = bool
-  description = "Add random generated suffix (4 characters long) to the newly provisioned COS bucket name. Only used if not passing existing bucket. set to false if you want full control over bucket naming using the 'cos_bucket_name' variable."
+  description = "Add random generated suffix (4 characters long) to the newly provisioned COS bucket name. Only used if not passing existing bucket. set to false if you want full control over bucket naming using the 'cos_bucket_name' & 'cos_target_bucket_name' variable."
   default     = true
 }
 
@@ -237,14 +237,14 @@ variable "kms_region" {
 
 variable "existing_kms_guid" {
   type        = string
-  default     = null
+  default     = "e6dce284-e80f-46e1-a3c1-830f7adff7a9"
   description = "The GUID of of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
 }
 
 variable "existing_cos_kms_key_crn" {
   type        = string
   default     = null
-  description = "The CRN of an existing KMS key to be used to encrypt the SCC COS bucket. If not supplied, a new key ring and key will be created in the provided KMS instance."
+  description = "The CRN of an existing KMS key to be used to encrypt the COS bucket. If not supplied, a new key ring and key will be created in the provided KMS instance."
 }
 
 variable "kms_endpoint_type" {

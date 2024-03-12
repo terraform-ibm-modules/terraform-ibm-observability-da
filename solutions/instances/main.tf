@@ -5,12 +5,12 @@ locals {
   archive_api_key = var.archive_api_key == null ? var.ibmcloud_api_key : var.archive_api_key
 
   cos_instance_crn = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
-  cos_bucket_name  = var.existing_cos_bucket_name != null ? var.existing_cos_bucket_name : module.cos[0].buckets[local.bucket_configs[0]].bucket_name
+  cos_bucket_name  = var.existing_cos_bucket_name != null ? var.existing_cos_bucket_name : module.cos[0].buckets[var.cos_bucket_name].bucket_name
   cos_kms_key_crn  = var.existing_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
 
   cos_target_instance_crn = var.existing_cos_target_instance_crn != null ? var.existing_cos_target_instance_crn : module.cos[0].cos_instance_crn
-  cos_target_bucket_name  = var.existing_cos_target_bucket_name != null ? var.existing_cos_target_bucket_name : module.cos[0].buckets[local.bucket_configs[1]].bucket_name
-  cos_bucket_endpoint     = var.existing_cos_target_bucket_endpoint != null ? var.existing_cos_target_bucket_endpoint : module.cos[0].buckets[local.bucket_configs[1]].s3_endpoint_private
+  cos_target_bucket_name  = var.existing_cos_target_bucket_name != null ? var.existing_cos_target_bucket_name : module.cos[0].buckets[var.cos_target_bucket_name].bucket_name
+  cos_bucket_endpoint     = var.existing_cos_target_bucket_endpoint != null ? var.existing_cos_target_bucket_endpoint : module.cos[0].buckets[var.cos_target_bucket_name].s3_endpoint_private
   bucket_configs          = (var.existing_cos_bucket_name == null || var.existing_cos_target_bucket_name == null) ? concat([var.cos_bucket_name], [var.cos_target_bucket_name]) : null
   skip_auth_policy        = concat([var.skip_cos_kms_auth_policy], [true])
 
@@ -102,7 +102,7 @@ module "kms" {
   }
   count                       = var.existing_cos_kms_key_crn != null || var.existing_cos_bucket_name != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.8.1"
+  version                     = "4.8.3"
   resource_group_id           = null # rg only needed if creating KP instance
   create_key_protect_instance = false
   region                      = var.kms_region
@@ -137,7 +137,7 @@ module "cos" {
   }
   count                    = (var.existing_cos_bucket_name == null || var.existing_cos_target_bucket_name == null) ? 1 : 0 # no need to call COS module if consumer is passing existing COS bucket
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "7.4.1"
+  version                  = "7.5.0"
   resource_group_id        = module.resource_group.resource_group_id
   create_cos_instance      = var.existing_cos_instance_crn == null ? true : false # don't create instance if existing one passed in
   create_resource_key      = false
