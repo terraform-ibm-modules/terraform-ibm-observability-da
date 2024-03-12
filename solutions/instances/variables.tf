@@ -116,6 +116,12 @@ variable "cloud_monitoring_service_endpoints" {
 # COS variables
 ########################################################################################################################
 
+variable "add_bucket_name_suffix" {
+  type        = bool
+  description = "Add random generated suffix (4 characters long) to the newly provisioned COS bucket name. Only used if not passing existing bucket. set to false if you want full control over bucket naming using the 'cos_bucket_name' variable."
+  default     = true
+}
+
 variable "cos_region" {
   type        = string
   default     = "us-south"
@@ -143,7 +149,13 @@ variable "cos_instance_access_tags" {
 variable "cos_bucket_name" {
   type        = string
   default     = "observability-cos-bucket"
-  description = "The name to use when creating the Cloud Object Storage bucket (NOTE: bucket names are globally unique)."
+  description = "The name to use when creating the Cloud Object Storage bucket (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique."
+}
+
+variable "cos_target_bucket_name" {
+  type        = string
+  default     = "observability-cos-target-bucket"
+  description = "The name to use when creating the Cloud Object Storage bucket for cos target (NOTE: bucket names are globally unique)."
 }
 
 variable "cos_bucket_access_tags" {
@@ -169,6 +181,13 @@ variable "existing_cos_instance_crn" {
   description = "The CRN of an existing Cloud Object Storage instance. If not supplied, a new instance will be created."
 }
 
+variable "existing_cos_target_instance_crn" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The CRN of an existing Cloud Object Storage instance for setting event routing. If not supplied, the CRN of the new instance will be used."
+}
+
 variable "existing_cos_bucket_name" {
   type        = string
   nullable    = true
@@ -176,7 +195,14 @@ variable "existing_cos_bucket_name" {
   description = "The name of an existing bucket inside the existing Cloud Object Storage instance to use for storing log archive. If not supplied, a new bucket will be created."
 }
 
-variable "existing_cos_bucket_endpoint" {
+variable "existing_cos_target_bucket_name" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The name of an existing bucket inside the existing Cloud Object Storage instance to use for event routing. If not supplied, a new bucket will be created."
+}
+
+variable "existing_cos_target_bucket_endpoint" {
   type        = string
   nullable    = true
   default     = null
@@ -211,7 +237,7 @@ variable "kms_region" {
 
 variable "existing_kms_guid" {
   type        = string
-  default     = null # Make it null
+  default     = null
   description = "The GUID of of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
 }
 

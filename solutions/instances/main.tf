@@ -4,10 +4,26 @@
 locals {
   archive_api_key = var.archive_api_key == null ? var.ibmcloud_api_key : var.archive_api_key
 
-  cos_instance_crn    = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
-  cos_bucket_name     = var.existing_cos_bucket_name != null ? var.existing_cos_bucket_name : module.cos[0].buckets[var.cos_bucket_name].bucket_name
-  cos_bucket_endpoint = var.existing_cos_bucket_endpoint != null ? var.existing_cos_bucket_endpoint : module.cos[0].buckets[var.cos_bucket_name].s3_endpoint_private
-  cos_kms_key_crn     = var.existing_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
+  cos_instance_crn = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
+  cos_bucket_name  = var.existing_cos_bucket_name != null ? var.existing_cos_bucket_name : module.cos[0].buckets[local.bucket_configs[0]].bucket_name
+  cos_kms_key_crn  = var.existing_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
+
+  cos_target_instance_crn = var.existing_cos_target_instance_crn != null ? var.existing_cos_target_instance_crn : module.cos[0].cos_instance_crn
+  cos_target_bucket_name  = var.existing_cos_target_bucket_name != null ? var.existing_cos_target_bucket_name : module.cos[0].buckets[local.bucket_configs[1]].bucket_name
+  cos_bucket_endpoint     = var.existing_cos_target_bucket_endpoint != null ? var.existing_cos_target_bucket_endpoint : module.cos[0].buckets[local.bucket_configs[1]].s3_endpoint_private
+  bucket_configs          = (var.existing_cos_bucket_name == null || var.existing_cos_target_bucket_name == null) ? concat([var.cos_bucket_name], [var.cos_target_bucket_name]) : null
+  skip_auth_policy        = concat([var.skip_cos_kms_auth_policy], [true])
+
+  archive_rule = var.existing_cos_bucket_name == null ? {
+    enable = true
+    days   = 90
+    type   = "Glacier"
+  } : null
+
+  expire_rule = var.existing_cos_bucket_name == null ? {
+    enable = true
+    days   = 366
+  } : null
 }
 
 #######################################################################################################################
@@ -53,9 +69,9 @@ module "observability_instance" {
   activity_tracker_provision = false
   cos_targets = [
     {
-      bucket_name                       = local.cos_bucket_name
+      bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_bucket_endpoint
-      instance_id                       = local.cos_instance_crn
+      instance_id                       = local.cos_target_instance_crn
       target_region                     = var.cos_region
       target_name                       = "cos-target"
       skip_atracker_cos_iam_auth_policy = false
@@ -119,7 +135,7 @@ module "cos" {
   providers = {
     ibm = ibm.cos
   }
-  count                    = var.existing_cos_bucket_name == null ? 1 : 0 # no need to call COS module if consumer is passing existing COS bucket
+  count                    = (var.existing_cos_bucket_name == null || var.existing_cos_target_bucket_name == null) ? 1 : 0 # no need to call COS module if consumer is passing existing COS bucket
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "7.4.1"
   resource_group_id        = module.resource_group.resource_group_id
@@ -130,21 +146,26 @@ module "cos" {
   existing_cos_instance_id = var.existing_cos_instance_crn
   access_tags              = var.cos_instance_access_tags
   cos_plan                 = "standard"
-  bucket_configs = [{
-    # Todo: Need to know the configuration for COS bucket
-    # Are we going with this profile -> { retention_days = null, archive_days = "90", expiration_days = "366", version = false }
-    access_tags                   = var.cos_bucket_access_tags
-    bucket_name                   = var.cos_bucket_name
-    kms_encryption_enabled        = true
-    kms_guid                      = var.existing_kms_guid
-    kms_key_crn                   = local.cos_kms_key_crn
-    skip_iam_authorization_policy = var.skip_cos_kms_auth_policy
-    management_endpoint_type      = var.management_endpoint_type_for_bucket
-    storage_class                 = var.cos_bucket_class
-    resource_instance_id          = local.cos_instance_crn
-    region_location               = var.cos_region
-    force_delete                  = true
-    activity_tracking             = null # Do we need to connect the COS bucket to AT instance to send COS log data?
-    metrics_monitoring            = null
-  }]
+  bucket_configs = [
+    for config in range(length(local.bucket_configs)) :
+    {
+      # Todo: Need to know the configuration for COS bucket
+      # Are we going with this profile -> { retention_days = null, archive_days = "90", expiration_days = "366", version = false }
+      access_tags                   = var.cos_bucket_access_tags
+      bucket_name                   = local.bucket_configs[config]
+      add_bucket_name_suffix        = var.add_bucket_name_suffix
+      kms_encryption_enabled        = true
+      kms_guid                      = var.existing_kms_guid
+      kms_key_crn                   = local.cos_kms_key_crn
+      skip_iam_authorization_policy = local.skip_auth_policy[config]
+      management_endpoint_type      = var.management_endpoint_type_for_bucket
+      storage_class                 = var.cos_bucket_class
+      resource_instance_id          = local.cos_instance_crn
+      region_location               = var.cos_region
+      force_delete                  = true
+      archive_rule                  = local.archive_rule
+      expire_rule                   = local.expire_rule
+      retention_rule                = null
+    }
+  ]
 }
