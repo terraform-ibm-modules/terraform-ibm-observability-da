@@ -9,20 +9,5 @@ terraform {
       source  = "logdna/logdna"
       version = ">= 1.14.2"
     }
-    # tflint-ignore: terraform_unused_required_providers
-    external = {
-      source  = "hashicorp/external"
-      version = ">= 2.3.2"
-    }
-    # tflint-ignore: terraform_unused_required_providers
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.6.0"
-    }
-    # tflint-ignore: terraform_unused_required_providers
-    time = {
-      source  = "hashicorp/time"
-      version = ">= 0.11.1"
-    }
   }
 }
