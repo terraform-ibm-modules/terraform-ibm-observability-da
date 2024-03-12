@@ -34,7 +34,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 	// ------------------------------------------------------------------------------------------------------
 
 	prefix := fmt.Sprintf("slz-%s", strings.ToLower(random.UniqueId()))
-	realTerraformDir := "./resources"
+	realTerraformDir := "../resources"
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 
 	// Verify ibmcloud_api_key variable is set
