@@ -1,7 +1,7 @@
 {
     "products": [
       {
-        "name": "deploy-arch-ibm-observability-instances",
+        "name": "deploy-arch-ibm-observability",
         "label": "Deployment of IBM Cloud Observability Instances",
         "product_kind": "solution",
         "tags": [
