@@ -25,15 +25,5 @@ output "cloud_monitoring_guid" {
 output "cos_bucket_details" {
   value       = module.cos[0].buckets
   sensitive   = true
-  description = "The details of the buckets created for storing log archive."
+  description = "The details of the COS buckets."
 }
-
-# output "activity_tracker_crn" {
-#   value       = module.observability_instance.activity_tracker_crn
-#   description = "The id of the provisioned Activity Tracker instance."
-# }
-
-# output "activity_tracker_guid" {
-#   value       = module.observability_instance.activity_tracker_guid
-#   description = "The guid of the provisioned Activity Tracker instance."
-# }

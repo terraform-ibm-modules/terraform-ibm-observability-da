@@ -20,7 +20,7 @@ variable "resource_group_name" {
 }
 
 variable "region" {
-  description = "Region where resources will be created"
+  description = "Region where observability resources will be created"
   type        = string
   default     = "us-south"
 }
@@ -38,7 +38,7 @@ variable "log_analysis_instance_name" {
 variable "log_analysis_plan" {
   type        = string
   description = "The IBM Cloud Logging plan to provision. Available: lite, 7-day, 14-day, 30-day, hipaa-30-day"
-  default     = "7-day" # Check it whether lite plan will be allowed or not for log Analysis
+  default     = "7-day"
 
   validation {
     condition     = can(regex("^lite$|^7-day$|^14-day$|^30-day$|^hipaa-30-day$", var.log_analysis_plan))
@@ -49,7 +49,7 @@ variable "log_analysis_plan" {
 variable "log_analysis_service_endpoints" {
   description = "The type of the service endpoint that will be set for the Log Analysis instance."
   type        = string
-  default     = "public-and-private" # Change it to private
+  default     = "private"
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.log_analysis_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
@@ -64,13 +64,13 @@ variable "log_analysis_tags" {
 
 variable "enable_archive" {
   type        = bool
-  description = "Enable archive on log analysis and activity tracker instances"
+  description = "Enable archive on log analysis instance"
   default     = true
 }
 
 variable "archive_api_key" {
   type        = string
-  description = "Limited IBM Cloud API key for Log Analysis archiving to COS"
+  description = "(Optional) The IBM Cloud API key will be used for Log Analysis archiving to COS if this is not passed."
   sensitive   = true
   default     = null
 }
@@ -87,12 +87,12 @@ variable "cloud_monitoring_instance_name" {
 
 variable "cloud_monitoring_plan" {
   type        = string
-  description = "The IBM Cloud Monitoring plan to provision. Available: lite, graduated-tier, graduated-tier-sysdig-secure-plus-monitor"
-  default     = "graduated-tier" # Need to confirm which plan we are using
+  description = "The IBM Cloud Monitoring plan to provision. Available: lite, graduated-tier"
+  default     = "graduated-tier"
 
   validation {
     condition     = can(regex("^lite$|^graduated-tier$|^graduated-tier-sysdig-secure-plus-monitor$", var.cloud_monitoring_plan))
-    error_message = "The cloud_monitoring_plan value must be one of the following: lite, graduated-tier, graduated-tier-sysdig-secure-plus-monitor."
+    error_message = "The cloud_monitoring_plan value must be one of the following: lite, graduated-tier."
   }
 }
 
@@ -105,7 +105,7 @@ variable "cloud_monitoring_tags" {
 variable "cloud_monitoring_service_endpoints" {
   description = "The type of the service endpoint that will be set for the IBM cloud monitoring instance."
   type        = string
-  default     = "public-and-private" # Change it to private
+  default     = "private"
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.cloud_monitoring_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
@@ -146,13 +146,13 @@ variable "cos_instance_access_tags" {
   default     = []
 }
 
-variable "cos_bucket_name" {
+variable "log_archive_cos_bucket_name" {
   type        = string
   default     = "observability-cos-bucket"
-  description = "The name to use when creating the Cloud Object Storage bucket (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique."
+  description = "The name to use when creating the Cloud Object Storage bucket for storing log archives (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique."
 }
 
-variable "cos_target_bucket_name" {
+variable "at_cos_target_bucket_name" {
   type        = string
   default     = "observability-cos-target-bucket"
   description = "The name to use when creating the Cloud Object Storage bucket for cos target (NOTE: bucket names are globally unique)."
@@ -161,7 +161,7 @@ variable "cos_target_bucket_name" {
 variable "cos_bucket_access_tags" {
   type        = list(string)
   default     = []
-  description = "Optional list of access tags to be added to the SCC COS bucket."
+  description = "Optional list of access tags to be added to the COS bucket."
 }
 
 variable "cos_bucket_class" {
@@ -181,28 +181,28 @@ variable "existing_cos_instance_crn" {
   description = "The CRN of an existing Cloud Object Storage instance. If not supplied, a new instance will be created."
 }
 
-variable "existing_cos_target_instance_crn" {
+variable "existing_at_cos_target_instance_crn" {
   type        = string
   nullable    = true
   default     = null
   description = "The CRN of an existing Cloud Object Storage instance for setting event routing. If not supplied, the CRN of the new instance will be used."
 }
 
-variable "existing_cos_bucket_name" {
+variable "existing_log_archive_cos_bucket_name" {
   type        = string
   nullable    = true
   default     = null
   description = "The name of an existing bucket inside the existing Cloud Object Storage instance to use for storing log archive. If not supplied, a new bucket will be created."
 }
 
-variable "existing_cos_target_bucket_name" {
+variable "existing_at_cos_target_bucket_name" {
   type        = string
   nullable    = true
   default     = null
   description = "The name of an existing bucket inside the existing Cloud Object Storage instance to use for event routing. If not supplied, a new bucket will be created."
 }
 
-variable "existing_cos_target_bucket_endpoint" {
+variable "existing_at_cos_target_bucket_endpoint" {
   type        = string
   nullable    = true
   default     = null
@@ -218,7 +218,7 @@ variable "skip_cos_kms_auth_policy" {
 variable "management_endpoint_type_for_bucket" {
   description = "The type of endpoint for the IBM terraform provider to use to manage COS buckets. (`public`, `private` or `direct`). Ensure to enable virtual routing and forwarding (VRF) in your account if using `private`, and that the terraform runtime has access to the the IBM Cloud private network."
   type        = string
-  default     = "public" # Change it to private
+  default     = "private"
   validation {
     condition     = contains(["public", "private", "direct"], var.management_endpoint_type_for_bucket)
     error_message = "The specified management_endpoint_type_for_bucket is not a valid selection!"
@@ -237,20 +237,20 @@ variable "kms_region" {
 
 variable "existing_kms_guid" {
   type        = string
-  default     = "e6dce284-e80f-46e1-a3c1-830f7adff7a9"
+  default     = null
   description = "The GUID of of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
 }
 
 variable "existing_cos_kms_key_crn" {
   type        = string
   default     = null
-  description = "The CRN of an existing KMS key to be used to encrypt the COS bucket. If not supplied, a new key ring and key will be created in the provided KMS instance."
+  description = "The CRN of an existing KMS key to be used to encrypt both the COS bucket i.e 'log-archive-bucket' and 'at-target-cos-bucket'. If not supplied, a new key ring and key will be created in the provided KMS instance."
 }
 
 variable "kms_endpoint_type" {
   type        = string
   description = "The type of endpoint to be used for commincating with the KMS instance. Allowed values are: 'public' or 'private' (default)"
-  default     = "public" # Change it to private
+  default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
     error_message = "The kms_endpoint_type value must be 'public' or 'private'."
@@ -260,11 +260,11 @@ variable "kms_endpoint_type" {
 variable "cos_key_ring_name" {
   type        = string
   default     = "observability-cos-key-ring"
-  description = "The name to give the Key Ring which will be created for the COS bucket Key. Not used if supplying an existing Key."
+  description = "The name to give the Key Ring which will be created for the COS bucket Key. Will be used by both 'log-archive-bucket' and 'at-target-cos-bucket'. Not used if supplying an existing Key."
 }
 
 variable "cos_key_name" {
   type        = string
   default     = "observability-cos-key"
-  description = "The name to give the Key which will be created for the COS bucket. Not used if supplying an existing Key."
+  description = "The name to give the Key which will be created for the COS bucket.  Will be used by both 'log-archive-bucket' and 'at-target-cos-bucket'. Not used if supplying an existing Key."
 }
