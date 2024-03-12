@@ -1,6 +1,6 @@
 # IBM Observability Instances Deployable Architecture
 
-This architecture creates an observability instance on IBM Cloud®  and supports provisioning the following resources:
+This architecture creates an observability instances on IBM Cloud®  and supports provisioning the following resources:
 
 - A resource group, if one is not passed in.
 - A log analysis instance,
