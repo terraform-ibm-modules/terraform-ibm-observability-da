@@ -1,0 +1,98 @@
+{
+    "products": [
+      {
+        "name": "deploy-arch-ibm-observability-instances",
+        "label": "Deployment of IBM Cloud Observability Instances",
+        "product_kind": "solution",
+        "tags": [
+          "ibm_created",
+          "target_terraform",
+          "terraform",
+          "reference_architecture",
+          "solution"
+        ],
+        "keywords": [
+          "slz",
+          "IaC",
+          "infrastructure as code",
+          "terraform",
+          "solution",
+          "observability",
+          "observability instances",
+          "log analysis",
+          "cloud monitoring"
+        ],
+        "short_description": "Deploys the IBM Cloud Observability Instances",
+        "long_description": "Deploys the IBM Cloud Observability Instances - Log Analysis and Cloud Monitoring",
+        "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
+        "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
+        "provider_name": "IBM",
+        "features": [
+          {
+            "title": "Creates the Log analysis instance.",
+            "description": "Creates and configures the Log analysis instance."
+          },
+          {
+            "description": "Creates the Cloud Monitoring instance.",
+            "title": "Creates and configures the Cloud Monitoring instance."
+          },
+          {
+            "title": "Creates the COS bucket required for the logs archiving",
+            "description": "Creates and configures the COS bucket with archiving and expiration enabled."
+          },
+          {
+            "title": "Creates the COS bucket required for routing of ATracker events",
+            "description": "Creates and configures the COS bucket with archiving and expiration enabled."
+          }
+        ],
+        "flavors": [
+          {
+            "label": "Standard",
+            "name": "standard",
+            "install_type": "fullstack",
+            "working_directory": "solutions/instances",
+            "compliance": {
+                "authority": "scc-v3",
+                "profiles": [
+                    {
+                        "profile_name": "IBM Cloud Framework for Financial Services",
+                        "profile_version": "1.5.0"
+                    }
+                ]
+            },
+            "architecture": {
+              "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud.",
+              "features": [
+                {
+                    "title": "Creates the Log analysis instance.",
+                    "description": "Creates and configures the Log analysis instance."
+                  },
+                  {
+                    "description": "Creates the Cloud Monitoring instance.",
+                    "title": "Creates and configures the Cloud Monitoring instance."
+                  },
+                  {
+                    "title": "Creates the COS bucket required for the logs archiving",
+                    "description": "Creates and configures the COS bucket with archiving and expiration enabled."
+                  },
+                  {
+                    "title": "Creates the COS bucket required for routing of ATracker events",
+                    "description": "Creates and configures the COS bucket with archiving and expiration enabled."
+                  }
+              ],
+              "diagrams": [
+                {
+                  "diagram": {
+                    "caption": "Observability instances on IBM Cloud.",
+                    "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
+                    "type": "image/svg+xml"
+                  },
+                  "description": "This architecture supports creating and configuring IBM Cloud Observability instances."
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
