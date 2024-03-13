@@ -5,7 +5,6 @@ locals {
   archive_api_key = var.archive_api_key == null ? var.ibmcloud_api_key : var.archive_api_key
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
-  cos_instance_id             = var.existing_cos_instance_id != null ? var.existing_cos_instance_id : module.cos[0].cos_instance_id
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos[0].buckets[var.log_archive_cos_bucket_name].bucket_name
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : module.cos[0].buckets[var.log_archive_cos_bucket_name].s3_endpoint_private
   cos_kms_key_crn             = var.existing_log_archive_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
@@ -56,7 +55,7 @@ module "observability_instance" {
   log_analysis_plan                = var.log_analysis_plan
   log_analysis_tags                = var.log_analysis_tags
   log_analysis_service_endpoints   = var.log_analysis_service_endpoints
-  log_analysis_cos_instance_id     = local.cos_instance_id
+  log_analysis_cos_instance_id     = local.cos_instance_crn
   log_analysis_cos_bucket_name     = local.archive_cos_bucket_name
   log_analysis_cos_bucket_endpoint = local.archive_cos_bucket_endpoint
   # IBM Cloud Monitoring
@@ -104,7 +103,6 @@ module "kms" {
   count                       = var.existing_cos_kms_key_crn != null || var.existing_log_archive_cos_bucket_name != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.8.3"
-  resource_group_id           = null # rg only needed if creating KP instance
   create_key_protect_instance = false
   region                      = var.kms_region
   existing_kms_instance_guid  = var.existing_kms_guid

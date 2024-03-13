@@ -70,7 +70,7 @@ variable "enable_archive" {
 
 variable "archive_api_key" {
   type        = string
-  description = "(Optional) The IBM Cloud API key will be used for Log Analysis archiving to COS if this is not passed."
+  description = "(Optional) The API key value passed in the 'ibmcloud_api_key' variable will be used if no value is passed here."
   sensitive   = true
   default     = null
 }
@@ -148,13 +148,13 @@ variable "cos_instance_access_tags" {
 
 variable "log_archive_cos_bucket_name" {
   type        = string
-  default     = "observability-cos-bucket"
+  default     = "log-archive-cos-bucket"
   description = "The name to use when creating the Cloud Object Storage bucket for storing log archives (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique."
 }
 
 variable "at_cos_target_bucket_name" {
   type        = string
-  default     = "observability-cos-target-bucket"
+  default     = "at-events-cos-bucket"
   description = "The name to use when creating the Cloud Object Storage bucket for cos target (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique."
 }
 
@@ -189,13 +189,6 @@ variable "existing_cos_instance_crn" {
   nullable    = true
   default     = null
   description = "The CRN of an existing Cloud Object Storage instance. If not supplied, a new instance will be created."
-}
-
-variable "existing_cos_instance_id" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The id of an existing Cloud Object Storage instance. If not supplied, a new instance will be created."
 }
 
 variable "existing_log_archive_cos_bucket_name" {

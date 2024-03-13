@@ -3,11 +3,12 @@
 This architecture creates the observability instances on IBM Cloud and supports provisioning the following resources:
 
 - A resource group, if one is not passed in.
-- A log analysis instance.
-- A cloud monitoring instance.
-- Creates a cloud object storage(COS) instance or taking in an existing one.
-- Creates a KMS encrypted COS bucket that is required to store archived logs or using the existing one.
-- Creates a KMS encrypted COS bucket for setting up Activity Tracker event routing or using the existing one.
+- A Log Analysis instance.
+- A Cloud Monitoring instance.
+- Creates a Cloud Object Storage (COS) instance or supports using an existing one.
+- Supports creating KMS root keys in an existing KMS instance or using existing keys if creating new buckets.
+- Creates a KMS encrypted COS bucket that is required to store archived logs or using an existing bucket.
+- Creates a KMS encrypted COS bucket for setting up Activity Tracker event routing or using an existing bucket.
 
 ![observability-instances-deployable-architecure](../../reference-architecture/deployable-architecture-observability-instances.svg)
 
