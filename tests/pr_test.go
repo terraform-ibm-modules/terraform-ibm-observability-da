@@ -21,6 +21,7 @@ import (
 // Use existing resource group
 const resourceGroup = "geretain-test-observability-instances"
 const solutionAgentsDADir = "solutions/agents"
+const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // const testAgentsResourcesDir = "tests/resources"
 
@@ -71,22 +72,22 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 			TarIncludePatterns: []string{
 				"*.tf",
 				solutionAgentsDADir + "/*.tf",
+				agentsKubeconfigDir + "/*.*",
 			},
 			ResourceGroup:          resourceGroup,
 			TemplateFolder:         solutionAgentsDADir,
 			Tags:                   []string{"test-schematic"},
 			DeleteWorkspaceOnFail:  false,
-			WaitJobCompleteMinutes: 240,
+			WaitJobCompleteMinutes: 60,
 			Region:                 region,
 		})
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-			{Name: "resource_tags", Value: options.Tags, DataType: "list(string)"},
-			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "workload_cluster_id")},
-			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_resource_group_id")},
-			{Name: "log_analysis_ingestion_key", Value: terraform.Output(t, existingTerraformOptions, "log_analysis_ingestion_key")},
-			{Name: "cloud_monitoring_access_key", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_access_key")},
+			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "workload_cluster_id"), DataType: "string", Secure: true},
+			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_resource_group_id"), DataType: "string", Secure: true},
+			{Name: "log_analysis_ingestion_key", Value: terraform.Output(t, existingTerraformOptions, "log_analysis_ingestion_key"), DataType: "string", Secure: true},
+			{Name: "cloud_monitoring_access_key", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_access_key"), DataType: "string", Secure: true},
 		}
 
 		err := options.RunSchematicTest()
