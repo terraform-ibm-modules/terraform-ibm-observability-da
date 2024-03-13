@@ -2,12 +2,17 @@
 # Outputs
 ##############################################################################
 
+output "log_analysis_name" {
+  value       = module.observability_instance.log_analysis_name
+  description = "The name of the provisioned Log Analysis instance."
+}
+
 output "log_analysis_crn" {
   value       = module.observability_instance.log_analysis_crn
   description = "The id of the provisioned Log Analysis instance."
 }
 
-output "log_analysis_guid" {
+output "log_analysis_gusis_guid" {
   value       = module.observability_instance.log_analysis_guid
   description = "vaThe guid of the provisioned Log Analysis instance."
 }
@@ -16,6 +21,11 @@ output "log_analysis_ingestion_key" {
   value       = module.observability_instance.log_analysis_ingestion_key
   description = "Log Analysis ingest key for agents to use"
   sensitive   = true
+}
+
+output "cloud_monitoring_name" {
+  value       = module.observability_instance.cloud_monitoring_name
+  description = "The name of the provisioned IBM cloud monitoring instance."
 }
 
 output "cloud_monitoring_crn" {
