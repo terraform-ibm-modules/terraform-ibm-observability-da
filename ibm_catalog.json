@@ -24,7 +24,7 @@
           "Activity Tracker"
         ],
         "short_description": "Configures IBM Cloud Observability resources",
-        "long_description": "Solutions which support configuring IBM Cloud Observability resources for logging and monitoring.",
+        "long_description": "Solutions which support configuring IBM Cloud Observability resources for logging, monitoring and activity tracking.",
         "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
         "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
         "provider_name": "IBM",
