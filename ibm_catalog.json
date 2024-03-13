@@ -24,22 +24,18 @@
           "Activity Tracker"
         ],
         "short_description": "Configures IBM Cloud Observability resources",
-        "long_description": "Solutions which support configuring IBM Cloud Observability resources for logging, monitoring and activity tracking",
+        "long_description": "Solutions which support configuring IBM Cloud Observability resources for logging and monitoring.",
         "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
         "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
         "provider_name": "IBM",
         "features": [
           {
-            "title": "Creates the Log analysis instance.",
-            "description": "Creates and configures the Log analysis instance."
+            "title": "Creates the Log Analysis instance.",
+            "description": "Creates and configures the Log Analysis instance."
           },
           {
             "description": "Creates the Cloud Monitoring instance.",
             "title": "Creates and configures the Cloud Monitoring instance."
-          },
-          {
-            "title": "Creates the COS bucket required for the logs archiving",
-            "description": "Creates and configures the COS bucket with archiving and expiration enabled."
           }
         ],
         "flavors": [
@@ -58,27 +54,27 @@
                 ]
             },
             "architecture": {
-              "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud and Activity Tracker routing to a COS bucket target.",
+              "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud and Activity Tracker event routing to a COS target.",
               "features": [
                 {
-                    "title": "Creates the Log analysis instance.",
-                    "description": "Creates and configures the Log analysis instance."
+                    "title": "Creates the Log Analysis instance.",
+                    "description": "Creates and configures the Log Analysis instance."
                   },
                   {
                     "description": "Creates the Cloud Monitoring instance.",
                     "title": "Creates and configures the Cloud Monitoring instance."
                   },
                   {
-                    "title": "Creates the COS bucket required for the logs archiving.",
+                    "title": "Creates the KMS encrypted COS bucket required for the logs archiving.",
                     "description": "Creates and configures the COS bucket with archiving and expiration enabled."
                   },
                   {
-                    "title": "Creates the COS bucket required for routing of ATracker events.",
+                    "title": "Creates the KMS encrypted COS bucket required for routing of ATracker events.",
                     "description": "Creates and configures the COS bucket with archiving and expiration enabled."
                   },
                   {
-                    "title": "Creates an Activity Tracker route and target",
-                    "description": "Creates and configures activity tracker route and target."
+                    "title": "Creates an Activity Tracker event route and COS target.",
+                    "description": "Creates and configures the Activity Tracker event route and COS target."
                   }
               ],
               "diagrams": [
@@ -88,7 +84,7 @@
                     "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
                     "type": "image/svg+xml"
                   },
-                  "description": "This architecture supports creating and configuring IBM Cloud Observability instances."
+                  "description": "This architecture supports creating and configuring IBM Cloud Observability instances and Activity Tracker event routing to a COS target."
                 }
               ]
             }
