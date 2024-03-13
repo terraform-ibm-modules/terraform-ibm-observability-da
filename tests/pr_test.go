@@ -3,6 +3,7 @@ package test
 
 import (
 	"log"
+	"math/rand"
 	"os"
 	"testing"
 
@@ -16,6 +17,14 @@ import (
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
 const resourceGroup = "geretain-test-observability-instances"
 const solutionInstanceDADir = "solutions/instances"
+
+// Current supported SCC region
+var validRegions = []string{
+	"us-south",
+	"eu-de",
+	"ca-tor",
+	"eu-es",
+}
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
@@ -37,7 +46,7 @@ func TestMain(m *testing.M) {
 func TestInstancesInSchematics(t *testing.T) {
 	t.Parallel()
 
-	const region = "us-south"
+	var region = validRegions[rand.Intn(len(validRegions))]
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
@@ -51,7 +60,6 @@ func TestInstancesInSchematics(t *testing.T) {
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
-		Region:                 region,
 	})
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
@@ -71,7 +79,7 @@ func TestInstancesInSchematics(t *testing.T) {
 	assert.Nil(t, err, "This should not have errored")
 }
 
-func TestRunUpgradeInstances(t *testing.T) {
+func TestRunUpgradeSolutionInstances(t *testing.T) {
 	t.Parallel()
 
 	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
