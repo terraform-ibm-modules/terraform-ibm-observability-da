@@ -164,12 +164,22 @@ variable "cos_bucket_access_tags" {
   description = "Optional list of access tags to be added to the COS bucket."
 }
 
-variable "cos_bucket_class" {
+variable "log_archive_cos_bucket_class" {
   type        = string
   default     = "smart"
   description = "The storage class of the newly provisioned COS bucket. Allowed values are: 'standard', 'vault', 'cold', 'smart' (default value), 'onerate_active'"
   validation {
-    condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.cos_bucket_class)
+    condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.log_archive_cos_bucket_class)
+    error_message = "Allowed values for cos_bucket_class are \"standard\", \"vault\",\"cold\", \"smart\", or \"onerate_active\"."
+  }
+}
+
+variable "at_cos_target_bucket_class" {
+  type        = string
+  default     = "smart"
+  description = "The storage class of the newly provisioned COS bucket. Allowed values are: 'standard', 'vault', 'cold', 'smart' (default value), 'onerate_active'"
+  validation {
+    condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.at_cos_target_bucket_class)
     error_message = "Allowed values for cos_bucket_class are \"standard\", \"vault\",\"cold\", \"smart\", or \"onerate_active\"."
   }
 }
@@ -186,13 +196,6 @@ variable "existing_cos_instance_id" {
   nullable    = true
   default     = null
   description = "The id of an existing Cloud Object Storage instance. If not supplied, a new instance will be created."
-}
-
-variable "existing_at_cos_target_instance_crn" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The CRN of an existing Cloud Object Storage instance for setting event routing. If not supplied, the CRN of the new instance will be used."
 }
 
 variable "existing_log_archive_cos_bucket_name" {
