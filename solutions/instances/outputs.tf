@@ -12,7 +12,7 @@ output "log_analysis_crn" {
   description = "The id of the provisioned Log Analysis instance."
 }
 
-output "log_analysis_gusis_guid" {
+output "log_analysis_guid" {
   value       = module.observability_instance.log_analysis_guid
   description = "vaThe guid of the provisioned Log Analysis instance."
 }
@@ -46,7 +46,6 @@ output "cloud_monitoring_access_key" {
 
 output "cos_bucket_details" {
   value       = module.cos[0].buckets
-  sensitive   = true
   description = "The details of the COS buckets."
 }
 
