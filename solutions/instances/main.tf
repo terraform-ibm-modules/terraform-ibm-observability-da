@@ -4,15 +4,17 @@
 locals {
   archive_api_key = var.archive_api_key == null ? var.ibmcloud_api_key : var.archive_api_key
 
-  cos_instance_crn = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
-  cos_bucket_name  = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos[0].buckets[var.log_archive_cos_bucket_name].bucket_name
-  cos_kms_key_crn  = var.existing_log_archive_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
+  cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
+  archive_cos_instance_id     = var.existing_cos_instance_id != null ? var.existing_cos_instance_id : module.cos[0].cos_instance_id
+  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos[0].buckets[var.log_archive_cos_bucket_name].bucket_name
+  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : module.cos[0].buckets[var.log_archive_cos_bucket_name].s3_endpoint_private
+  cos_kms_key_crn             = var.existing_log_archive_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
 
-  cos_target_instance_crn = var.existing_at_cos_target_instance_crn != null ? var.existing_at_cos_target_instance_crn : module.cos[0].cos_instance_crn
-  cos_target_bucket_name  = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos[0].buckets[var.at_cos_target_bucket_name].bucket_name
-  cos_bucket_endpoint     = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos[0].buckets[var.at_cos_target_bucket_name].s3_endpoint_private
-  bucket_configs          = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? concat([var.log_archive_cos_bucket_name], [var.at_cos_target_bucket_name]) : null
-  skip_auth_policy        = concat([var.skip_cos_kms_auth_policy], [true])
+  cos_target_instance_crn    = var.existing_at_cos_target_instance_crn != null ? var.existing_at_cos_target_instance_crn : module.cos[0].cos_instance_crn
+  cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos[0].buckets[var.at_cos_target_bucket_name].bucket_name
+  cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos[0].buckets[var.at_cos_target_bucket_name].s3_endpoint_private
+  bucket_configs             = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? concat([var.log_archive_cos_bucket_name], [var.at_cos_target_bucket_name]) : null
+  skip_auth_policy           = concat([var.skip_cos_kms_auth_policy], [true])
 
   archive_rule = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? {
     enable = true
@@ -54,10 +56,9 @@ module "observability_instance" {
   log_analysis_plan                = var.log_analysis_plan
   log_analysis_tags                = var.log_analysis_tags
   log_analysis_service_endpoints   = var.log_analysis_service_endpoints
-  log_analysis_cos_instance_id     = module.cos[0].cos_instance_id
-  log_analysis_cos_bucket_name     = local.cos_bucket_name
-  log_analysis_cos_bucket_endpoint = local.cos_bucket_endpoint
-  # Todo: Need to get the s3_endpoing exposed in the fscloud COS module
+  log_analysis_cos_instance_id     = local.archive_cos_instance_id
+  log_analysis_cos_bucket_name     = local.archive_cos_bucket_name
+  log_analysis_cos_bucket_endpoint = local.archive_cos_bucket_endpoint
   # IBM Cloud Monitoring
   cloud_monitoring_provision         = true
   cloud_monitoring_instance_name     = var.cloud_monitoring_instance_name
@@ -70,7 +71,7 @@ module "observability_instance" {
   cos_targets = [
     {
       bucket_name                       = local.cos_target_bucket_name
-      endpoint                          = local.cos_bucket_endpoint
+      endpoint                          = local.cos_target_bucket_endpoint
       instance_id                       = local.cos_target_instance_crn
       target_region                     = var.cos_region
       target_name                       = "cos-target"
