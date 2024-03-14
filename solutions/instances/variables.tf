@@ -158,10 +158,16 @@ variable "at_cos_target_bucket_name" {
   description = "The name to use when creating the Cloud Object Storage bucket for cos target (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique."
 }
 
-variable "cos_bucket_access_tags" {
+variable "archive_bucket_access_tags" {
   type        = list(string)
   default     = []
-  description = "Optional list of access tags to be added to the COS bucket."
+  description = "Optional list of access tags to be added to the log archive COS bucket."
+}
+
+variable "at_cos_bucket_access_tags" {
+  type        = list(string)
+  default     = []
+  description = "Optional list of access tags to be added to the activity tracking event routing COS bucket."
 }
 
 variable "log_archive_cos_bucket_class" {

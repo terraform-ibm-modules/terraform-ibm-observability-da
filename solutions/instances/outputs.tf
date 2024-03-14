@@ -45,7 +45,7 @@ output "cloud_monitoring_access_key" {
 }
 
 output "cos_bucket_details" {
-  value       = module.cos[0].buckets
+  value       = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? module.cos[0].buckets : null
   description = "The details of the COS buckets."
 }
 

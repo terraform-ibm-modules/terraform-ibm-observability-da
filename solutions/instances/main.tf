@@ -7,14 +7,25 @@ locals {
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos[0].buckets[var.log_archive_cos_bucket_name].bucket_name
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : module.cos[0].buckets[var.log_archive_cos_bucket_name].s3_endpoint_private
-  cos_kms_key_crn             = var.existing_log_archive_cos_bucket_name != null ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
+  cos_kms_key_crn             = (var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos[0].buckets[var.at_cos_target_bucket_name].bucket_name
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos[0].buckets[var.at_cos_target_bucket_name].s3_endpoint_private
-  bucket_configs             = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? concat([var.log_archive_cos_bucket_name], [var.at_cos_target_bucket_name]) : null
-  storage_class_configs      = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? concat([var.log_archive_cos_bucket_class], [var.at_cos_target_bucket_class]) : null
-  skip_auth_policy           = concat([var.skip_cos_kms_auth_policy], [true])
 
+  bucket_config_map = ((var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null)) ? [
+    {
+      class  = var.log_archive_cos_bucket_class
+      name   = var.log_archive_cos_bucket_name
+      tag    = var.archive_bucket_access_tags
+      policy = var.skip_cos_kms_auth_policy
+    },
+    {
+      class  = var.at_cos_target_bucket_class
+      name   = var.at_cos_target_bucket_name
+      tag    = var.at_cos_bucket_access_tags
+      policy = var.skip_cos_kms_auth_policy == true ? false : true
+    }
+  ] : null
   archive_rule = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? {
     enable = true
     days   = 90
@@ -146,17 +157,17 @@ module "cos" {
   access_tags              = var.cos_instance_access_tags
   cos_plan                 = "standard"
   bucket_configs = [
-    for config in range(length(local.bucket_configs)) :
+    for value in local.bucket_config_map :
     {
-      access_tags                   = var.cos_bucket_access_tags
-      bucket_name                   = local.bucket_configs[config]
+      access_tags                   = value.tag
+      bucket_name                   = value.name
       add_bucket_name_suffix        = var.add_bucket_name_suffix
       kms_encryption_enabled        = true
       kms_guid                      = var.existing_kms_guid
       kms_key_crn                   = local.cos_kms_key_crn
-      skip_iam_authorization_policy = local.skip_auth_policy[config]
+      skip_iam_authorization_policy = value.policy
       management_endpoint_type      = var.management_endpoint_type_for_bucket
-      storage_class                 = local.storage_class_configs[config]
+      storage_class                 = value.class
       resource_instance_id          = local.cos_instance_crn
       region_location               = var.cos_region
       force_delete                  = true
