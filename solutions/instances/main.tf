@@ -12,20 +12,26 @@ locals {
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos[0].buckets[var.at_cos_target_bucket_name].bucket_name
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos[0].buckets[var.at_cos_target_bucket_name].s3_endpoint_private
 
-  bucket_config_map = ((var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null)) ? [
-    {
-      class  = var.log_archive_cos_bucket_class
-      name   = var.log_archive_cos_bucket_name
-      tag    = var.archive_bucket_access_tags
-      policy = var.skip_cos_kms_auth_policy
-    },
-    {
-      class  = var.at_cos_target_bucket_class
-      name   = var.at_cos_target_bucket_name
-      tag    = var.at_cos_bucket_access_tags
-      policy = var.skip_cos_kms_auth_policy == true ? false : true
-    }
-  ] : null
+  config_1 = var.existing_log_archive_cos_bucket_name == null ? {
+    class  = var.log_archive_cos_bucket_class
+    name   = var.log_archive_cos_bucket_name
+    tag    = var.archive_bucket_access_tags
+    policy = var.skip_cos_kms_auth_policy
+  } : null
+
+  config_2 = var.existing_at_cos_target_bucket_name == null ? {
+    class  = var.at_cos_target_bucket_class
+    name   = var.at_cos_target_bucket_name
+    tag    = var.at_cos_bucket_access_tags
+    policy = var.skip_cos_kms_auth_policy == true ? false : true
+  } : null
+
+  bucket_config_map = var.existing_log_archive_cos_bucket_name == null ? (
+    var.existing_at_cos_target_bucket_name == null ? [local.config_1, local.config_2] : [local.config_1]
+    ) : (
+    var.existing_at_cos_target_bucket_name == null ? [local.config_2] : null
+  )
+
   archive_rule = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? {
     enable = true
     days   = 90
