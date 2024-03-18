@@ -23,8 +23,6 @@ const resourceGroup = "geretain-test-observability-instances"
 const solutionAgentsDADir = "solutions/agents"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
-// const testAgentsResourcesDir = "tests/resources"
-
 func TestAgentsSolutionInSchematics(t *testing.T) {
 	t.Parallel()
 

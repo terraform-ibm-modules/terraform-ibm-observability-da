@@ -1,87 +1,138 @@
 {
     "products": [
-      {
-        "name": "deploy-arch-ibm-observability-agents",
-        "label": "Observability Agents deployment on the OpenShift Cluster on the Secure Landing Zone",
-        "product_kind": "solution",
-        "tags": [
-          "ibm_created",
-          "target_terraform",
-          "terraform",
-          "reference_architecture",
-          "solution"
-        ],
-        "keywords": [
-          "slz",
-          "IaC",
-          "infrastructure as code",
-          "terraform",
-          "solution",
-          "observability",
-          "observability agents",
-          "log analysis agent",
-          "cloud monitoring agent"
-        ],
-        "short_description": "Deploys the Observbility agents on the OpenShift cluster on the Secure Landing Zone (SLZ).",
-        "long_description": "Deploys the Observbility agents on the OpenShift cluster on the Secure Landing Zone (SLZ).",
-        "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
-        "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
-        "provider_name": "IBM",
-        "features": [
-          {
-            "description": "Supports deployment of the Log analysis agent on the existing cluster on Secure Landing Zone.",
-            "title": "Deploys Log Analysis agent on existing cluster on Secure Landing Zone."
-          },
-          {
-            "description": "Supports deployment of the Cloud Monitoring agent on the existing cluster on Secure Landing Zone.",
-            "title": "Deploys Cloud Monitoring agent on existing cluster on Secure Landing Zone."
-          }
-        ],
-        "flavors": [
-          {
-            "label": "Standard",
-            "name": "standard",
-            "install_type": "extension",
-            "working_directory": "solutions/agents",
-            "dependencies": [
-              {
-                "flavors": [
-                  "standard"
-                ],
-                "id": "",
-                "name": "deploy-arch-ibm-slz-ocp",
-                "version": "v5.17.2"
-              }
-            ],
-            "architecture": {
-              "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring Agent on an existing OpenShift Cluster.",
-              "features": [
-                {
-                  "title": "Works with the Secure Landing Zone",
-                  "description": "Yes"
-                },
-                {
-                  "title": "Supports deployment of Log Analysis agent on an existing cluster on Secure Landing Zone",
-                  "description": "Yes"
-                },
-                {
-                  "title": "Supports deployment of Cloud Monitoring agent on an existing cluster on Secure Landing Zone",
-                  "description": "Yes"
-                }
-              ],
-              "diagrams": [
-                {
-                  "diagram": {
-                    "caption": "Observability Agents on an OCP cluster of Secure Landing Zone.",
-                    "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
-                    "type": "image/svg+xml"
-                  },
-                  "description": "Deployment of Observability agents on an OCP cluster of Secure Landing Zone."
-                }
-              ]
+        {
+          "name": "deploy-arch-ibm-observability",
+          "label": "Observability",
+          "product_kind": "solution",
+          "tags": [
+            "ibm_created",
+            "target_terraform",
+            "terraform",
+            "logging_monitoring",
+            "solution"
+          ],
+          "keywords": [
+            "IaC",
+            "infrastructure as code",
+            "terraform",
+            "solution",
+            "observability",
+            "observability instances",
+            "log analysis",
+            "cloud monitoring",
+            "ATracker",
+            "Activity Tracker"
+          ],
+          "short_description": "Configures IBM Cloud Observability resources",
+          "long_description": "Solutions which support configuring IBM Cloud Observability resources for logging, monitoring and activity tracking.",
+          "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
+          "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
+          "provider_name": "IBM",
+          "features": [
+            {
+              "title": "Creates the Log Analysis instance.",
+              "description": "Creates and configures the Log Analysis instance."
+            },
+            {
+              "description": "Creates the Cloud Monitoring instance.",
+              "title": "Creates and configures the Cloud Monitoring instance."
             }
-          }
-        ]
-      }
+          ],
+          "flavors": [
+            {
+                "label": "Instances",
+                "name": "instances",
+                "install_type": "fullstack",
+                "working_directory": "solutions/instances",
+                "compliance": {
+                    "authority": "scc-v3",
+                    "profiles": [
+                        {
+                            "profile_name": "IBM Cloud Framework for Financial Services",
+                            "profile_version": "1.5.0"
+                        }
+                    ]
+                },
+                "architecture": {
+                  "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud and Activity Tracker event routing to a COS bucket target.",
+                  "features": [
+                    {
+                        "title": "Creates the Log Analysis instance.",
+                        "description": "Creates and configures the Log Analysis instance."
+                      },
+                      {
+                        "description": "Creates the Cloud Monitoring instance.",
+                        "title": "Creates and configures the Cloud Monitoring instance."
+                      },
+                      {
+                        "title": "Creates the KMS encrypted COS bucket required for the logs archiving.",
+                        "description": "Creates and configures the COS bucket with archiving and expiration enabled."
+                      },
+                      {
+                        "title": "Creates the KMS encrypted COS bucket required for routing of ATracker events.",
+                        "description": "Creates and configures the COS bucket with archiving and expiration enabled."
+                      },
+                      {
+                        "title": "Creates an Activity Tracker event route and COS target.",
+                        "description": "Creates and configures the Activity Tracker event routing and COS target."
+                      }
+                  ],
+                  "diagrams": [
+                    {
+                      "diagram": {
+                        "caption": "Observability instances on IBM Cloud",
+                        "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
+                        "type": "image/svg+xml"
+                      },
+                      "description": "This architecture supports creating and configuring IBM Cloud Observability instances and Activity Tracker event routing to a COS target."
+                    }
+                  ]
+                }
+            },
+            {
+                "label": "Agents",
+                "name": "agents",
+                "install_type": "extension",
+                "working_directory": "solutions/agents",
+                "dependencies": [
+                {
+                    "flavors": [
+                    "standard"
+                    ],
+                    "id": "",
+                    "name": "deploy-arch-ibm-slz-ocp",
+                    "version": "v5.17.2"
+                }
+                ],
+                "architecture": {
+                    "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring Agent on an existing OpenShift Cluster on Secure Landing Zone.",
+                    "features": [
+                      {
+                        "title": "Works with the Secure Landing Zone.",
+                        "description": "Works with the OpenShift cluster of Secure Landing Zone."
+                      },
+                      {
+                        "title": "Deploys Log Analysis agent on an existing cluster on Secure Landing Zone.",
+                        "description": "Deploys Log Analysis agent on an existing cluster on Secure Landing Zone."
+                      },
+                      {
+                        "title": "Deploys Cloud Monitoring agent on an existing cluster on Secure Landing Zone.",
+                        "description": "Deploys Cloud Monitoring agent on existing cluster on Secure Landing Zone."
+                      }
+                    ],
+                    "diagrams": [
+                    {
+                     "diagram": {
+                        "caption": "Observability Agents on an OpenShift cluster",
+                        "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
+                        "type": "image/svg+xml"
+                     },
+                     "description": "Deployment of Observability agents on an OpenShift cluster of Secure Landing Zone."
+                    }
+                    ]
+                }
+            }
+          ]
+        }
     ]
-  }
+}

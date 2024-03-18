@@ -1,9 +1,9 @@
 #! /bin/bash
 
-########################################################################################################################
-## This script is used by the catalog pipeline to deploy the SLZ ROKS, which is a prerequisite for the Observability  ##
-## Agents extension, after catalog validation has completed.                                                          ##
-########################################################################################################################
+############################################################################################################
+## This script is used by the catalog pipeline to deploy the SLZ ROKS and Observability instances,
+## which are the prerequisites for the Observability Agents extension.
+############################################################################################################
 
 set -e
 
