@@ -36,6 +36,14 @@
             {
               "description": "Creates the Cloud Monitoring instance.",
               "title": "Creates and configures the Cloud Monitoring instance."
+            },
+            {
+              "title": "Deploys Log Analysis agent on an OpenShift cluster.",
+              "description": "Deploys Log Analysis agent on an existing OpenShift cluster on Secure Landing Zone."
+            },
+            {
+              "title": "Deploys Cloud Monitoring agent on an OpenShift cluster.",
+              "description": "Deploys Cloud Monitoring agent on existing OpenShift cluster on Secure Landing Zone."
             }
           ],
           "flavors": [
