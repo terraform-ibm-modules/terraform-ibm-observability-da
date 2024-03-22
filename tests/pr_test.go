@@ -72,7 +72,8 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
-		{Name: "cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
+		{Name: "archive_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
+		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 	}
 
 	err := options.RunSchematicTest()
