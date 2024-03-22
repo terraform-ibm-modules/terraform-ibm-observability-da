@@ -20,8 +20,10 @@ const solutionInstanceDADir = "solutions/instances"
 
 // Current supported SCC region
 var validRegions = []string{
-	"us-south",
 	"eu-de",
+	"eu-es",
+	"eu-gb",
+	"us-south",
 	"us-east",
 }
 
