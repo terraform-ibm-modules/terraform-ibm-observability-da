@@ -1,6 +1,6 @@
-##############################################################################
-# Resource Group
-##############################################################################
+#######################################################################################################################
+# Validation
+#######################################################################################################################
 locals {
   archive_api_key = var.archive_api_key == null ? var.ibmcloud_api_key : var.archive_api_key
 
@@ -12,14 +12,14 @@ locals {
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos[0].buckets[var.at_cos_target_bucket_name].bucket_name
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos[0].buckets[var.at_cos_target_bucket_name].s3_endpoint_private
 
-  config_1 = var.existing_log_archive_cos_bucket_name == null ? {
+  bucket_config_1 = var.existing_log_archive_cos_bucket_name == null ? {
     class  = var.log_archive_cos_bucket_class
     name   = var.log_archive_cos_bucket_name
     tag    = var.archive_bucket_access_tags
     policy = var.skip_cos_kms_auth_policy
   } : null
 
-  config_2 = var.existing_at_cos_target_bucket_name == null ? {
+  bucket_config_2 = var.existing_at_cos_target_bucket_name == null ? {
     class  = var.at_cos_target_bucket_class
     name   = var.at_cos_target_bucket_name
     tag    = var.at_cos_bucket_access_tags
@@ -27,9 +27,9 @@ locals {
   } : null
 
   bucket_config_map = var.existing_log_archive_cos_bucket_name == null ? (
-    var.existing_at_cos_target_bucket_name == null ? [local.config_1, local.config_2] : [local.config_1]
+    var.existing_at_cos_target_bucket_name == null ? [local.bucket_config_1, local.bucket_config_2] : [local.bucket_config_1]
     ) : (
-    var.existing_at_cos_target_bucket_name == null ? [local.config_2] : null
+    var.existing_at_cos_target_bucket_name == null ? [local.bucket_config_2] : null
   )
 
   archive_rule = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? {
@@ -54,6 +54,10 @@ module "resource_group" {
   resource_group_name          = var.existing_resource_group == false ? var.resource_group_name : null
   existing_resource_group_name = var.existing_resource_group == true ? var.resource_group_name : null
 }
+
+#######################################################################################################################
+# Observability Instance
+#######################################################################################################################
 
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
@@ -112,7 +116,6 @@ module "observability_instance" {
 # KMS Key
 #######################################################################################################################
 
-# KMS root key for COS bucket
 module "kms" {
   providers = {
     ibm = ibm.kms
@@ -153,7 +156,7 @@ module "cos" {
   }
   count                    = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? 1 : 0 # no need to call COS module if consumer is passing existing COS bucket
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "7.5.0"
+  version                  = "7.5.3"
   resource_group_id        = module.resource_group.resource_group_id
   create_cos_instance      = var.existing_cos_instance_crn == null ? true : false # don't create instance if existing one passed in
   create_resource_key      = false

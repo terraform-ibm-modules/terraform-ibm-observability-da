@@ -44,9 +44,14 @@ output "cloud_monitoring_access_key" {
   sensitive   = true
 }
 
-output "cos_bucket_details" {
-  value       = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? module.cos[0].buckets : null
-  description = "The details of the COS buckets."
+output "log_archive_cos_bucket_name" {
+  value       = var.existing_log_archive_cos_bucket_name == null ? module.cos[0].buckets[var.log_archive_cos_bucket_name].bucket_name : var.existing_log_archive_cos_bucket_name
+  description = "The name of log archive COS bucket"
+}
+
+output "at_cos_target_bucket_name" {
+  value       = var.existing_at_cos_target_bucket_name == null ? module.cos[0].buckets[var.at_cos_target_bucket_name].bucket_name : var.existing_at_cos_target_bucket_name
+  description = "The name of the at cos target bucket"
 }
 
 output "at_cos_targets" {
