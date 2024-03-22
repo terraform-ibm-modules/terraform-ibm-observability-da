@@ -22,8 +22,7 @@ const solutionInstanceDADir = "solutions/instances"
 var validRegions = []string{
 	"us-south",
 	"eu-de",
-	"ca-tor",
-	"eu-es",
+	"us-east",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
