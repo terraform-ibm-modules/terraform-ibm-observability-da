@@ -70,7 +70,7 @@ variable "enable_archive" {
 
 variable "archive_api_key" {
   type        = string
-  description = "(Optional) The API key value passed in the 'ibmcloud_api_key' variable will be used if no value is passed here."
+  description = "(Optional) The API key to use to configure log analysis archiving with COS. If no value passed, the API key value passed in the 'ibmcloud_api_key' variable will be used."
   sensitive   = true
   default     = null
 }
@@ -91,7 +91,7 @@ variable "cloud_monitoring_plan" {
   default     = "graduated-tier"
 
   validation {
-    condition     = can(regex("^lite$|^graduated-tier$|^graduated-tier-sysdig-secure-plus-monitor$", var.cloud_monitoring_plan))
+    condition     = can(regex("^lite$|^graduated-tier$", var.cloud_monitoring_plan))
     error_message = "The cloud_monitoring_plan value must be one of the following: lite, graduated-tier."
   }
 }
@@ -118,7 +118,7 @@ variable "cloud_monitoring_service_endpoints" {
 
 variable "add_bucket_name_suffix" {
   type        = bool
-  description = "Add random generated suffix (4 characters long) to the newly provisioned COS bucket name. Only used if not passing existing bucket. set to false if you want full control over bucket naming using the 'cos_bucket_name' & 'cos_target_bucket_name' variable."
+  description = "Add random generated suffix (4 characters long) to the newly provisioned COS buckets name. Only used if not passing existing bucket. Set to false if you want full control over bucket naming using the 'log_archive_cos_bucket_name' and 'at_cos_target_bucket_name' variables."
   default     = true
 }
 
@@ -276,11 +276,11 @@ variable "kms_endpoint_type" {
 variable "cos_key_ring_name" {
   type        = string
   default     = "observability-cos-key-ring"
-  description = "The name to give the Key Ring which will be created for the COS bucket Key. Will be used by both 'log-archive-bucket' and 'at-target-cos-bucket'. Not used if supplying an existing Key."
+  description = "The name to give the Key Ring which will be created for the COS bucket Key. Will be used by both log archive bucket and AT COS bucket. Not used if supplying an existing Key."
 }
 
 variable "cos_key_name" {
   type        = string
   default     = "observability-cos-key"
-  description = "The name to give the Key which will be created for the COS bucket.  Will be used by both 'log-archive-bucket' and 'at-target-cos-bucket'. Not used if supplying an existing Key."
+  description = "The name to give the Key which will be created for the COS bucket. Will be used by both log archive bucket and AT COS bucket. Not used if supplying an existing Key."
 }

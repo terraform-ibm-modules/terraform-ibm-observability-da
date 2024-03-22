@@ -30,12 +30,16 @@
         "provider_name": "IBM",
         "features": [
           {
-            "title": "Creates the Log Analysis instance.",
-            "description": "Creates and configures the Log Analysis instance."
+            "title": "Configures Log Analysis",
+            "description": "Configures Log Analysis instance and agents."
           },
           {
-            "description": "Creates the Cloud Monitoring instance.",
-            "title": "Creates and configures the Cloud Monitoring instance."
+            "description": "Configures Cloud Monitoring",
+            "title": "Configures Cloud Monitoring. instance and agents."
+          },
+          {
+            "description": "Configures Activity Tracker routing",
+            "title": "Configures an Activity Tracker route with a COS bucket target."
           }
         ],
         "flavors": [
@@ -48,8 +52,8 @@
                 "authority": "scc-v3",
                 "profiles": [
                     {
-                        "profile_name": "IBM Cloud Framework for Financial Services",
-                        "profile_version": "1.5.0"
+                        "profile_name": "CIS IBM Cloud Foundations Benchmark",
+                        "profile_version": "1.0.0"
                     }
                 ]
             },
