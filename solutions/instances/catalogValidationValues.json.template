@@ -1,0 +1,6 @@
+{
+  "ibmcloud_api_key": $VALIDATION_APIKEY,
+  "resource_group_name": $PREFIX,
+  "existing_kms_guid": $HPCS_US_SOUTH_GUID,
+  "kms_region": "us-south"
+}

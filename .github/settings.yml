@@ -22,7 +22,7 @@ repository:
 
   # Uncomment this description property
   # and update the description to the current repo description.
-  description: "Deploys observability instances and observability agents."
+  description: "A deployable architecture solution to deploy Observability instances and agents."
 
   # Use a comma-separated list of topics to set on the repo (ensure not to use any caps in the topic string).
-  topics: core-team, terraform, ibm-cloud, terraform-module, observability, observability-agents, deployable-architecture
+  topics: core-team, terraform, ibm-cloud, observability, supported, deployable-architecture

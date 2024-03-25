@@ -3,7 +3,7 @@
   "extends": ["github>terraform-ibm-modules/common-dev-assets:commonRenovateConfig"],
   "packageRules": [
     {
-      "description": "Allow the locked in provider version to be updated to the latest for DAs",
+      "description": "Allow the locked in provider version to be updated to the latest for deployable architectures",
       "enabled": true,
       "matchFileNames": ["solutions/**"],
       "matchManagers": ["terraform"],
