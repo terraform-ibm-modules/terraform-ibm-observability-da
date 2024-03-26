@@ -4,7 +4,7 @@ provider "ibm" {
 }
 
 locals {
-  at_endpoint = "https://api.${var.region}.logging.cloud.ibm.com"
+  at_endpoint = "https://api.private.${var.region}.logging.cloud.ibm.com"
 }
 
 provider "logdna" {

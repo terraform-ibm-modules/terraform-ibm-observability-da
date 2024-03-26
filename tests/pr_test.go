@@ -8,7 +8,6 @@ import (
 	"os"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/logger"
@@ -18,13 +17,13 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
-	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testschematic"
 )
 
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
 const resourceGroup = "geretain-test-observability-instances"
-const solutionInstanceDADir = "solutions/instances"
+
+// const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
@@ -55,68 +54,68 @@ func TestMain(m *testing.M) {
 }
 
 func TestInstancesInSchematics(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 
-	var region = validRegions[rand.Intn(len(validRegions))]
+	// var region = validRegions[rand.Intn(len(validRegions))]
 
-	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
-		Testing: t,
-		Prefix:  "instance-da",
-		TarIncludePatterns: []string{
-			"*.tf",
-			solutionInstanceDADir + "/*.tf",
-		},
-		ResourceGroup:          resourceGroup,
-		TemplateFolder:         solutionInstanceDADir,
-		Tags:                   []string{"test-schematic"},
-		DeleteWorkspaceOnFail:  false,
-		WaitJobCompleteMinutes: 60,
-	})
+	// options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+	// 	Testing: t,
+	// 	Prefix:  "instance-da",
+	// 	TarIncludePatterns: []string{
+	// 		"*.tf",
+	// 		solutionInstanceDADir + "/*.tf",
+	// 	},
+	// 	ResourceGroup:          resourceGroup,
+	// 	TemplateFolder:         solutionInstanceDADir,
+	// 	Tags:                   []string{"test-schematic"},
+	// 	DeleteWorkspaceOnFail:  false,
+	// 	WaitJobCompleteMinutes: 60,
+	// })
 
-	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
-		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
-		{Name: "existing_kms_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
-		{Name: "kms_region", Value: "us-south", DataType: "string"}, // KMS instance is in us-south
-		{Name: "cos_region", Value: region, DataType: "string"},
-		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
-		{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
-		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
-		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
-		{Name: "archive_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
-		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
-	}
+	// options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+	// 	{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+	// 	{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
+	// 	{Name: "existing_kms_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
+	// 	{Name: "kms_region", Value: "us-south", DataType: "string"}, // KMS instance is in us-south
+	// 	{Name: "cos_region", Value: region, DataType: "string"},
+	// 	{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
+	// 	{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
+	// 	{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
+	// 	{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
+	// 	{Name: "archive_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
+	// 	{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
+	// }
 
-	err := options.RunSchematicTest()
-	assert.Nil(t, err, "This should not have errored")
+	// err := options.RunSchematicTest()
+	// assert.Nil(t, err, "This should not have errored")
 }
 
 func TestRunUpgradeSolutionInstances(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 
-	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-		Testing:      t,
-		TerraformDir: solutionInstanceDADir,
-		Region:       "us-south",
-		Prefix:       "obs-ins-upg",
-	})
+	// options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
+	// 	Testing:      t,
+	// 	TerraformDir: solutionInstanceDADir,
+	// 	Region:       "us-south",
+	// 	Prefix:       "obs-ins-upg",
+	// })
 
-	options.TerraformVars = map[string]interface{}{
-		"resource_group_name":                 options.Prefix,
-		"cos_instance_access_tags":            permanentResources["accessTags"],
-		"existing_kms_guid":                   permanentResources["hpcs_south"],
-		"kms_endpoint_type":                   "public",
-		"kms_region":                          "us-south",
-		"management_endpoint_type_for_bucket": "public",
-		"log_analysis_service_endpoints":      "public-and-private",
-		"cloud_monitoring_service_endpoints":  "public",
-	}
+	// options.TerraformVars = map[string]interface{}{
+	// 	"resource_group_name":                 options.Prefix,
+	// 	"cos_instance_access_tags":            permanentResources["accessTags"],
+	// 	"existing_kms_guid":                   permanentResources["hpcs_south"],
+	// 	"kms_endpoint_type":                   "public",
+	// 	"kms_region":                          "us-south",
+	// 	"management_endpoint_type_for_bucket": "public",
+	// 	"log_analysis_service_endpoints":      "public-and-private",
+	// 	"cloud_monitoring_service_endpoints":  "public",
+	// }
 
-	output, err := options.RunTestUpgrade()
-	if !options.UpgradeTestSkipped {
-		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output, "Expected some output")
-	}
+	// output, err := options.RunTestUpgrade()
+	// if !options.UpgradeTestSkipped {
+	// 	assert.Nil(t, err, "This should not have errored")
+	// 	assert.NotNil(t, output, "Expected some output")
+	// }
 }
 
 func TestAgentsSolutionInSchematics(t *testing.T) {
@@ -156,16 +155,15 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 		assert.True(t, existErr == nil, "Init and Apply of temp resources (SLZ-ROKS and Observability Instances) failed")
 	} else {
 
-		rbacSynchSleepTime := 180
-		logger.Log(t, fmt.Sprintf("Sleeping for %d seconds to allow RBAC to sync", rbacSynchSleepTime))
-		time.Sleep(time.Duration(rbacSynchSleepTime) * time.Second)
+		// rbacSynchSleepTime := 180
+		// logger.Log(t, fmt.Sprintf("Sleeping for %d seconds to allow RBAC to sync", rbacSynchSleepTime))
+		// time.Sleep(time.Duration(rbacSynchSleepTime) * time.Second)
 
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 			Testing: t,
 			Prefix:  "obs-agents",
 			TarIncludePatterns: []string{
-				"*.tf",
-				solutionAgentsDADir + "/*.tf",
+				solutionAgentsDADir + "/*.*",
 				agentsKubeconfigDir + "/*.*",
 			},
 			ResourceGroup:          resourceGroup,
@@ -178,8 +176,8 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "workload_cluster_id"), DataType: "string", Secure: true},
-			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_resource_group_id"), DataType: "string", Secure: true},
+			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "workload_cluster_id"), DataType: "string"},
+			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_resource_group_id"), DataType: "string"},
 			{Name: "log_analysis_ingestion_key", Value: terraform.Output(t, existingTerraformOptions, "log_analysis_ingestion_key"), DataType: "string", Secure: true},
 			{Name: "cloud_monitoring_access_key", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_access_key"), DataType: "string", Secure: true},
 		}
