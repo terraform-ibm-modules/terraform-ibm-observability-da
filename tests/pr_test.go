@@ -122,7 +122,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 func TestAgentsSolutionInSchematics(t *testing.T) {
 	t.Parallel()
 
-	const region = "us-south"
+	var region = validRegions[rand.Intn(len(validRegions))]
 
 	// ------------------------------------------------------------------------------------------------------
 	// Deploy SLZ ROKS Cluster and Observability instances since it is needed to deploy Observability Agents
