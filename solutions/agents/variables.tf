@@ -86,13 +86,13 @@ variable "log_analysis_endpoint_type" {
 variable "log_analysis_agent_custom_line_inclusion" {
   description = "Log Analysis agent custom configuration for line inclusion setting LOGDNA_K8S_METADATA_LINE_INCLUSION. See https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering for more info."
   type        = string
-  default     = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
+  default     = null # "namespace:default"
 }
 
 variable "log_analysis_agent_custom_line_exclusion" {
   description = "Log Analysis agent custom configuration for line exclusion setting LOGDNA_K8S_METADATA_LINE_EXCLUSION. See https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering for more info."
   type        = string
-  default     = "namespace:default"
+  default     = null # "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
 }
 
 variable "log_analysis_agent_name" {
@@ -110,7 +110,7 @@ variable "log_analysis_agent_namespace" {
 }
 
 variable "log_analysis_agent_tolerations" {
-  description = "List of tolerations to apply to Log Analysis agent."
+  description = "List of tolerations to apply to Log Analysis agent. Defaults to the 'Exists' operator, that means it will match any taint on any node. See https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ for more info."
   type = list(object({
     key               = optional(string)
     operator          = optional(string)
@@ -203,7 +203,7 @@ variable "cloud_monitoring_agent_namespace" {
 }
 
 variable "cloud_monitoring_agent_tolerations" {
-  description = "List of tolerations to apply to Cloud Monitoring agent."
+  description = "List of tolerations to apply to Cloud Monitoring agent. Default value means that it will match any taint on any node except the master node. See https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ for more info."
   type = list(object({
     key               = optional(string)
     operator          = optional(string)
