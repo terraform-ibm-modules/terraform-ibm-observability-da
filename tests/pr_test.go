@@ -155,10 +155,6 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 		assert.True(t, existErr == nil, "Init and Apply of temp resources (SLZ-ROKS and Observability Instances) failed")
 	} else {
 
-		// rbacSynchSleepTime := 180
-		// logger.Log(t, fmt.Sprintf("Sleeping for %d seconds to allow RBAC to sync", rbacSynchSleepTime))
-		// time.Sleep(time.Duration(rbacSynchSleepTime) * time.Second)
-
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 			Testing: t,
 			Prefix:  "obs-agents",
