@@ -69,8 +69,8 @@ variable "log_analysis_secret_name" {
 
 variable "log_analysis_instance_region" {
   type        = string
-  description = "The IBM Log Analysis instance region. Used to construct the ingestion endpoint."
-  default     = "us-south"
+  description = "The region name where the IBM Log Analysis instance is created. Used to construct the ingestion endpoint."
+  default     = null
 }
 
 variable "log_analysis_endpoint_type" {
@@ -149,8 +149,8 @@ variable "cloud_monitoring_secret_name" {
 
 variable "cloud_monitoring_instance_region" {
   type        = string
-  description = "The IBM Cloud Monitoring instance region. Used to construct the ingestion endpoint."
-  default     = "us-south"
+  description = "The region name where the IBM Cloud Monitoring instance is created. Used to construct the ingestion endpoint."
+  default     = null
 }
 
 variable "cloud_monitoring_endpoint_type" {
