@@ -191,16 +191,16 @@ variable "at_cos_target_bucket_class" {
 }
 
 variable "existing_cos_instance_crn" {
-  type     = string
-  nullable = true
-  default  = null
+  type        = string
+  nullable    = true
+  default     = null
   description = "The CRN of an existing Cloud Object Storage instance. If not supplied, a new instance will be created."
 }
 
 variable "existing_log_archive_cos_bucket_name" {
-  type     = string
-  nullable = true
-  default  = null
+  type        = string
+  nullable    = true
+  default     = null
   description = "The name of an existing bucket inside the existing Cloud Object Storage instance to use for storing log archive. If not supplied, a new bucket will be created."
 }
 
@@ -212,9 +212,9 @@ variable "existing_at_cos_target_bucket_name" {
 }
 
 variable "existing_log_archive_cos_bucket_endpoint" {
-  type     = string
-  nullable = true
-  default  = null
+  type        = string
+  nullable    = true
+  default     = null
   description = "The name of an existing cos bucket endpoint to use for storing log archive. If not supplied, the endpoint of the new bucket will be used."
 }
 
@@ -258,8 +258,8 @@ variable "existing_kms_guid" {
 }
 
 variable "existing_cos_kms_key_crn" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
   description = "The CRN of an existing KMS key to be used to encrypt both the COS bucket i.e 'log-archive-bucket' and 'at-target-cos-bucket'. If not supplied, a new key ring and key will be created in the provided KMS instance."
 }
 
