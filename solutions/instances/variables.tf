@@ -17,6 +17,7 @@ variable "existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or an existing resource group in which to provision resources to."
+  default     = "ar-rg"
 }
 
 variable "region" {
@@ -32,7 +33,7 @@ variable "region" {
 variable "log_analysis_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Logging instance to create."
-  default     = "log-analysis"
+  default     = "log-analysis-ar"
 }
 
 variable "log_analysis_plan" {
@@ -49,7 +50,7 @@ variable "log_analysis_plan" {
 variable "log_analysis_service_endpoints" {
   description = "The type of the service endpoint that will be set for the Log Analysis instance."
   type        = string
-  default     = "private"
+  default     = "public-and-private"
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.log_analysis_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
@@ -82,7 +83,7 @@ variable "archive_api_key" {
 variable "cloud_monitoring_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Monitoring instance to create."
-  default     = "cloud-monitoring"
+  default     = "cloud-monitoring-ar"
 }
 
 variable "cloud_monitoring_plan" {
@@ -105,7 +106,7 @@ variable "cloud_monitoring_tags" {
 variable "cloud_monitoring_service_endpoints" {
   description = "The type of the service endpoint that will be set for the IBM cloud monitoring instance."
   type        = string
-  default     = "private"
+  default     = "public"
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.cloud_monitoring_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
@@ -130,7 +131,7 @@ variable "cos_region" {
 
 variable "cos_instance_name" {
   type        = string
-  default     = "observability-cos"
+  default     = "observability-cos-ar"
   description = "The name to use when creating the Cloud Object Storage instance."
 }
 
@@ -191,16 +192,18 @@ variable "at_cos_target_bucket_class" {
 }
 
 variable "existing_cos_instance_crn" {
-  type        = string
-  nullable    = true
-  default     = null
+  type     = string
+  nullable = true
+  default  = null
+  # default     = "crn:v1:bluemix:public:cloud-object-storage:global:a/abac0df06b644a9cabc6e44f55b3880e:0d820681-2802-46d3-8d39-c64e9dc970cf::"
   description = "The CRN of an existing Cloud Object Storage instance. If not supplied, a new instance will be created."
 }
 
 variable "existing_log_archive_cos_bucket_name" {
-  type        = string
-  nullable    = true
-  default     = null
+  type     = string
+  nullable = true
+  default  = null
+  # default     = "new-bucket-ar"
   description = "The name of an existing bucket inside the existing Cloud Object Storage instance to use for storing log archive. If not supplied, a new bucket will be created."
 }
 
@@ -212,9 +215,10 @@ variable "existing_at_cos_target_bucket_name" {
 }
 
 variable "existing_log_archive_cos_bucket_endpoint" {
-  type        = string
-  nullable    = true
-  default     = null
+  type     = string
+  nullable = true
+  default  = null
+  # default     = "s3.private.us-south.cloud-object-storage.appdomain.cloud"
   description = "The name of an existing cos bucket endpoint to use for storing log archive. If not supplied, the endpoint of the new bucket will be used."
 }
 
@@ -234,7 +238,7 @@ variable "skip_cos_kms_auth_policy" {
 variable "management_endpoint_type_for_bucket" {
   description = "The type of endpoint for the IBM terraform provider to use to manage COS buckets. (`public`, `private` or `direct`). Ensure to enable virtual routing and forwarding (VRF) in your account if using `private`, and that the terraform runtime has access to the the IBM Cloud private network."
   type        = string
-  default     = "private"
+  default     = "public"
   validation {
     condition     = contains(["public", "private", "direct"], var.management_endpoint_type_for_bucket)
     error_message = "The specified management_endpoint_type_for_bucket is not a valid selection!"
@@ -253,20 +257,21 @@ variable "kms_region" {
 
 variable "existing_kms_guid" {
   type        = string
-  default     = null
+  default     = "e6dce284-e80f-46e1-a3c1-830f7adff7a9"
   description = "The GUID of of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
 }
 
 variable "existing_cos_kms_key_crn" {
-  type        = string
-  default     = null
+  type    = string
+  default = null
+  # default     = "crn:v1:bluemix:public:hs-crypto:us-south:a/abac0df06b644a9cabc6e44f55b3880e:e6dce284-e80f-46e1-a3c1-830f7adff7a9:key:76170fae-4e0c-48c3-8ebe-326059ebb533"
   description = "The CRN of an existing KMS key to be used to encrypt both the COS bucket i.e 'log-archive-bucket' and 'at-target-cos-bucket'. If not supplied, a new key ring and key will be created in the provided KMS instance."
 }
 
 variable "kms_endpoint_type" {
   type        = string
   description = "The type of endpoint to be used for commincating with the KMS instance. Allowed values are: 'public' or 'private' (default)"
-  default     = "private"
+  default     = "public"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
     error_message = "The kms_endpoint_type value must be 'public' or 'private'."
