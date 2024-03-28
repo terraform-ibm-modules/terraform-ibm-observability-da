@@ -28,7 +28,7 @@ const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
-// Current supported SCC region
+// Current supported regions for Observability instances
 var validRegions = []string{
 	"eu-de",
 	"eu-es",
