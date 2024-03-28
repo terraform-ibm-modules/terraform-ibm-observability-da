@@ -21,7 +21,8 @@
           "log analysis",
           "cloud monitoring",
           "ATracker",
-          "Activity Tracker"
+          "Activity Tracker",
+          "observability agents"
         ],
         "short_description": "Configures IBM Cloud Observability resources",
         "long_description": "Solutions which support configuring IBM Cloud Observability resources for logging, monitoring and activity tracking.",
@@ -92,7 +93,66 @@
                 }
               ]
             }
-          }
+          },
+          {
+            "label": "Agents",
+            "name": "agents",
+            "install_type": "extension",
+            "working_directory": "solutions/agents",
+            "dependencies": [
+             {
+                "flavors": [
+                 "standard"
+                ],
+                "id": "95fccffc-ae3b-42df-b6d9-80be5914d852",
+                "name": "deploy-arch-ibm-slz-ocp",
+                "version": ">=v3.0.0"
+             },
+             {
+              "flavors": [
+               "quickstart"
+              ],
+              "id": "95fccffc-ae3b-42df-b6d9-80be5914d852",
+              "name": "deploy-arch-ibm-slz-ocp",
+              "version": ">=v5.20.0"
+             },
+             {
+               "flavors": [
+                "instances"
+               ],
+               "id": "a3137d28-79e0-479d-8a24-758ebd5a0eab",
+               "name": "deploy-arch-ibm-observability",
+               "version": ">=v1.0.0"
+             }
+            ],
+            "architecture": {
+                "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring Agents on an existing OpenShift Cluster on Secure Landing Zone.",
+                "features": [
+                  {
+                    "title": "Works with the Secure Landing Zone.",
+                    "description": "Works with the OpenShift cluster of Secure Landing Zone."
+                  },
+                  {
+                    "title": "Deploys Log Analysis agent on an existing cluster on Secure Landing Zone.",
+                    "description": "Deploys Log Analysis agent on an existing OpenShift cluster on Secure Landing Zone."
+                  },
+                  {
+                    "title": "Deploys Cloud Monitoring agent on an existing cluster on Secure Landing Zone.",
+                    "description": "Deploys Cloud Monitoring agent on an existing OpenShift cluster on Secure Landing Zone."
+                  }
+                ],
+                "diagrams": [
+                 {
+                  "diagram": {
+                    "caption": "Observability Agents on an OpenShift cluster",
+                    "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
+                    "type": "image/svg+xml"
+                  },
+                  "description": "Deployment of Observability agents on an OpenShift cluster of Secure Landing Zone."
+                 }
+                ]
+            }
+         }
         ]
       }
     ]
