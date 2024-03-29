@@ -168,7 +168,7 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 # Create IAM Authorization Policy to allow COS to access KMS for the encryption key
 resource "ibm_iam_authorization_policy" "policy" {
-  count                       = (var.skip_cos_kms_auth_policy || (var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null)) ? 0 : 1
+  count                       = (var.skip_cos_kms_auth_policy || (length(local.bucket_config_map) == 0)) ? 0 : 1
   source_service_name         = "cloud-object-storage"
   source_resource_instance_id = local.cos_instance_guid
   target_service_name         = local.kms_service
@@ -199,7 +199,7 @@ module "cos_bucket" {
   providers = {
     ibm = ibm.cos
   }
-  count   = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? 1 : 0 # no need to call COS module if consumer is passing existing COS bucket
+  count   = (length(local.bucket_config_map) != 0) ? 1 : 0 # no need to call COS module if consumer is passing existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "7.5.3"
   bucket_configs = [

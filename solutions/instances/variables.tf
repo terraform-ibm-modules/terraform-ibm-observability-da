@@ -254,7 +254,7 @@ variable "kms_region" {
 variable "existing_kms_crn" {
   type        = string
   default     = null
-  description = "The CRN of of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
+  description = "The CRN of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
 }
 
 variable "existing_cos_kms_key_crn" {
