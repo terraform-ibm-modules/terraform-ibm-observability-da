@@ -6,4 +6,4 @@ CRA_TARGETS:
     PROFILE_ID: "1c13d739-e09e-4bf4-8715-dd82e4498041" # SCC profile ID (currently set to CIS IBM Cloud Foundations Benchmark 1.0.0 profile).
     CRA_ENVIRONMENT_VARIABLES:
         TF_VAR_resource_group_name: "test"
-        TF_VAR_existing_kms_crn: "XXXX:XXXXXXX:XXXXX:XXXXX"
+        TF_VAR_existing_kms_crn: "XXXX:hs-crypto:XXXXXXX:XXXXX:XXXXX"
