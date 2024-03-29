@@ -112,7 +112,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"cloud_monitoring_service_endpoints":  "public",
 	}
 
-	output, err := options.RunTestConsistency()
+	output, err := options.RunTestUpgrade()
 	if !options.UpgradeTestSkipped {
 		assert.Nil(t, err, "This should not have errored")
 		assert.NotNil(t, output, "Expected some output")
