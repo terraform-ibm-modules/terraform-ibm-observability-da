@@ -44,6 +44,26 @@ output "cloud_monitoring_access_key" {
   sensitive   = true
 }
 
+output "cos_instance_id" {
+  description = "COS instance id"
+  value       = var.existing_cos_instance_crn == null ? module.cos[0].cos_instance_id : null
+}
+
+output "cos_instance_guid" {
+  description = "COS instance guid"
+  value       = var.existing_cos_instance_crn == null ? module.cos[0].cos_instance_guid : null
+}
+
+output "cos_instance_name" {
+  description = "COS instance name"
+  value       = var.existing_cos_instance_crn == null ? module.cos[0].cos_instance_name : null
+}
+
+output "cos_instance_crn" {
+  description = "COS instance crn"
+  value       = var.existing_cos_instance_crn == null ? module.cos[0].cos_instance_crn : null
+}
+
 output "log_archive_cos_bucket_name" {
   value       = var.existing_log_archive_cos_bucket_name == null ? module.cos[0].buckets[var.log_archive_cos_bucket_name].bucket_name : var.existing_log_archive_cos_bucket_name
   description = "The name of log archive COS bucket"
@@ -51,7 +71,7 @@ output "log_archive_cos_bucket_name" {
 
 output "at_cos_target_bucket_name" {
   value       = var.existing_at_cos_target_bucket_name == null ? module.cos[0].buckets[var.at_cos_target_bucket_name].bucket_name : var.existing_at_cos_target_bucket_name
-  description = "The name of the at cos target bucket"
+  description = "The name of the AT cos target bucket"
 }
 
 output "at_cos_targets" {

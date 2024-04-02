@@ -62,7 +62,7 @@ module "resource_group" {
 
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.11.0"
+  version = "2.12.2"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
