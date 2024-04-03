@@ -6,4 +6,4 @@ CRA_TARGETS:
     PROFILE_ID: "bfacb71d-4b84-41ac-9825-e8a3a3eb7405" # SCC profile ID (currently set to IBM Cloud Framework for Financial Services 1.6.0 profile).
     CRA_ENVIRONMENT_VARIABLES:
         TF_VAR_resource_group_name: "test"
-        TF_VAR_existing_kms_guid: "XXXXXXXXXXXXXXXX"
+        TF_VAR_existing_kms_crn: "XXXX:hs-crypto:XXXXXXX:XXXXX:XXXXX"

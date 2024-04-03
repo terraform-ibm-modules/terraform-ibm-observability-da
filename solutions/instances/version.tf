@@ -10,5 +10,9 @@ terraform {
       source  = "logdna/logdna"
       version = "1.16.0"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = "0.11.1"
+    }
   }
 }
