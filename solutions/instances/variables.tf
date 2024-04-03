@@ -62,13 +62,13 @@ variable "log_analysis_tags" {
   default     = []
 }
 
-variable "enable_archive" {
+variable "enable_log_archive" {
   type        = bool
   description = "Enable archive on log analysis instance"
   default     = true
 }
 
-variable "archive_api_key" {
+variable "log_archive_api_key" {
   type        = string
   description = "(Optional) The API key to use to configure log analysis archiving with COS. If no value passed, the API key value passed in the 'ibmcloud_api_key' variable will be used."
   sensitive   = true

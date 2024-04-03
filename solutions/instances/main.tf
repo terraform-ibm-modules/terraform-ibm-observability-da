@@ -3,7 +3,7 @@
 #######################################################################################################################
 
 locals {
-  archive_api_key = var.archive_api_key == null ? var.ibmcloud_api_key : var.archive_api_key
+  archive_api_key = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos_instance[0].cos_instance_crn
   existing_kms_guid           = var.existing_kms_crn != null ? element(split(":", var.existing_kms_crn), length(split(":", var.existing_kms_crn)) - 3) : length(local.bucket_config_map) == 2 ? null : tobool("The CRN of the existing KMS is not provided.")
@@ -75,7 +75,7 @@ module "observability_instance" {
   }
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
-  enable_archive    = var.enable_archive
+  enable_archive    = var.enable_log_archive
   ibmcloud_api_key  = local.archive_api_key
   # Log Analysis
   log_analysis_provision           = true
