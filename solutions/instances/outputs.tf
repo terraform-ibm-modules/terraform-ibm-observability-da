@@ -92,10 +92,10 @@ output "at_routes" {
 ## KMS
 output "kms_key_rings" {
   description = "IDs of new KMS Key Rings created"
-  value       = module.kms[0].key_rings
+  value       = length(module.kms) > 0 ? module.kms[0].key_rings : null
 }
 
 output "kms_keys" {
   description = "IDs of new KMS Keys created"
-  value       = module.kms[0].keys
+  value       = length(module.kms) > 0 ? module.kms[0].keys : null
 }

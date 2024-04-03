@@ -127,7 +127,7 @@ module "kms" {
   providers = {
     ibm = ibm.kms
   }
-  count                       = (var.existing_cos_kms_key_crn != null || (length(local.bucket_config_map) != 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
+  count                       = (var.existing_cos_kms_key_crn != null || (length(local.bucket_config_map) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.8.5"
   create_key_protect_instance = false
