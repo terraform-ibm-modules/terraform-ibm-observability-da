@@ -57,7 +57,7 @@ locals {
 
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.1.4"
+  version                      = "1.1.5"
   resource_group_name          = var.existing_resource_group == false ? var.resource_group_name : null
   existing_resource_group_name = var.existing_resource_group == true ? var.resource_group_name : null
 }
@@ -68,7 +68,7 @@ module "resource_group" {
 
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.11.0"
+  version = "2.12.2"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -127,9 +127,9 @@ module "kms" {
   providers = {
     ibm = ibm.kms
   }
-  count                       = (var.existing_cos_kms_key_crn != null || (var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
+  count                       = (var.existing_cos_kms_key_crn != null || (length(local.bucket_config_map) != 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.8.3"
+  version                     = "4.8.5"
   create_key_protect_instance = false
   region                      = var.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid
@@ -181,11 +181,11 @@ module "cos_instance" {
   providers = {
     ibm = ibm.cos
   }
-  count                    = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? 1 : 0 # no need to call COS module if consumer is passing existing COS bucket
+  count                    = (var.existing_cos_instance_crn == null) ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "7.5.3"
   resource_group_id        = module.resource_group.resource_group_id
-  create_cos_instance      = var.existing_cos_instance_crn == null ? true : false # don't create instance if existing one passed in
+  create_cos_instance      = true
   create_resource_key      = false
   cos_instance_name        = var.cos_instance_name
   cos_tags                 = var.cos_instance_tags
@@ -199,7 +199,7 @@ module "cos_bucket" {
   providers = {
     ibm = ibm.cos
   }
-  count   = (length(local.bucket_config_map) != 0) ? 1 : 0 # no need to call COS module if consumer is passing existing COS bucket
+  count   = (length(local.bucket_config_map) != 0) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "7.5.3"
   bucket_configs = [
