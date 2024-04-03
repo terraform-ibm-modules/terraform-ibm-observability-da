@@ -3,7 +3,7 @@
 #######################################################################################################################
 
 locals {
-  archive_api_key = var.archive_api_key == null ? var.ibmcloud_api_key : var.archive_api_key
+  archive_api_key = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos[0].cos_instance_crn
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos[0].buckets[var.log_archive_cos_bucket_name].bucket_name
@@ -69,7 +69,7 @@ module "observability_instance" {
   }
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
-  enable_archive    = var.enable_archive
+  enable_archive    = var.enable_log_archive
   ibmcloud_api_key  = local.archive_api_key
   # Log Analysis
   log_analysis_provision           = true
