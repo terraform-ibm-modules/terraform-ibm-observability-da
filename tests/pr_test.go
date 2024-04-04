@@ -76,7 +76,7 @@ func TestInstancesInSchematics(t *testing.T) {
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
-		{Name: "existing_kms_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
+		{Name: "existing_kms_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "kms_region", Value: "us-south", DataType: "string"}, // KMS instance is in us-south
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
@@ -104,7 +104,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 	options.TerraformVars = map[string]interface{}{
 		"resource_group_name":                 options.Prefix,
 		"cos_instance_access_tags":            permanentResources["accessTags"],
-		"existing_kms_guid":                   permanentResources["hpcs_south"],
+		"existing_kms_crn":                    permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                   "public",
 		"kms_region":                          "us-south",
 		"management_endpoint_type_for_bucket": "public",
