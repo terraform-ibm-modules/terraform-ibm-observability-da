@@ -30,9 +30,12 @@ const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Current supported regions for Observability instances
 var validRegions = []string{
+	"au-syd",
 	"eu-de",
 	"eu-es",
 	"eu-gb",
+	"jp-osa",
+	"jp-tok",
 	"us-south",
 	"us-east",
 }

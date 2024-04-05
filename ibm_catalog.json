@@ -60,22 +60,17 @@
             },
             "configuration" : [
               {
-                "key": "ibmcloud_api_key"
-              },
-              {
                 "key": "existing_cos_kms_key_crn",
                 "required": true
               },
               {
                 "key": "region",
+                "required": true,
+                "default_value": "",
                 "options": [
                   {
                     "displayname": "Dallas (us-south)",
                     "value": "us-south"
-                  },
-                  {
-                    "displayname": "Washington (us-east)",
-                    "value": "us-east"
                   },
                   {
                     "displayname": "Frankfurt (eu-de)",
@@ -88,6 +83,22 @@
                   {
                     "displayname": "Madrid (eu-es)",
                     "value": "eu-es"
+                  },
+                  {
+                    "displayname": "Osaka (jp-osa)",
+                    "value": "jp-osa"
+                  },
+                  {
+                    "displayname": "Sydney(au-syd)",
+                    "value": "au-syd"
+                  },
+                  {
+                    "displayname": "Tokyo (jp-tok)",
+                    "value": "jp-tok"
+                  },
+                  {
+                    "displayname": "Washington (us-east)",
+                    "value": "us-east"
                   }
                 ]
               }

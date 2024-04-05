@@ -23,6 +23,11 @@ variable "region" {
   description = "Region where observability resources will be created"
   type        = string
   default     = "us-south"
+
+  validation {
+    condition     = contains(["us-south", "us-east", "jp-osa", "jp-tok", "eu-de", "eu-es", "eu-gb", "au-syd"], var.region)
+    error_message = "The specified region is not a valid selection!"
+  }
 }
 
 ##############################################################################
@@ -245,10 +250,10 @@ variable "management_endpoint_type_for_bucket" {
 # KMS variables
 ########################################################################################################################
 
-variable "existing_kms_crn" {
+variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
+  description = "The CRN of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key. Not required if existing bucket details are passed as an input."
 }
 
 variable "existing_cos_kms_key_crn" {

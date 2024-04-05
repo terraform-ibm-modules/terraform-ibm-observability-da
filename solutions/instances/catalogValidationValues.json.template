@@ -2,5 +2,4 @@
   "ibmcloud_api_key": $VALIDATION_APIKEY,
   "resource_group_name": $PREFIX,
   "existing_kms_crn": $HPCS_US_SOUTH_CRN,
-  "kms_region": "us-south"
 }

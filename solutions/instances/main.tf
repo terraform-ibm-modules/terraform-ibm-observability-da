@@ -7,7 +7,7 @@ locals {
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos_instance[0].cos_instance_crn
-  existing_kms_guid           = var.existing_kms_crn != null ? element(split(":", var.existing_kms_crn), length(split(":", var.existing_kms_crn)) - 3) : length(local.bucket_config_map) == 2 ? null : tobool("The CRN of the existing KMS is not provided.")
+  existing_kms_guid           = var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : length(local.bucket_config_map) == 2 ? null : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? module.cos_instance[0].cos_instance_guid : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos_bucket[0].buckets[var.log_archive_cos_bucket_name].bucket_name
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : module.cos_bucket[0].buckets[var.log_archive_cos_bucket_name].s3_endpoint_private
@@ -45,13 +45,13 @@ locals {
     days   = 366
   } : null
 
-  kms_service = var.existing_kms_crn != null ? (
-    can(regex(".*kms.*", var.existing_kms_crn)) ? "kms" : (
-      can(regex(".*hs-crypto.*", var.existing_kms_crn)) ? "hs-crypto" : null
+  kms_service = var.existing_kms_instance_crn != null ? (
+    can(regex(".*kms.*", var.existing_kms_instance_crn)) ? "kms" : (
+      can(regex(".*hs-crypto.*", var.existing_kms_instance_crn)) ? "hs-crypto" : null
     )
   ) : null
 
-  kms_region = element(split(":", var.existing_kms_crn), length(split(":", var.existing_kms_crn)) - 5)
+  kms_region = (length(local.bucket_config_map) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
 }
 
 #######################################################################################################################
