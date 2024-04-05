@@ -8,7 +8,7 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
-variable "existing_resource_group" {
+variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
   default     = false
@@ -244,12 +244,6 @@ variable "management_endpoint_type_for_bucket" {
 ########################################################################################################################
 # KMS variables
 ########################################################################################################################
-
-variable "kms_region" {
-  type        = string
-  default     = "us-south"
-  description = "The region in which KMS instance exists."
-}
 
 variable "existing_kms_crn" {
   type        = string

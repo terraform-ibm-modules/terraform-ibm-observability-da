@@ -50,6 +50,8 @@ locals {
       can(regex(".*hs-crypto.*", var.existing_kms_crn)) ? "hs-crypto" : null
     )
   ) : null
+
+  kms_region = element(split(":", var.existing_kms_crn), length(split(":", var.existing_kms_crn)) - 5)
 }
 
 #######################################################################################################################
@@ -59,8 +61,8 @@ locals {
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.5"
-  resource_group_name          = var.existing_resource_group == false ? var.resource_group_name : null
-  existing_resource_group_name = var.existing_resource_group == true ? var.resource_group_name : null
+  resource_group_name          = var.use_existing_resource_group == false ? var.resource_group_name : null
+  existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
 
 #######################################################################################################################
@@ -132,7 +134,7 @@ module "kms" {
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.8.5"
   create_key_protect_instance = false
-  region                      = var.kms_region
+  region                      = local.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid
   key_ring_endpoint_type      = var.kms_endpoint_type
   key_endpoint_type           = var.kms_endpoint_type
