@@ -125,7 +125,7 @@ variable "add_bucket_name_suffix" {
 variable "cos_region" {
   type        = string
   default     = null
-  description = "The Cloud Object Storage region."
+  description = "The Cloud Object Storage region. If no value is provided, it defaults to the value specified in the 'region' input variable."
 }
 
 variable "cos_instance_name" {
