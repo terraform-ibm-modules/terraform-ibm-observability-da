@@ -26,7 +26,7 @@ provider "logdna" {
 provider "ibm" {
   alias            = "cos"
   ibmcloud_api_key = var.ibmcloud_api_key
-  region           = var.cos_region
+  region           = local.default_cos_region
 }
 
 provider "ibm" {
