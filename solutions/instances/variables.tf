@@ -124,7 +124,7 @@ variable "add_bucket_name_suffix" {
 
 variable "cos_region" {
   type        = string
-  default     = "us-south"
+  default     = null
   description = "The Cloud Object Storage region."
 }
 

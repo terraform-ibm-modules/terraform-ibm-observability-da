@@ -3,7 +3,8 @@
 #######################################################################################################################
 
 locals {
-  archive_api_key = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
+  archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
+  default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos_instance[0].cos_instance_crn
   existing_kms_guid           = var.existing_kms_crn != null ? element(split(":", var.existing_kms_crn), length(split(":", var.existing_kms_crn)) - 3) : length(local.bucket_config_map) == 2 ? null : tobool("The CRN of the existing KMS is not provided.")
@@ -100,7 +101,7 @@ module "observability_instance" {
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
       instance_id                       = local.cos_instance_crn
-      target_region                     = var.cos_region
+      target_region                     = local.default_cos_region
       target_name                       = "cos-target"
       skip_atracker_cos_iam_auth_policy = false
       service_to_service_enabled        = true
@@ -215,7 +216,7 @@ module "cos_bucket" {
       management_endpoint_type      = var.management_endpoint_type_for_bucket
       storage_class                 = value.class
       resource_instance_id          = local.cos_instance_crn
-      region_location               = var.cos_region
+      region_location               = local.default_cos_region
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
