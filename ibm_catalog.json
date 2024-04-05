@@ -61,12 +61,12 @@
             "configuration" : [
               {
                 "key": "existing_cos_kms_key_crn",
-                "required": true
+                "required": true,
+                "default_value": ""
               },
               {
                 "key": "region",
                 "required": true,
-                "default_value": "",
                 "options": [
                   {
                     "displayname": "Dallas (us-south)",
