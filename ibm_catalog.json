@@ -58,6 +58,51 @@
                     }
                 ]
             },
+            "configuration" : [
+              {
+                "key": "existing_cos_kms_key_crn",
+                "required": true
+              },
+              {
+                "key": "region",
+                "required": true,
+                "default_value": "",
+                "options": [
+                  {
+                    "displayname": "Dallas (us-south)",
+                    "value": "us-south"
+                  },
+                  {
+                    "displayname": "Frankfurt (eu-de)",
+                    "value": "eu-de"
+                  },
+                  {
+                    "displayname": "London (eu-gb)",
+                    "value": "eu-gb"
+                  },
+                  {
+                    "displayname": "Madrid (eu-es)",
+                    "value": "eu-es"
+                  },
+                  {
+                    "displayname": "Osaka (jp-osa)",
+                    "value": "jp-osa"
+                  },
+                  {
+                    "displayname": "Sydney (au-syd)",
+                    "value": "au-syd"
+                  },
+                  {
+                    "displayname": "Tokyo (jp-tok)",
+                    "value": "jp-tok"
+                  },
+                  {
+                    "displayname": "Washington (us-east)",
+                    "value": "us-east"
+                  }
+                ]
+              }
+            ],
             "architecture": {
               "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud and Activity Tracker event routing to a COS bucket target.",
               "features": [

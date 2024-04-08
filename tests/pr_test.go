@@ -30,9 +30,12 @@ const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Current supported regions for Observability instances
 var validRegions = []string{
+	"au-syd",
 	"eu-de",
 	"eu-es",
 	"eu-gb",
+	"jp-osa",
+	"jp-tok",
 	"us-south",
 	"us-east",
 }
@@ -76,8 +79,7 @@ func TestInstancesInSchematics(t *testing.T) {
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
-		{Name: "existing_kms_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
-		{Name: "kms_region", Value: "us-south", DataType: "string"}, // KMS instance is in us-south
+		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
@@ -104,9 +106,8 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 	options.TerraformVars = map[string]interface{}{
 		"resource_group_name":                 options.Prefix,
 		"cos_instance_access_tags":            permanentResources["accessTags"],
-		"existing_kms_crn":                    permanentResources["hpcs_south_crn"],
+		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                   "public",
-		"kms_region":                          "us-south",
 		"management_endpoint_type_for_bucket": "public",
 		"log_analysis_service_endpoints":      "public-and-private",
 		"cloud_monitoring_service_endpoints":  "public",

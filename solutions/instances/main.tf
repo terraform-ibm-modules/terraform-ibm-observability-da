@@ -3,10 +3,11 @@
 #######################################################################################################################
 
 locals {
-  archive_api_key = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
+  archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
+  default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos_instance[0].cos_instance_crn
-  existing_kms_guid           = var.existing_kms_crn != null ? element(split(":", var.existing_kms_crn), length(split(":", var.existing_kms_crn)) - 3) : length(local.bucket_config_map) == 2 ? null : tobool("The CRN of the existing KMS is not provided.")
+  existing_kms_guid           = var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : length(local.bucket_config_map) == 2 ? null : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? module.cos_instance[0].cos_instance_guid : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos_bucket[0].buckets[var.log_archive_cos_bucket_name].bucket_name
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : module.cos_bucket[0].buckets[var.log_archive_cos_bucket_name].s3_endpoint_private
@@ -44,11 +45,13 @@ locals {
     days   = 366
   } : null
 
-  kms_service = var.existing_kms_crn != null ? (
-    can(regex(".*kms.*", var.existing_kms_crn)) ? "kms" : (
-      can(regex(".*hs-crypto.*", var.existing_kms_crn)) ? "hs-crypto" : null
+  kms_service = var.existing_kms_instance_crn != null ? (
+    can(regex(".*kms.*", var.existing_kms_instance_crn)) ? "kms" : (
+      can(regex(".*hs-crypto.*", var.existing_kms_instance_crn)) ? "hs-crypto" : null
     )
   ) : null
+
+  kms_region = (length(local.bucket_config_map) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
 }
 
 #######################################################################################################################
@@ -58,8 +61,8 @@ locals {
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.5"
-  resource_group_name          = var.existing_resource_group == false ? var.resource_group_name : null
-  existing_resource_group_name = var.existing_resource_group == true ? var.resource_group_name : null
+  resource_group_name          = var.use_existing_resource_group == false ? var.resource_group_name : null
+  existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
 
 #######################################################################################################################
@@ -100,7 +103,7 @@ module "observability_instance" {
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
       instance_id                       = local.cos_instance_crn
-      target_region                     = var.cos_region
+      target_region                     = local.default_cos_region
       target_name                       = "cos-target"
       skip_atracker_cos_iam_auth_policy = false
       service_to_service_enabled        = true
@@ -131,7 +134,7 @@ module "kms" {
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.8.5"
   create_key_protect_instance = false
-  region                      = var.kms_region
+  region                      = local.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid
   key_ring_endpoint_type      = var.kms_endpoint_type
   key_endpoint_type           = var.kms_endpoint_type
@@ -215,7 +218,7 @@ module "cos_bucket" {
       management_endpoint_type      = var.management_endpoint_type_for_bucket
       storage_class                 = value.class
       resource_instance_id          = local.cos_instance_crn
-      region_location               = var.cos_region
+      region_location               = local.default_cos_region
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule

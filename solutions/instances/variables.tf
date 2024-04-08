@@ -8,7 +8,7 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
-variable "existing_resource_group" {
+variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
   default     = false
@@ -23,6 +23,11 @@ variable "region" {
   description = "Region where observability resources will be created"
   type        = string
   default     = "us-south"
+
+  validation {
+    condition     = contains(["us-south", "us-east", "jp-osa", "jp-tok", "eu-de", "eu-es", "eu-gb", "au-syd"], var.region)
+    error_message = "The specified region is not a valid selection!"
+  }
 }
 
 ##############################################################################
@@ -124,8 +129,8 @@ variable "add_bucket_name_suffix" {
 
 variable "cos_region" {
   type        = string
-  default     = "us-south"
-  description = "The Cloud Object Storage region."
+  default     = null
+  description = "The Cloud Object Storage region. If no value is provided, it defaults to the value specified in the 'region' input variable."
 }
 
 variable "cos_instance_name" {
@@ -245,16 +250,10 @@ variable "management_endpoint_type_for_bucket" {
 # KMS variables
 ########################################################################################################################
 
-variable "kms_region" {
-  type        = string
-  default     = "us-south"
-  description = "The region in which KMS instance exists."
-}
-
-variable "existing_kms_crn" {
+variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
+  description = "The CRN of the KMS instance used for the COS bucket root Key. Only required if not supplying an existing KMS root key. Not required if existing bucket details are passed as an input."
 }
 
 variable "existing_cos_kms_key_crn" {
