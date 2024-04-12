@@ -61,7 +61,7 @@ locals {
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.5"
-  resource_group_name          = var.use_existing_resource_group == false ? var.resource_group_name : null
+  resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
 
@@ -82,7 +82,7 @@ module "observability_instance" {
   ibmcloud_api_key  = local.archive_api_key
   # Log Analysis
   log_analysis_provision           = true
-  log_analysis_instance_name       = var.log_analysis_instance_name
+  log_analysis_instance_name       = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
   log_analysis_plan                = var.log_analysis_plan
   log_analysis_tags                = var.log_analysis_tags
   log_analysis_service_endpoints   = var.log_analysis_service_endpoints
@@ -91,7 +91,7 @@ module "observability_instance" {
   log_analysis_cos_bucket_endpoint = local.archive_cos_bucket_endpoint
   # IBM Cloud Monitoring
   cloud_monitoring_provision         = true
-  cloud_monitoring_instance_name     = var.cloud_monitoring_instance_name
+  cloud_monitoring_instance_name     = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
   cloud_monitoring_plan              = var.cloud_monitoring_plan
   cloud_monitoring_tags              = var.cloud_monitoring_tags
   cloud_monitoring_service_endpoints = var.cloud_monitoring_service_endpoints
@@ -140,12 +140,12 @@ module "kms" {
   key_endpoint_type           = var.kms_endpoint_type
   keys = [
     {
-      key_ring_name         = var.cos_key_ring_name
+      key_ring_name         = var.prefix != null ? "${var.prefix}-${var.cos_key_ring_name}" : var.cos_key_ring_name
       existing_key_ring     = false
       force_delete_key_ring = true
       keys = [
         {
-          key_name                 = var.cos_key_name
+          key_name                 = var.prefix != null ? "${var.prefix}-${var.cos_key_name}" : var.cos_key_name
           standard_key             = false
           rotation_interval_month  = 3
           dual_auth_delete_enabled = false
@@ -190,7 +190,7 @@ module "cos_instance" {
   resource_group_id        = module.resource_group.resource_group_id
   create_cos_instance      = true
   create_resource_key      = false
-  cos_instance_name        = var.cos_instance_name
+  cos_instance_name        = var.prefix != null ? "${var.prefix}-${var.cos_instance_name}" : var.cos_instance_name
   cos_tags                 = var.cos_instance_tags
   existing_cos_instance_id = var.existing_cos_instance_crn
   access_tags              = var.cos_instance_access_tags
@@ -209,7 +209,7 @@ module "cos_bucket" {
     for value in local.bucket_config_map :
     {
       access_tags                   = value.tag
-      bucket_name                   = value.name
+      bucket_name                   = var.prefix != null ? "${var.prefix}-${value.name}" : value.name
       add_bucket_name_suffix        = var.add_bucket_name_suffix
       kms_encryption_enabled        = true
       kms_guid                      = local.existing_kms_guid
