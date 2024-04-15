@@ -25,7 +25,7 @@ module "observability_agents" {
   log_analysis_agent_tolerations = var.log_analysis_agent_tolerations
   log_analysis_agent_tags        = var.log_analysis_agent_tags
   log_analysis_endpoint_type     = var.log_analysis_endpoint_type
-  log_analysis_add_cluster_name  = var.prefix != null ? "${var.prefix}-${var.log_analysis_add_cluster_name}" : var.log_analysis_add_cluster_name
+  log_analysis_add_cluster_name  = var.log_analysis_add_cluster_name
   # Log Analysis agent custom settings to setup Kubernetes metadata logs filtering by setting
   # LOGDNA_K8S_METADATA_LINE_INCLUSION and LOGDNA_K8S_METADATA_LINE_EXCLUSION in the agent daemonset definition
   # Ref https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering
