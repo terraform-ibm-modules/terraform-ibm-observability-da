@@ -16,7 +16,7 @@ variable "use_existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or an existing resource group in which to provision resources to. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name of a new or an existing resource group in which to provision resources to. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "region" {
@@ -42,7 +42,7 @@ variable "prefix" {
 
 variable "log_analysis_instance_name" {
   type        = string
-  description = "The name of the IBM Cloud Logging instance to create. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name of the IBM Cloud Logging instance to create. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   default     = "log-analysis"
 }
 
@@ -92,7 +92,7 @@ variable "log_archive_api_key" {
 
 variable "cloud_monitoring_instance_name" {
   type        = string
-  description = "The name of the IBM Cloud Monitoring instance to create. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name of the IBM Cloud Monitoring instance to create. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   default     = "cloud-monitoring"
 }
 
@@ -142,7 +142,7 @@ variable "cos_region" {
 variable "cos_instance_name" {
   type        = string
   default     = "observability-cos"
-  description = "The name to use when creating the Cloud Object Storage instance. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to use when creating the Cloud Object Storage instance. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "cos_instance_tags" {
@@ -160,13 +160,13 @@ variable "cos_instance_access_tags" {
 variable "log_archive_cos_bucket_name" {
   type        = string
   default     = "log-archive-cos-bucket"
-  description = "The name to use when creating the Cloud Object Storage bucket for storing log archives (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to use when creating the Cloud Object Storage bucket for storing log archives (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "at_cos_target_bucket_name" {
   type        = string
   default     = "at-events-cos-bucket"
-  description = "The name to use when creating the Cloud Object Storage bucket for cos target (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to use when creating the Cloud Object Storage bucket for cos target (NOTE: bucket names are globally unique). If 'add_bucket_name_suffix' is set to true, a random 4 characters will be added to this name to help ensure bucket name is globally unique. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "archive_bucket_access_tags" {
@@ -281,11 +281,11 @@ variable "kms_endpoint_type" {
 variable "cos_key_ring_name" {
   type        = string
   default     = "observability-cos-key-ring"
-  description = "The name to give the Key Ring which will be created for the COS bucket Key. Will be used by both log archive bucket and AT COS bucket. Not used if supplying an existing Key. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to give the Key Ring which will be created for the COS bucket Key. Will be used by both log archive bucket and AT COS bucket. Not used if supplying an existing Key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "cos_key_name" {
   type        = string
   default     = "observability-cos-key"
-  description = "The name to give the Key which will be created for the COS bucket. Will be used by both log archive bucket and AT COS bucket. Not used if supplying an existing Key. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to give the Key which will be created for the COS bucket. Will be used by both log archive bucket and AT COS bucket. Not used if supplying an existing Key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }

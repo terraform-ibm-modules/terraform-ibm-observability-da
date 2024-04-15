@@ -68,7 +68,7 @@ variable "log_analysis_ingestion_key" {
 
 variable "log_analysis_secret_name" {
   type        = string
-  description = "The name of the secret which will store the ingestion key. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name of the secret which will store the ingestion key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   default     = "logdna-agent"
   nullable    = false
 }
@@ -102,7 +102,7 @@ variable "log_analysis_agent_custom_line_exclusion" {
 }
 
 variable "log_analysis_agent_name" {
-  description = "Log Analysis agent name. Used for naming all kubernetes and helm resources on the cluster. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "Log Analysis agent name. Used for naming all kubernetes and helm resources on the cluster. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   type        = string
   default     = "logdna-agent"
   nullable    = false
@@ -148,7 +148,7 @@ variable "cloud_monitoring_access_key" {
 
 variable "cloud_monitoring_secret_name" {
   type        = string
-  description = "The name of the secret which will store the access key. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name of the secret which will store the access key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   default     = "sysdig-agent"
   nullable    = false
 }
@@ -196,7 +196,7 @@ variable "cloud_monitoring_add_cluster_name" {
 }
 
 variable "cloud_monitoring_agent_name" {
-  description = "Cloud Monitoring agent name. Used for naming all kubernetes and helm resources on the cluster. If 'var.prefix' is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "Cloud Monitoring agent name. Used for naming all kubernetes and helm resources on the cluster. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   type        = string
   default     = "sysdig-agent"
 }
