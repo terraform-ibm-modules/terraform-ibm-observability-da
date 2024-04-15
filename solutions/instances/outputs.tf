@@ -69,12 +69,12 @@ output "cos_instance_crn" {
 
 ## COS Buckets
 output "log_archive_cos_bucket_name" {
-  value       = var.existing_log_archive_cos_bucket_name == null ? module.cos_bucket[0].buckets[var.log_archive_cos_bucket_name].bucket_name : var.existing_log_archive_cos_bucket_name
+  value       = var.existing_log_archive_cos_bucket_name == null ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : var.existing_log_archive_cos_bucket_name
   description = "The name of log archive COS bucket"
 }
 
 output "at_cos_target_bucket_name" {
-  value       = var.existing_at_cos_target_bucket_name == null ? module.cos_bucket[0].buckets[var.at_cos_target_bucket_name].bucket_name : var.existing_at_cos_target_bucket_name
+  value       = var.existing_at_cos_target_bucket_name == null ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : var.existing_at_cos_target_bucket_name
   description = "The name of the AT target COS bucket"
 }
 

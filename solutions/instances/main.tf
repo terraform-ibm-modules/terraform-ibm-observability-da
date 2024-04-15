@@ -6,25 +6,30 @@ locals {
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
+  cos_key_ring_name           = var.prefix != null ? "${var.prefix}-${var.cos_key_ring_name}" : var.cos_key_ring_name
+  cos_key_name                = var.prefix != null ? "${var.prefix}-${var.cos_key_name}" : var.cos_key_name
+  log_archive_cos_bucket_name = var.prefix != null ? "${var.prefix}-${var.log_archive_cos_bucket_name}" : var.log_archive_cos_bucket_name
+  at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
+
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos_instance[0].cos_instance_crn
   existing_kms_guid           = var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : length(local.bucket_config_map) == 2 ? null : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? module.cos_instance[0].cos_instance_guid : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
-  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos_bucket[0].buckets[var.log_archive_cos_bucket_name].bucket_name
-  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : module.cos_bucket[0].buckets[var.log_archive_cos_bucket_name].s3_endpoint_private
-  cos_kms_key_crn             = (var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", var.cos_key_ring_name, var.cos_key_name)].crn
+  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name
+  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private
+  cos_kms_key_crn             = (var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
 
-  cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos_bucket[0].buckets[var.at_cos_target_bucket_name].bucket_name
-  cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos_bucket[0].buckets[var.at_cos_target_bucket_name].s3_endpoint_private
+  cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name
+  cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private
 
   bucket_config_1 = var.existing_log_archive_cos_bucket_name == null ? {
     class = var.log_archive_cos_bucket_class
-    name  = var.log_archive_cos_bucket_name
+    name  = local.log_archive_cos_bucket_name
     tag   = var.archive_bucket_access_tags
   } : null
 
   bucket_config_2 = var.existing_at_cos_target_bucket_name == null ? {
     class = var.at_cos_target_bucket_class
-    name  = var.at_cos_target_bucket_name
+    name  = local.at_cos_target_bucket_name
     tag   = var.at_cos_bucket_access_tags
   } : null
 
@@ -140,12 +145,12 @@ module "kms" {
   key_endpoint_type           = var.kms_endpoint_type
   keys = [
     {
-      key_ring_name         = var.prefix != null ? "${var.prefix}-${var.cos_key_ring_name}" : var.cos_key_ring_name
+      key_ring_name         = local.cos_key_ring_name
       existing_key_ring     = false
       force_delete_key_ring = true
       keys = [
         {
-          key_name                 = var.prefix != null ? "${var.prefix}-${var.cos_key_name}" : var.cos_key_name
+          key_name                 = local.cos_key_name
           standard_key             = false
           rotation_interval_month  = 3
           dual_auth_delete_enabled = false
@@ -209,7 +214,7 @@ module "cos_bucket" {
     for value in local.bucket_config_map :
     {
       access_tags                   = value.tag
-      bucket_name                   = var.prefix != null ? "${var.prefix}-${value.name}" : value.name
+      bucket_name                   = value.name
       add_bucket_name_suffix        = var.add_bucket_name_suffix
       kms_encryption_enabled        = true
       kms_guid                      = local.existing_kms_guid
