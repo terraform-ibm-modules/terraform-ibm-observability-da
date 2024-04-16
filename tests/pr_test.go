@@ -87,6 +87,7 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "archive_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
+		{Name: "prefix", Value: options.Prefix, DataType: "string"},
 	}
 
 	err := options.RunSchematicTest()
@@ -181,6 +182,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_resource_group_id"), DataType: "string"},
 			{Name: "log_analysis_ingestion_key", Value: terraform.Output(t, existingTerraformOptions, "log_analysis_ingestion_key"), DataType: "string", Secure: true},
 			{Name: "cloud_monitoring_access_key", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_access_key"), DataType: "string", Secure: true},
+			{Name: "prefix", Value: options.Prefix, DataType: "string"},
 		}
 
 		err := options.RunSchematicTest()
