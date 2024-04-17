@@ -64,6 +64,174 @@
                 "required": true
               },
               {
+                "key": "log_analysis_plan",
+                "required": true,
+                "default_value": "7-day",
+                "options": [
+                  {
+                    "displayname": "lite",
+                    "value": "lite"
+                  },
+                  {
+                    "displayname": "7-day",
+                    "value": "7-day"
+                  },
+                  {
+                    "displayname": "14-day",
+                    "value": "14-day"
+                  },
+                  {
+                    "displayname": "30-day",
+                    "value": "30-day"
+                  },
+                  {
+                    "displayname": "hipaa-30-day",
+                    "value": "hipaa-30-day"
+                  }
+                ]
+              },
+              {
+                "key": "log_analysis_service_endpoints",
+                "required": true,
+                "default_value": "private",
+                "options": [
+                  {
+                    "displayname": "public",
+                    "value": "public"
+                  },
+                  {
+                    "displayname": "private",
+                    "value": "private"
+                  },
+                  {
+                    "displayname": "public-and-private",
+                    "value": "public-and-private"
+                  }
+                ]
+              },
+              {
+                "key": "cloud_monitoring_plan",
+                "required": true,
+                "default_value": "graduated-tier",
+                "options": [
+                  {
+                    "displayname": "lite",
+                    "value": "lite"
+                  },
+                  {
+                    "displayname": "graduated-tier",
+                    "value": "graduated-tier"
+                  }
+                ]
+              },
+              {
+                "key": "cloud_monitoring_service_endpoints",
+                "required": true,
+                "default_value": "private",
+                "options": [
+                  {
+                    "displayname": "public",
+                    "value": "public"
+                  },
+                  {
+                    "displayname": "private",
+                    "value": "private"
+                  },
+                  {
+                    "displayname": "public-and-private",
+                    "value": "public-and-private"
+                  }
+                ]
+              },
+              {
+                "key": "management_endpoint_type_for_bucket",
+                "required": true,
+                "default_value": "private",
+                "options": [
+                  {
+                    "displayname": "public",
+                    "value": "public"
+                  },
+                  {
+                    "displayname": "private",
+                    "value": "private"
+                  },
+                  {
+                    "displayname": "direct",
+                    "value": "direct"
+                  }
+                ]
+              },
+              {
+                "key": "at_cos_target_bucket_class",
+                "required": true,
+                "default_value": "smart",
+                "options": [
+                  {
+                    "displayname": "standard",
+                    "value": "standard"
+                  },
+                  {
+                    "displayname": "vault",
+                    "value": "vault"
+                  },
+                  {
+                    "displayname": "cold",
+                    "value": "cold"
+                  },
+                  {
+                    "displayname": "smart",
+                    "value": "smart"
+                  },
+                  {
+                    "displayname": "onerate_active",
+                    "value": "onerate_active"
+                  }
+                ]
+              },
+              {
+                "key": "log_archive_cos_bucket_class",
+                "required": true,
+                "default_value": "smart",
+                "options": [
+                  {
+                    "displayname": "standard",
+                    "value": "standard"
+                  },
+                  {
+                    "displayname": "vault",
+                    "value": "vault"
+                  },
+                  {
+                    "displayname": "cold",
+                    "value": "cold"
+                  },
+                  {
+                    "displayname": "smart",
+                    "value": "smart"
+                  },
+                  {
+                    "displayname": "onerate_active",
+                    "value": "onerate_active"
+                  }
+                ]
+              },
+              {
+                "key": "kms_endpoint_type",
+                "required": true,
+                "default_value": "private",
+                "options": [
+                  {
+                    "displayname": "public",
+                    "value": "public"
+                  },
+                  {
+                    "displayname": "private",
+                    "value": "private"
+                  }
+                ]
+              },
+              {
                 "key": "region",
                 "required": true,
                 "default_value": "",
