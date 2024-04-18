@@ -265,7 +265,7 @@ variable "existing_kms_instance_crn" {
 variable "existing_cos_kms_key_crn" {
   type        = string
   default     = null
-  description = "(OPTIONAL) The CRN of an existing KMS key to be used to encrypt both the COS bucket i.e 'log-archive-bucket' and 'at-target-cos-bucket'. If not supplied, a new key ring and key will be created in the provided KMS instance."
+  description = "(OPTIONAL) The CRN of an existing KMS key to be used to encrypt the Cloud Object Storage buckets created by this solution. If no value is passed, a value must be passed for either the existing_kms_instance_crn input variable if you want to create a new key ring and key, or the existing_log_archive_cos_bucket_name and existing_at_cos_target_bucket_name input variables if you want to use existing buckets."
 }
 
 variable "kms_endpoint_type" {
