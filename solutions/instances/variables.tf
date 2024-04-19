@@ -40,6 +40,12 @@ variable "prefix" {
 # Log Analysis Variables
 ##############################################################################
 
+variable "log_analysis_provision" {
+  description = "Provision an IBM Cloud Logging instance?"
+  type        = bool
+  default     = true
+}
+
 variable "log_analysis_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Logging instance to create. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
@@ -90,6 +96,12 @@ variable "log_archive_api_key" {
 # Cloud Monitoring Variables
 ##############################################################################
 
+variable "cloud_monitoring_provision" {
+  description = "Provision a IBM cloud monitoring instance?"
+  type        = bool
+  default     = true
+}
+
 variable "cloud_monitoring_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Monitoring instance to create. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
@@ -121,6 +133,16 @@ variable "cloud_monitoring_service_endpoints" {
     condition     = contains(["public", "private", "public-and-private"], var.cloud_monitoring_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
   }
+}
+
+##############################################################################
+# Activity Tracker Variables
+##############################################################################
+
+variable "activity_tracker_provision" {
+  description = "Provision an Activity Tracker instance?"
+  type        = bool
+  default     = false
 }
 
 ########################################################################################################################

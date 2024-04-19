@@ -86,7 +86,7 @@ module "observability_instance" {
   enable_archive    = var.enable_log_archive
   ibmcloud_api_key  = local.archive_api_key
   # Log Analysis
-  log_analysis_provision           = true
+  log_analysis_provision           = var.log_analysis_provision
   log_analysis_instance_name       = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
   log_analysis_plan                = var.log_analysis_plan
   log_analysis_tags                = var.log_analysis_tags
@@ -95,14 +95,14 @@ module "observability_instance" {
   log_analysis_cos_bucket_name     = local.archive_cos_bucket_name
   log_analysis_cos_bucket_endpoint = local.archive_cos_bucket_endpoint
   # IBM Cloud Monitoring
-  cloud_monitoring_provision         = true
+  cloud_monitoring_provision         = var.cloud_monitoring_provision
   cloud_monitoring_instance_name     = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
   cloud_monitoring_plan              = var.cloud_monitoring_plan
   cloud_monitoring_tags              = var.cloud_monitoring_tags
   cloud_monitoring_service_endpoints = var.cloud_monitoring_service_endpoints
 
   # Activity Tracker
-  activity_tracker_provision = false
+  activity_tracker_provision = var.activity_tracker_provision
   cos_targets = [
     {
       bucket_name                       = local.cos_target_bucket_name
