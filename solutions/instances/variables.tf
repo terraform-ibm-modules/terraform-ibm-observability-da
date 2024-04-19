@@ -86,6 +86,12 @@ variable "log_archive_api_key" {
   default     = null
 }
 
+variable "enable_platform_logs" {
+  type        = bool
+  description = "Receive platform logs in the provisioned IBM Cloud Logging instance."
+  default     = true
+}
+
 ##############################################################################
 # Cloud Monitoring Variables
 ##############################################################################
@@ -121,6 +127,12 @@ variable "cloud_monitoring_service_endpoints" {
     condition     = contains(["public", "private", "public-and-private"], var.cloud_monitoring_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
   }
+}
+
+variable "enable_platform_metrics" {
+  type        = bool
+  description = "Receive platform metrics in the provisioned IBM Cloud Monitoring instance."
+  default     = true
 }
 
 ########################################################################################################################

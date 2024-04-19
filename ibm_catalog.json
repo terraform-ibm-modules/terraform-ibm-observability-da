@@ -165,6 +165,10 @@
                 "key": "log_archive_api_key"
               },
               {
+                "key": "enable_platform_logs",
+                "default_value": "false"
+              },
+              {
                 "key": "cloud_monitoring_instance_name"
               },
               {
@@ -199,6 +203,10 @@
               },
               {
                 "key": "cloud_monitoring_tags"
+              },
+              {
+                "key": "enable_platform_metrics",
+                "default_value": "false"
               },
               {
                 "key": "add_bucket_name_suffix"
