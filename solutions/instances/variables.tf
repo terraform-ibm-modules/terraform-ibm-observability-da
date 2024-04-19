@@ -41,7 +41,7 @@ variable "prefix" {
 ##############################################################################
 
 variable "log_analysis_provision" {
-  description = "Provision an IBM Cloud Logging instance?"
+  description = "Set it to true to provision an IBM Cloud Logging instance"
   type        = bool
   default     = true
 }
@@ -97,7 +97,7 @@ variable "log_archive_api_key" {
 ##############################################################################
 
 variable "cloud_monitoring_provision" {
-  description = "Provision a IBM cloud monitoring instance?"
+  description = "Set it to true to provision an IBM cloud monitoring instance"
   type        = bool
   default     = true
 }
@@ -135,14 +135,20 @@ variable "cloud_monitoring_service_endpoints" {
   }
 }
 
-##############################################################################
-# Activity Tracker Variables
-##############################################################################
+########################################################################################################################
+# COS targets and AT routes
+########################################################################################################################
 
-variable "activity_tracker_provision" {
-  description = "Provision an Activity Tracker instance?"
-  type        = bool
-  default     = false
+variable "provision_cos_targets" {
+  description = "Set it to true if cos targets is to be provisioned"
+  type = bool
+  default = true
+}
+
+variable "provision_activity_tracker_routes" {
+  description = "Set it to true if activity tracker route is to be provisioned"
+  type = bool
+  default = true
 }
 
 ########################################################################################################################
