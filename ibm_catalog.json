@@ -209,9 +209,6 @@
                 "default_value": "false"
               },
               {
-                "key": "add_bucket_name_suffix"
-              },
-              {
                 "key": "cos_instance_name"
               },
               {
@@ -219,6 +216,9 @@
               },
               {
                 "key": "cos_instance_access_tags"
+              },
+              {
+                "key": "add_bucket_name_suffix"
               },
               {
                 "key": "log_archive_cos_bucket_name"
