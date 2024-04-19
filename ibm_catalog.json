@@ -69,6 +69,9 @@
                 "key": "resource_group_name"
               },
               {
+                "key": "use_existing_resource_group"
+              },
+              {
                 "key": "region",
                 "required": true,
                 "default_value": "",
@@ -106,9 +109,6 @@
                     "value": "us-east"
                   }
                 ]
-              },
-              {
-                "key": "use_existing_resource_group"
               },
               {
                 "key": "log_analysis_instance_name"
@@ -165,8 +165,7 @@
                 "key": "log_archive_api_key"
               },
               {
-                "key": "enable_platform_logs",
-                "default_value": "false"
+                "key": "enable_platform_logs"
               },
               {
                 "key": "cloud_monitoring_instance_name"
@@ -205,8 +204,7 @@
                 "key": "cloud_monitoring_tags"
               },
               {
-                "key": "enable_platform_metrics",
-                "default_value": "false"
+                "key": "enable_platform_metrics"
               },
               {
                 "key": "cos_instance_name"
