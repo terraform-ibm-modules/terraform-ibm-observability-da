@@ -136,19 +136,13 @@ variable "cloud_monitoring_service_endpoints" {
 }
 
 ########################################################################################################################
-# COS targets and AT routes
+# AT targets and routes
 ########################################################################################################################
 
-variable "provision_cos_targets" {
-  description = "Set it to true if cos targets is to be provisioned"
-  type = bool
-  default = true
-}
-
-variable "provision_activity_tracker_routes" {
-  description = "Set it to true if activity tracker route is to be provisioned"
-  type = bool
-  default = true
+variable "provision_atracker" {
+  description = "Set it to true if AT targets and routes needs to be configured."
+  type        = bool
+  default     = true
 }
 
 ########################################################################################################################
