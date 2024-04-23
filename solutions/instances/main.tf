@@ -94,12 +94,14 @@ module "observability_instance" {
   log_analysis_cos_instance_id     = local.cos_instance_crn
   log_analysis_cos_bucket_name     = local.archive_cos_bucket_name
   log_analysis_cos_bucket_endpoint = local.archive_cos_bucket_endpoint
+  enable_platform_logs             = var.enable_platform_logs
   # IBM Cloud Monitoring
   cloud_monitoring_provision         = true
   cloud_monitoring_instance_name     = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
   cloud_monitoring_plan              = var.cloud_monitoring_plan
   cloud_monitoring_tags              = var.cloud_monitoring_tags
   cloud_monitoring_service_endpoints = var.cloud_monitoring_service_endpoints
+  enable_platform_metrics            = var.enable_platform_metrics
 
   # Activity Tracker
   activity_tracker_provision = false
