@@ -60,8 +60,16 @@
             },
             "configuration" : [
               {
-                "key": "existing_cos_kms_key_crn",
-                "required": true
+                "key": "ibmcloud_api_key"
+              },
+              {
+                "key": "prefix"
+              },
+              {
+                "key": "use_existing_resource_group"
+              },
+              {
+                "key": "resource_group_name"
               },
               {
                 "key": "region",
@@ -99,6 +107,237 @@
                   {
                     "displayname": "Washington (us-east)",
                     "value": "us-east"
+                  }
+                ]
+              },
+              {
+                "key": "log_analysis_instance_name"
+              },
+              {
+                "key": "log_analysis_plan",
+                "options": [
+                  {
+                    "displayname": "lite",
+                    "value": "lite"
+                  },
+                  {
+                    "displayname": "7-day",
+                    "value": "7-day"
+                  },
+                  {
+                    "displayname": "14-day",
+                    "value": "14-day"
+                  },
+                  {
+                    "displayname": "30-day",
+                    "value": "30-day"
+                  },
+                  {
+                    "displayname": "hipaa-30-day",
+                    "value": "hipaa-30-day"
+                  }
+                ]
+              },
+              {
+                "key": "log_analysis_service_endpoints",
+                "options": [
+                  {
+                    "displayname": "public",
+                    "value": "public"
+                  },
+                  {
+                    "displayname": "private",
+                    "value": "private"
+                  },
+                  {
+                    "displayname": "public-and-private",
+                    "value": "public-and-private"
+                  }
+                ]
+              },
+              {
+                "key": "log_analysis_tags"
+              },
+              {
+                "key": "enable_log_archive"
+              },
+              {
+                "key": "log_archive_api_key"
+              },
+              {
+                "key": "enable_platform_logs"
+              },
+              {
+                "key": "cloud_monitoring_instance_name"
+              },
+              {
+                "key": "cloud_monitoring_plan",
+                "options": [
+                  {
+                    "displayname": "lite",
+                    "value": "lite"
+                  },
+                  {
+                    "displayname": "graduated-tier",
+                    "value": "graduated-tier"
+                  }
+                ]
+              },
+              {
+                "key": "cloud_monitoring_service_endpoints",
+                "options": [
+                  {
+                    "displayname": "public",
+                    "value": "public"
+                  },
+                  {
+                    "displayname": "private",
+                    "value": "private"
+                  },
+                  {
+                    "displayname": "public-and-private",
+                    "value": "public-and-private"
+                  }
+                ]
+              },
+              {
+                "key": "cloud_monitoring_tags"
+              },
+              {
+                "key": "enable_platform_metrics"
+              },
+              {
+                "key": "cos_instance_name"
+              },
+              {
+                "key": "cos_instance_tags"
+              },
+              {
+                "key": "cos_instance_access_tags"
+              },
+              {
+                "key": "add_bucket_name_suffix"
+              },
+              {
+                "key": "log_archive_cos_bucket_name"
+              },
+              {
+                "key": "archive_bucket_access_tags"
+              },
+              {
+                "key": "log_archive_cos_bucket_class",
+                "options": [
+                  {
+                    "displayname": "standard",
+                    "value": "standard"
+                  },
+                  {
+                    "displayname": "vault",
+                    "value": "vault"
+                  },
+                  {
+                    "displayname": "cold",
+                    "value": "cold"
+                  },
+                  {
+                    "displayname": "smart",
+                    "value": "smart"
+                  },
+                  {
+                    "displayname": "onerate_active",
+                    "value": "onerate_active"
+                  }
+                ]
+              },
+              {
+                "key": "at_cos_target_bucket_name"
+              },
+              {
+                "key": "at_cos_bucket_access_tags"
+              },
+              {
+                "key": "at_cos_target_bucket_class",
+                "options": [
+                  {
+                    "displayname": "standard",
+                    "value": "standard"
+                  },
+                  {
+                    "displayname": "vault",
+                    "value": "vault"
+                  },
+                  {
+                    "displayname": "cold",
+                    "value": "cold"
+                  },
+                  {
+                    "displayname": "smart",
+                    "value": "smart"
+                  },
+                  {
+                    "displayname": "onerate_active",
+                    "value": "onerate_active"
+                  }
+                ]
+              },
+              {
+                "key": "management_endpoint_type_for_bucket",
+                "options": [
+                  {
+                    "displayname": "public",
+                    "value": "public"
+                  },
+                  {
+                    "displayname": "private",
+                    "value": "private"
+                  },
+                  {
+                    "displayname": "direct",
+                    "value": "direct"
+                  }
+                ]
+              },
+              {
+                "key": "existing_cos_instance_crn"
+              },
+              {
+                "key": "existing_log_archive_cos_bucket_name"
+              },
+              {
+                "key": "existing_log_archive_cos_bucket_endpoint"
+              },
+              {
+                "key": "existing_at_cos_target_bucket_name"
+              },
+              {
+                "key": "existing_at_cos_target_bucket_endpoint"
+              },
+              {
+                "key": "skip_cos_kms_auth_policy"
+              },
+              {
+                "key": "existing_cos_kms_key_crn",
+                "required": true
+              },
+              {
+                "key": "existing_kms_instance_crn"
+              },
+              {
+                "key": "cos_key_name"
+              },
+              {
+                "key": "cos_key_ring_name"
+              },
+              {
+                "key": "kms_endpoint_type",
+                "options": [
+                  {
+                    "displayname": "public",
+                    "value": "public"
+                  },
+                  {
+                    "displayname": "private",
+                    "value": "private"
                   }
                 ]
               }
