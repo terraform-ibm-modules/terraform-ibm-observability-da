@@ -264,6 +264,72 @@ variable "management_endpoint_type_for_bucket" {
   }
 }
 
+variable "enable_at_event_routing_to_log_analysis" {
+  type        = bool
+  description = "Set to true to enable activity tracker event routing to log analysis."
+  default     = false
+}
+
+variable "existing_at_log_analysis_crn" {
+  type        = string
+  description = "The crn of an existing log analysis instance to use for activity tracker event routing target. If not supplied, a new instance will be created if `enable_at_event_routing_to_log_analysis` is set."
+  default     = null
+}
+
+variable "existing_at_log_analysis_ingestion_key" {
+  type        = string
+  description = "The ingestion key of an existing log analysis instance for activity tracker event routing target."
+  default     = null
+}
+
+
+variable "at_log_analysis_name" {
+  type        = string
+  description = "The name to use when creating new log analysis instance for activity tracker event routing target."
+  default     = "at-events-log-analysis"
+}
+
+variable "at_log_analysis_region" {
+  type        = string
+  description = "The region to use when creating new log analysis instance for activity tracker event routing target."
+  default     = "us-south"
+}
+
+variable "at_log_analysis_manager_key_name" {
+  type        = string
+  description = "The name of manager key to use when creating new log analysis instance for activity tracker event routing target."
+  default     = "us-south"
+}
+
+variable "at_log_analysis_access_tags" {
+  type        = list(string)
+  description = "Optional list of access tags to be added to the activity tracking event routing log analysis."
+  default     = []
+}
+
+variable "at_log_analysis_plan" {
+  type        = string
+  description = "The IBM Cloud Logging plan to provision. Available: lite, 7-day, 14-day, 30-day, hipaa-30-day"
+  default     = "7-day"
+
+  validation {
+    condition     = can(regex("^lite$|^7-day$|^14-day$|^30-day$|^hipaa-30-day$", var.at_log_analysis_plan))
+    error_message = "The log_analysis_plan value must be one of the following: lite, 7-day, 14-day, 30-day, hipaa-30-day."
+  }
+}
+
+variable "at_log_analysis_resource_key_role" {
+  type        = string
+  description = "Role assigned to provide the IBM Cloud Logging key."
+  default     = "Manager"
+
+  validation {
+    condition     = contains(["Manager", "Reader", "Standard Member"], var.at_log_analysis_resource_key_role)
+    error_message = "Allowed roles can be Manager, Reader or Standard Member."
+  }
+}
+
+
 ########################################################################################################################
 # KMS variables
 ########################################################################################################################

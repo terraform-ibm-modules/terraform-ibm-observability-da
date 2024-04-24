@@ -57,6 +57,15 @@ locals {
   ) : null
 
   kms_region = (length(local.bucket_config_map) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
+
+  use_existing_at_log_analysis = var.enable_at_event_routing_to_log_analysis && var.existing_at_log_analysis_crn != null
+  # tflint-ignore: terraform_unused_declarations
+  validate_existing_at_log_analysis_ingestion_key = local.use_existing_at_log_analysis && var.existing_at_log_analysis_ingestion_key == null ? tobool("Ingestion key of log analysis is required when using existing instance.") : null
+  existing_at_log_analysis_region                 = local.use_existing_at_log_analysis ? element(split(":", var.existing_at_log_analysis_crn), length(split(":", var.existing_at_log_analysis_crn)) - 5) : null
+
+  at_log_analysis_instance_id   = local.use_existing_at_log_analysis ? var.existing_at_log_analysis_crn : module.at_event_routing_log_analysis[0].crn
+  at_log_analysis_ingestion_key = local.use_existing_at_log_analysis ? var.existing_at_log_analysis_ingestion_key : module.at_event_routing_log_analysis[0].at_log_analysis_ingestion_key
+  at_log_analysis_region        = local.use_existing_at_log_analysis ? local.existing_at_log_analysis_region : (var.at_log_analysis_region == null ? var.region : var.at_log_analysis_region)
 }
 
 #######################################################################################################################
@@ -117,14 +126,32 @@ module "observability_instance" {
     }
   ]
 
+  log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
+    {
+      instance_id   = local.at_log_analysis_instance_id
+      ingestion_key = local.at_log_analysis_ingestion_key
+      target_region = local.at_log_analysis_region
+      target_name   = "log-analysis-target"
+
+    }
+  ] : []
+
   # Routes
-  activity_tracker_routes = [
+  activity_tracker_routes = var.enable_at_event_routing_to_log_analysis ? [
+    {
+      route_name = "at-cos-route"
+      locations  = ["*", "global"]
+      target_ids = [module.observability_instance.activity_tracker_targets["cos-target"].id]
+      }, {
+      route_name = "at-log-analysis-route"
+      locations  = ["*", "global"]
+      target_ids = [module.observability_instance.activity_tracker_targets["log-analysis-target"].id]
+    }
+    ] : [
     {
       route_name = "at-route"
       locations  = ["*", "global"]
-      target_ids = [
-        module.observability_instance.activity_tracker_targets["cos-target"].id
-      ]
+      target_ids = [module.observability_instance.activity_tracker_targets["cos-target"].id]
     }
   ]
 }
@@ -232,4 +259,23 @@ module "cos_bucket" {
       retention_rule                = null
     }
   ]
+}
+
+#######################################################################################################################
+# Log Analysis for AT event routing
+#######################################################################################################################
+module "at_event_routing_log_analysis" {
+  count   = local.use_existing_at_log_analysis ? 0 : 1
+  source  = "terraform-ibm-modules/observability-instances/ibm//modules/log_analysis"
+  version = "2.12.2"
+  providers = {
+    logdna.ld = logdna.at_event_routing_ld
+  }
+  instance_name     = var.prefix != null ? "${var.prefix}-${var.at_log_analysis_name}" : var.at_log_analysis_name
+  resource_group_id = module.resource_group.resource_group_id
+  plan              = var.at_log_analysis_plan
+  region            = var.at_log_analysis_region == null ? var.region : var.at_log_analysis_region
+  manager_key_name  = var.prefix != null ? "${var.prefix}-${var.at_log_analysis_manager_key_name}" : var.at_log_analysis_manager_key_name
+  resource_key_role = var.at_log_analysis_resource_key_role
+  access_tags       = var.at_log_analysis_access_tags
 }

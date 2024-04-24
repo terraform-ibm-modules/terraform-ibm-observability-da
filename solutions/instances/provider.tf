@@ -23,6 +23,12 @@ provider "logdna" {
   url        = local.at_endpoint
 }
 
+provider "logdna" {
+  alias      = "at_event_routing_ld"
+  servicekey = var.enable_at_event_routing_to_log_analysis ? (local.use_existing_at_log_analysis ? var.existing_at_log_analysis_ingestion_key : module.at_event_routing_log_analysis[0].resource_key) : ""
+  url        = local.at_endpoint
+}
+
 provider "ibm" {
   alias            = "cos"
   ibmcloud_api_key = var.ibmcloud_api_key
