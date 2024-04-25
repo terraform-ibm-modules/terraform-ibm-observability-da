@@ -83,7 +83,9 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
+		{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
+		{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
 		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "archive_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
@@ -112,6 +114,8 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"management_endpoint_type_for_bucket": "public",
 		"log_analysis_service_endpoints":      "public-and-private",
 		"cloud_monitoring_service_endpoints":  "public",
+		"enable_platform_logs":                "false",
+		"enable_platform_metrics":             "false",
 	}
 
 	output, err := options.RunTestUpgrade()
