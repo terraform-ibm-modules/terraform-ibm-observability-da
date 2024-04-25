@@ -298,7 +298,7 @@ variable "at_log_analysis_region" {
 variable "at_log_analysis_manager_key_name" {
   type        = string
   description = "The name of manager key to use when creating new log analysis instance for activity tracker event routing target."
-  default     = "us-south"
+  default     = "at-log-analysis-key"
 }
 
 variable "at_log_analysis_access_tags" {
@@ -315,17 +315,6 @@ variable "at_log_analysis_plan" {
   validation {
     condition     = can(regex("^lite$|^7-day$|^14-day$|^30-day$|^hipaa-30-day$", var.at_log_analysis_plan))
     error_message = "The log_analysis_plan value must be one of the following: lite, 7-day, 14-day, 30-day, hipaa-30-day."
-  }
-}
-
-variable "at_log_analysis_resource_key_role" {
-  type        = string
-  description = "Role assigned to provide the IBM Cloud Logging key."
-  default     = "Manager"
-
-  validation {
-    condition     = contains(["Manager", "Reader", "Standard Member"], var.at_log_analysis_resource_key_role)
-    error_message = "Allowed roles can be Manager, Reader or Standard Member."
   }
 }
 

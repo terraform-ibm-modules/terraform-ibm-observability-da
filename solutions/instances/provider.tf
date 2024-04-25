@@ -8,7 +8,8 @@ provider "ibm" {
 }
 
 locals {
-  at_endpoint = var.log_analysis_service_endpoints == "private" ? "https://api.${var.log_analysis_service_endpoints}.${var.region}.logging.cloud.ibm.com" : "https://api.${var.region}.logging.cloud.ibm.com"
+  at_endpoint               = var.log_analysis_service_endpoints == "private" ? "https://api.${var.log_analysis_service_endpoints}.${var.region}.logging.cloud.ibm.com" : "https://api.${var.region}.logging.cloud.ibm.com"
+  at_event_routing_endpoint = var.log_analysis_service_endpoints == "private" ? "https://api.${var.log_analysis_service_endpoints}.${local.at_log_analysis_region}.logging.cloud.ibm.com" : "https://api.${local.at_log_analysis_region}.logging.cloud.ibm.com"
 }
 
 provider "logdna" {
@@ -26,7 +27,7 @@ provider "logdna" {
 provider "logdna" {
   alias      = "at_event_routing_ld"
   servicekey = var.enable_at_event_routing_to_log_analysis ? (local.use_existing_at_log_analysis ? var.existing_at_log_analysis_ingestion_key : module.at_event_routing_log_analysis[0].resource_key) : ""
-  url        = local.at_endpoint
+  url        = local.at_event_routing_endpoint
 }
 
 provider "ibm" {

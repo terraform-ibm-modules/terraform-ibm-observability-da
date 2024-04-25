@@ -64,8 +64,9 @@ locals {
   existing_at_log_analysis_region                 = local.use_existing_at_log_analysis ? element(split(":", var.existing_at_log_analysis_crn), length(split(":", var.existing_at_log_analysis_crn)) - 5) : null
 
   at_log_analysis_instance_id   = local.use_existing_at_log_analysis ? var.existing_at_log_analysis_crn : module.at_event_routing_log_analysis[0].crn
-  at_log_analysis_ingestion_key = local.use_existing_at_log_analysis ? var.existing_at_log_analysis_ingestion_key : module.at_event_routing_log_analysis[0].at_log_analysis_ingestion_key
+  at_log_analysis_ingestion_key = local.use_existing_at_log_analysis ? var.existing_at_log_analysis_ingestion_key : module.at_event_routing_log_analysis[0].ingestion_key
   at_log_analysis_region        = local.use_existing_at_log_analysis ? local.existing_at_log_analysis_region : (var.at_log_analysis_region == null ? var.region : var.at_log_analysis_region)
+
 }
 
 #######################################################################################################################
@@ -132,7 +133,6 @@ module "observability_instance" {
       ingestion_key = local.at_log_analysis_ingestion_key
       target_region = local.at_log_analysis_region
       target_name   = "log-analysis-target"
-
     }
   ] : []
 
@@ -142,7 +142,8 @@ module "observability_instance" {
       route_name = "at-cos-route"
       locations  = ["*", "global"]
       target_ids = [module.observability_instance.activity_tracker_targets["cos-target"].id]
-      }, {
+    },
+    {
       route_name = "at-log-analysis-route"
       locations  = ["*", "global"]
       target_ids = [module.observability_instance.activity_tracker_targets["log-analysis-target"].id]
