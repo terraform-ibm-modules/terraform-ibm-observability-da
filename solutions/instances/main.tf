@@ -277,6 +277,5 @@ module "at_event_routing_log_analysis" {
   plan              = var.at_log_analysis_plan
   region            = var.at_log_analysis_region == null ? var.region : var.at_log_analysis_region
   manager_key_name  = var.prefix != null ? "${var.prefix}-${var.at_log_analysis_manager_key_name}" : var.at_log_analysis_manager_key_name
-  resource_key_role = var.at_log_analysis_resource_key_role
   access_tags       = var.at_log_analysis_access_tags
 }
