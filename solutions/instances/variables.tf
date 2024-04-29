@@ -264,6 +264,10 @@ variable "management_endpoint_type_for_bucket" {
   }
 }
 
+########################################################################################################################
+# AT Event Routing Log Analysis variables
+########################################################################################################################
+
 variable "enable_at_event_routing_to_log_analysis" {
   type        = bool
   description = "Set to true to enable activity tracker event routing to log analysis."

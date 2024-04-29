@@ -150,7 +150,7 @@ module "observability_instance" {
     }
     ] : [
     {
-      route_name = "at-route"
+      route_name = "at-cos-route"
       locations  = ["*", "global"]
       target_ids = [module.observability_instance.activity_tracker_targets["cos-target"].id]
     }

@@ -40,7 +40,7 @@
           },
           {
             "description": "Configures Activity Tracker routing",
-            "title": "Configures an Activity Tracker route with a COS bucket target."
+            "title": "Configures an Activity Tracker route with a COS bucket and log analysis target."
           }
         ],
         "flavors": [
@@ -166,6 +166,87 @@
               },
               {
                 "key": "enable_platform_logs"
+              },
+              {
+                "key": "enable_at_event_routing_to_log_analysis"
+              },
+              {
+                "key": "existing_at_log_analysis_crn"
+              },
+              {
+                "key": "existing_at_log_analysis_ingestion_key"
+              },
+              {
+                "key": "at_log_analysis_name"
+              },
+              {
+                "key": "at_log_analysis_region",
+                "default_value": "",
+                "options": [
+                  {
+                    "displayname": "Dallas (us-south)",
+                    "value": "us-south"
+                  },
+                  {
+                    "displayname": "Frankfurt (eu-de)",
+                    "value": "eu-de"
+                  },
+                  {
+                    "displayname": "London (eu-gb)",
+                    "value": "eu-gb"
+                  },
+                  {
+                    "displayname": "Madrid (eu-es)",
+                    "value": "eu-es"
+                  },
+                  {
+                    "displayname": "Osaka (jp-osa)",
+                    "value": "jp-osa"
+                  },
+                  {
+                    "displayname": "Sydney (au-syd)",
+                    "value": "au-syd"
+                  },
+                  {
+                    "displayname": "Tokyo (jp-tok)",
+                    "value": "jp-tok"
+                  },
+                  {
+                    "displayname": "Washington (us-east)",
+                    "value": "us-east"
+                  }
+                ]
+              },
+              {
+                "key": "at_log_analysis_manager_key_name"
+              },
+              {
+                "key": "at_log_analysis_access_tags"
+              },
+              {
+                "key": "at_log_analysis_plan",
+                "options": [
+                  {
+                    "displayname": "lite",
+                    "value": "lite"
+                  },
+                  {
+                    "displayname": "7-day",
+                    "value": "7-day"
+                  },
+                  {
+                    "displayname": "14-day",
+                    "value": "14-day"
+                  },
+                  {
+                    "displayname": "30-day",
+                    "value": "30-day"
+                  },
+                  {
+                    "displayname": "hipaa-30-day",
+                    "value": "hipaa-30-day"
+                  }
+                ]
               },
               {
                 "key": "cloud_monitoring_instance_name"
@@ -364,6 +445,10 @@
                   {
                     "title": "Creates an Activity Tracker event route and COS target.",
                     "description": "Creates and configures the Activity Tracker event routing and COS target."
+                  },
+                  {
+                    "title": "Creates an Activity Tracker event route and log analysis target.",
+                    "description": "Creates and configures the Activity Tracker event routing and log analysis target."
                   }
               ],
               "diagrams": [
