@@ -27,7 +27,7 @@ locals {
     tag   = var.archive_bucket_access_tags
   } : null
 
-  bucket_config_2 = var.existing_at_cos_target_bucket_name == null ? {
+  bucket_config_2 = var.existing_at_cos_target_bucket_name == null && var.provision_atracker == true ? {
     class = var.at_cos_target_bucket_class
     name  = local.at_cos_target_bucket_name
     tag   = var.at_cos_bucket_access_tags
