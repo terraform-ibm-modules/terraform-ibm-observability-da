@@ -295,8 +295,8 @@ variable "at_log_analysis_name" {
 
 variable "at_log_analysis_region" {
   type        = string
-  description = "The region to use when creating new log analysis instance for activity tracker event routing target."
-  default     = "us-south"
+  description = "The region to use when creating new log analysis instance for activity tracker event routing target. If not set `var.region` will be used."
+  default     = null
 }
 
 variable "at_log_analysis_manager_key_name" {
