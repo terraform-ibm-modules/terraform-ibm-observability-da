@@ -27,7 +27,7 @@ locals {
     tag   = var.archive_bucket_access_tags
   } : null
 
-  bucket_config_2 = var.existing_at_cos_target_bucket_name == null && var.provision_atracker == true ? {
+  bucket_config_2 = var.existing_at_cos_target_bucket_name == null && var.configure_cos_target_and_route_for_atracker_events == true ? {
     class = var.at_cos_target_bucket_class
     name  = local.at_cos_target_bucket_name
     tag   = var.at_cos_bucket_access_tags
@@ -107,7 +107,7 @@ module "observability_instance" {
   activity_tracker_provision = false
   cos_targets = [
     {
-      count                             = var.provision_atracker == true ? 1 : 0
+      count                             = var.configure_cos_target_and_route_for_atracker_events == true ? 1 : 0
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
       instance_id                       = local.cos_instance_crn
@@ -121,7 +121,7 @@ module "observability_instance" {
   # Routes
   activity_tracker_routes = [
     {
-      count      = var.provision_atracker == true ? 1 : 0
+      count      = var.configure_cos_target_and_route_for_atracker_events == true ? 1 : 0
       route_name = "at-route"
       locations  = ["*", "global"]
       target_ids = [
@@ -193,7 +193,7 @@ module "cos_instance" {
   providers = {
     ibm = ibm.cos
   }
-  count                    = (var.existing_cos_instance_crn == null) ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
+  count                    = (var.existing_cos_instance_crn == null) && (var.log_analysis_provision == true) ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "7.5.3"
   resource_group_id        = module.resource_group.resource_group_id
@@ -211,7 +211,7 @@ module "cos_bucket" {
   providers = {
     ibm = ibm.cos
   }
-  count   = (length(local.bucket_config_map) != 0) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
+  count   = (length(local.bucket_config_map) != 0) && (var.log_analysis_provision == true) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "7.5.3"
   bucket_configs = [

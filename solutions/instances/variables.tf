@@ -151,8 +151,8 @@ variable "enable_platform_metrics" {
 # AT targets and routes
 ########################################################################################################################
 
-variable "provision_atracker" {
-  description = "Set it to true if AT targets and routes needs to be configured."
+variable "configure_cos_target_and_route_for_atracker_events" {
+  description = "Set it to true if COS targets and routes needs to be configured for activity tracker event routing"
   type        = bool
   default     = true
 }
