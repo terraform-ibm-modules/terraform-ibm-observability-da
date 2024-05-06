@@ -88,7 +88,7 @@ variable "log_archive_api_key" {
 
 variable "enable_platform_logs" {
   type        = bool
-  description = "Receive platform logs in the provisioned IBM Cloud Logging instance."
+  description = "When set to `true`, the IBM Cloud Logging instance collects the platform log files."
   default     = true
 }
 
@@ -131,7 +131,7 @@ variable "cloud_monitoring_service_endpoints" {
 
 variable "enable_platform_metrics" {
   type        = bool
-  description = "Receive platform metrics in the provisioned IBM Cloud Monitoring instance."
+  description = "When set to `true`, the IBM Cloud Monitoring instance collects the platform metrics."
   default     = true
 }
 
@@ -184,7 +184,7 @@ variable "at_cos_target_bucket_name" {
 variable "archive_bucket_access_tags" {
   type        = list(string)
   default     = []
-  description = "Optional list of access tags to be added to the log archive COS bucket."
+  description = "A list of optional tags to add to the log archive Cloud Object Storage bucket."
 }
 
 variable "at_cos_bucket_access_tags" {
