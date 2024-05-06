@@ -58,7 +58,7 @@ variable "log_analysis_plan" {
 }
 
 variable "log_analysis_service_endpoints" {
-  description = "The type of the service endpoint that will be set for the Log Analysis instance."
+  description = "The type of the service endpoint that will be set for the IBM Log Analysis instance."
   type        = string
   default     = "private"
   validation {
@@ -190,7 +190,7 @@ variable "archive_bucket_access_tags" {
 variable "at_cos_bucket_access_tags" {
   type        = list(string)
   default     = []
-  description = "A list of optional access tags to add to the Activity Tracker event routing Cloud Object Storage bucket."
+  description = "A list of optional access tags to add to the IBM Cloud Activity Tracker Event Routing Cloud Object Storage bucket."
 }
 
 variable "log_archive_cos_bucket_class" {
@@ -206,7 +206,7 @@ variable "log_archive_cos_bucket_class" {
 variable "at_cos_target_bucket_class" {
   type        = string
   default     = "smart"
-  description = "TThe storage class of the newly provisioned Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
+  description = "The storage class of the newly provisioned Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
   validation {
     condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.at_cos_target_bucket_class)
     error_message = "Specify one of the following values for the `cos_bucket_class`:  \`standard\`, \`vault\`,\`cold\`, \`smart\`, or \`onerate_active\`."
@@ -231,7 +231,7 @@ variable "existing_at_cos_target_bucket_name" {
   type        = string
   nullable    = true
   default     = null
-  description = "The name of an existing bucket within the Cloud Object Storage instance in which to store Activity Tracker event routing. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
+  description = "The name of an existing bucket within the Cloud Object Storage instance in which to store IBM Cloud Activity Tracker Event Routing. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
 }
 
 variable "existing_log_archive_cos_bucket_endpoint" {
@@ -245,7 +245,7 @@ variable "existing_at_cos_target_bucket_endpoint" {
   type        = string
   nullable    = true
   default     = null
-  description = "The name of an existing Cloud Object Storage bucket endpoint to use for setting up Activity Tracker event routing. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
+  description = "The name of an existing Cloud Object Storage bucket endpoint to use for setting up IBM Cloud Activity Tracker Event Routing. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
 }
 
 variable "skip_cos_kms_auth_policy" {
@@ -293,11 +293,11 @@ variable "kms_endpoint_type" {
 variable "cos_key_ring_name" {
   type        = string
   default     = "observability-cos-key-ring"
-  description = "The name of the key ring to create for the Cloud Object Storage bucket key. This name will be used by both the log archive bucket and the Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key ring is prefixed to the value in the `prefix-value` format."
+  description = "The name of the key ring to create for the Cloud Object Storage bucket key. This name will be used by both the log archive bucket and the IBM Cloud Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key ring is prefixed to the value in the `prefix-value` format."
 }
 
 variable "cos_key_name" {
   type        = string
   default     = "observability-cos-key"
-  description = "The name of the key to create for the Cloud Object Storage bucket. This name will be used by both the log archive bucket and the Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key is prefixed to the value in the `prefix-value` format."
+  description = "The name of the key to create for the Cloud Object Storage bucket. This name will be used by both the log archive bucket and the IBM Cloud Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key is prefixed to the value in the `prefix-value` format."
 }
