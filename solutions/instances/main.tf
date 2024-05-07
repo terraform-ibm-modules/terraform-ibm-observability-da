@@ -75,7 +75,7 @@ locals {
     target_ids = [module.observability_instance.activity_tracker_targets["log-analysis-target"].id]
   }] : []
 
-  at_routes = merge(local.at_cos_route, local.at_log_analysis_route)
+  at_routes = concat(local.at_cos_route, local.at_log_analysis_route)
 }
 
 #######################################################################################################################

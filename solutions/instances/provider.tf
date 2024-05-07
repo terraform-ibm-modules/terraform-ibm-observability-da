@@ -26,7 +26,7 @@ provider "logdna" {
 
 provider "logdna" {
   alias      = "at_event_routing_ld"
-  servicekey = var.enable_at_event_routing_to_log_analysis ? (local.use_existing_at_log_analysis ? var.existing_at_log_analysis_ingestion_key : module.at_event_routing_log_analysis[0].resource_key) : ""
+  servicekey = var.enable_at_event_routing_to_log_analysis ? (var.create_new_log_analysis_instance_for_at_events ? module.at_event_routing_log_analysis[0].resource_key : module.observability_instance.log_analysis_ingestion_key) : ""
   url        = local.at_event_routing_endpoint
 }
 
