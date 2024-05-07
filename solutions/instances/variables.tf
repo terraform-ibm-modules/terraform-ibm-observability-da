@@ -274,48 +274,6 @@ variable "enable_at_event_routing_to_log_analysis" {
   default     = false
 }
 
-variable "create_new_log_analysis_instance_for_at_events" {
-  type        = bool
-  description = "Set to true to create new log analysis instance to route activity tracker events otherwise log analysis instance created by DA will be used."
-  default     = false
-}
-
-variable "at_log_analysis_name" {
-  type        = string
-  description = "The name to use when creating new log analysis instance for activity tracker event routing target."
-  default     = "at-events-log-analysis"
-}
-
-variable "at_log_analysis_region" {
-  type        = string
-  description = "The region to use when creating new log analysis instance for activity tracker event routing target. If not set `var.region` will be used."
-  default     = null
-}
-
-variable "at_log_analysis_manager_key_name" {
-  type        = string
-  description = "The name of manager key to use when creating new log analysis instance for activity tracker event routing target."
-  default     = "at-log-analysis-key"
-}
-
-variable "at_log_analysis_access_tags" {
-  type        = list(string)
-  description = "Optional list of access tags to be added to the activity tracking event routing log analysis."
-  default     = []
-}
-
-variable "at_log_analysis_plan" {
-  type        = string
-  description = "The IBM Cloud Logging plan to provision. Available: lite, 7-day, 14-day, 30-day, hipaa-30-day"
-  default     = "7-day"
-
-  validation {
-    condition     = can(regex("^lite$|^7-day$|^14-day$|^30-day$|^hipaa-30-day$", var.at_log_analysis_plan))
-    error_message = "The log_analysis_plan value must be one of the following: lite, 7-day, 14-day, 30-day, hipaa-30-day."
-  }
-}
-
-
 ########################################################################################################################
 # KMS variables
 ########################################################################################################################

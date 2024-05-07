@@ -58,11 +58,6 @@ locals {
 
   kms_region = (length(local.bucket_config_map) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
 
-
-  at_log_analysis_instance_id   = var.create_new_log_analysis_instance_for_at_events ? module.at_event_routing_log_analysis[0].crn : module.observability_instance.log_analysis_crn
-  at_log_analysis_ingestion_key = var.create_new_log_analysis_instance_for_at_events ? module.at_event_routing_log_analysis[0].ingestion_key : module.observability_instance.log_analysis_ingestion_key
-  at_log_analysis_region        = var.at_log_analysis_region == null ? var.region : var.at_log_analysis_region
-
   at_cos_route = [{
     route_name = "at-cos-route"
     locations  = ["*", "global"]
@@ -75,7 +70,7 @@ locals {
     target_ids = [module.observability_instance.activity_tracker_targets["log-analysis-target"].id]
   }] : []
 
-  at_routes = merge(local.at_cos_route, local.at_log_analysis_route)
+  at_routes = concat(local.at_cos_route, local.at_log_analysis_route)
 }
 
 #######################################################################################################################
@@ -138,9 +133,9 @@ module "observability_instance" {
 
   log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
     {
-      instance_id   = local.at_log_analysis_instance_id
-      ingestion_key = local.at_log_analysis_ingestion_key
-      target_region = local.at_log_analysis_region
+      instance_id   = module.observability_instance.log_analysis_crn
+      ingestion_key = module.observability_instance.log_analysis_ingestion_key
+      target_region = var.region
       target_name   = "log-analysis-target"
     }
   ] : []
@@ -252,22 +247,4 @@ module "cos_bucket" {
       retention_rule                = null
     }
   ]
-}
-
-#######################################################################################################################
-# Log Analysis for AT event routing
-#######################################################################################################################
-module "at_event_routing_log_analysis" {
-  count   = var.create_new_log_analysis_instance_for_at_events ? 1 : 0
-  source  = "terraform-ibm-modules/observability-instances/ibm//modules/log_analysis"
-  version = "2.12.2"
-  providers = {
-    logdna.ld = logdna.at_event_routing_ld
-  }
-  instance_name     = var.prefix != null ? "${var.prefix}-${var.at_log_analysis_name}" : var.at_log_analysis_name
-  resource_group_id = module.resource_group.resource_group_id
-  plan              = var.at_log_analysis_plan
-  region            = var.at_log_analysis_region == null ? var.region : var.at_log_analysis_region
-  manager_key_name  = var.prefix != null ? "${var.prefix}-${var.at_log_analysis_manager_key_name}" : var.at_log_analysis_manager_key_name
-  access_tags       = var.at_log_analysis_access_tags
 }
