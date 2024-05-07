@@ -193,7 +193,7 @@ module "cos_instance" {
   providers = {
     ibm = ibm.cos
   }
-  count                    = (var.existing_cos_instance_crn == null) && (var.log_analysis_provision == true) && (var.configure_cos_target_and_route_for_atracker_events == true) ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
+  count                    = (var.existing_cos_instance_crn == null) && ((var.log_analysis_provision == true) || (var.configure_cos_target_and_route_for_atracker_events == true)) ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "7.5.3"
   resource_group_id        = module.resource_group.resource_group_id
@@ -211,7 +211,7 @@ module "cos_bucket" {
   providers = {
     ibm = ibm.cos
   }
-  count   = (length(local.bucket_config_map) != 0) && (var.log_analysis_provision == true) && (var.configure_cos_target_and_route_for_atracker_events == true) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
+  count   = (length(local.bucket_config_map) != 0) && ((var.log_analysis_provision == true) || (var.configure_cos_target_and_route_for_atracker_events == true)) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "7.5.3"
   bucket_configs = [
