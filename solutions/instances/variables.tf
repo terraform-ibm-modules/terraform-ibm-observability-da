@@ -274,18 +274,11 @@ variable "enable_at_event_routing_to_log_analysis" {
   default     = false
 }
 
-variable "existing_at_log_analysis_crn" {
-  type        = string
-  description = "The crn of an existing log analysis instance to use for activity tracker event routing target. If not supplied, a new instance will be created if `enable_at_event_routing_to_log_analysis` is set."
-  default     = null
+variable "create_new_log_analysis_instance_for_at_events" {
+  type        = bool
+  description = "Set to true to create new log analysis instance to route activity tracker events otherwise log analysis instance created by DA will be used."
+  default     = false
 }
-
-variable "existing_at_log_analysis_ingestion_key" {
-  type        = string
-  description = "The ingestion key of an existing log analysis instance for activity tracker event routing target."
-  default     = null
-}
-
 
 variable "at_log_analysis_name" {
   type        = string

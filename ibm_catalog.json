@@ -171,10 +171,7 @@
                 "key": "enable_at_event_routing_to_log_analysis"
               },
               {
-                "key": "existing_at_log_analysis_crn"
-              },
-              {
-                "key": "existing_at_log_analysis_ingestion_key"
+                "key": "create_new_log_analysis_instance_for_at_events"
               },
               {
                 "key": "at_log_analysis_name"
