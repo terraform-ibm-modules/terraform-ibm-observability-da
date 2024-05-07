@@ -40,7 +40,7 @@
           },
           {
             "description": "Configures Activity Tracker routing",
-            "title": "Configures an Activity Tracker route with a COS bucket and log analysis target."
+            "title": "Configures an Activity Tracker route with a COS bucket and log analysis (optional) target."
           }
         ],
         "flavors": [
