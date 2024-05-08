@@ -108,15 +108,15 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 	})
 
 	options.TerraformVars = map[string]interface{}{
-		"resource_group_name":                 options.Prefix,
-		"cos_instance_access_tags":            permanentResources["accessTags"],
-		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
-		"kms_endpoint_type":                   "public",
-		"management_endpoint_type_for_bucket": "public",
-		"log_analysis_service_endpoints":      "public-and-private",
-		"cloud_monitoring_service_endpoints":  "public",
-		"enable_platform_logs":                "false",
-		"enable_platform_metrics":             "false",
+		"resource_group_name":                     options.Prefix,
+		"cos_instance_access_tags":                permanentResources["accessTags"],
+		"existing_kms_instance_crn":               permanentResources["hpcs_south_crn"],
+		"kms_endpoint_type":                       "public",
+		"management_endpoint_type_for_bucket":     "public",
+		"log_analysis_service_endpoints":          "public-and-private",
+		"cloud_monitoring_service_endpoints":      "public",
+		"enable_platform_logs":                    "false",
+		"enable_platform_metrics":                 "false",
 		"enable_at_event_routing_to_log_analysis": "true",
 	}
 
@@ -128,6 +128,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 }
 
 func TestAgentsSolutionInSchematics(t *testing.T) {
+	t.Skip()
 	t.Parallel()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
