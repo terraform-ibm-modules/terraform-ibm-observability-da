@@ -128,7 +128,6 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 }
 
 func TestAgentsSolutionInSchematics(t *testing.T) {
-	t.Skip()
 	t.Parallel()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
