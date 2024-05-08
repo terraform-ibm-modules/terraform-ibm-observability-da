@@ -90,6 +90,7 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "archive_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
+		{Name: "enable_at_event_routing_to_log_analysis", Value: true, DataType: "bool"},
 	}
 
 	err := options.RunSchematicTest()
@@ -116,6 +117,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"cloud_monitoring_service_endpoints":  "public",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
+		"enable_at_event_routing_to_log_analysis": "true",
 	}
 
 	output, err := options.RunTestUpgrade()

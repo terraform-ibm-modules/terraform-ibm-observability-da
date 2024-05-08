@@ -92,6 +92,12 @@ variable "enable_platform_logs" {
   default     = true
 }
 
+variable "enable_at_event_routing_to_log_analysis" {
+  type        = bool
+  description = "Set to true to enable activity tracker event routing to the provisioned IBM Cloud Logging instance."
+  default     = false
+}
+
 ##############################################################################
 # Cloud Monitoring Variables
 ##############################################################################

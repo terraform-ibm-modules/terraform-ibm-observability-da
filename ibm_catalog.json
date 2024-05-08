@@ -39,8 +39,8 @@
           "title": "Configures Cloud Monitoring. instance and agents."
         },
         {
-          "description": "Configures Activity Tracker routing",
-          "title": "Configures an Activity Tracker route with a COS bucket target."
+          "description": "Configures Activity Tracker event routing",
+          "title": "Configures an Activity Tracker event routing to a COS bucket and optionally to a Log Analysis instance."
         }
       ],
       "flavors": [
@@ -210,6 +210,9 @@
             },
             {
               "key": "enable_platform_logs"
+            },
+            {
+              "key": "enable_at_event_routing_to_log_analysis"
             },
             {
               "key": "cloud_monitoring_instance_name"
@@ -387,7 +390,7 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud and Activity Tracker event routing to a COS bucket target.",
+            "descriptions": "This architecture supports the deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud. It can also configure Activity Tracker event routing to a COS bucket and optionally to a Log Analysis instance.",
             "features": [
               {
                 "title": "Creates the Log Analysis instance.",
@@ -406,8 +409,8 @@
                 "description": "Creates and configures the COS bucket with archiving and expiration enabled."
               },
               {
-                "title": "Creates an Activity Tracker event route and COS target.",
-                "description": "Creates and configures the Activity Tracker event routing and COS target."
+                "title": "Configures an Activity Tracker event routing to a COS bucket and optionally to a Log Analysis instance.",
+                "description": "Configures Activity Tracker event routing."
               }
             ],
             "diagrams": [
