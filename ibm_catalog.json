@@ -390,7 +390,7 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports the deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud. It can also configure Activity Tracker event routing to a COS bucket and optionally to a Log Analysis instance.",
+            "descriptions": "This architecture supports the deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud. It also configures an Activity Tracker event routing to a COS bucket and optionally to a Log Analysis instance.",
             "features": [
               {
                 "title": "Creates the Log Analysis instance.",
@@ -410,7 +410,7 @@
               },
               {
                 "title": "Configures an Activity Tracker event routing to a COS bucket and optionally to a Log Analysis instance.",
-                "description": "Configures Activity Tracker event routing."
+                "description": "Configures an Activity Tracker event routing."
               }
             ],
             "diagrams": [
