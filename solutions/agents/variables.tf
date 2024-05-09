@@ -96,7 +96,7 @@ variable "log_analysis_agent_custom_line_inclusion" {
 }
 
 variable "log_analysis_agent_custom_line_exclusion" {
-  description = "The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line exclusion setting. For more information about this setting, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)."
+  description = "The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line exclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)"
   type        = string
   default     = null # "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
 }
