@@ -209,7 +209,7 @@ variable "cloud_monitoring_agent_namespace" {
 }
 
 variable "cloud_monitoring_agent_tolerations" {
-  description = " The list of tolerations to apply to the IBM Cloud Monitoring agent. The default value specifies that this variable will match any taint on any node except the master node. For more information about tolerations and taints, see [Taints and Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)."
+  description = "The list of tolerations to apply to the IBM Cloud Monitoring agent. The default operator value `Exists` matches any taint on any node except the master node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
   type = list(object({
     key               = optional(string)
     operator          = optional(string)
