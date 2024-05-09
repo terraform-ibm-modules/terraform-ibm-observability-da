@@ -16,7 +16,7 @@ variable "prefix" {
 
 variable "cluster_id" {
   type        = string
-  description = "The ID of the cluster that you want to deploy the agents in."
+  description = "The ID of the cluster to deploy the agents in."
 }
 
 variable "cluster_resource_group_id" {
