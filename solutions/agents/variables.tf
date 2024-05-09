@@ -81,7 +81,7 @@ variable "log_analysis_instance_region" {
 
 variable "log_analysis_endpoint_type" {
   type        = string
-  description = "Specify the IBM Log Analysis instance endpoint type (`public` or `private`) to use to construct the ingestion endpoint."
+  description = "Specify the IBM Log Analysis instance endpoint type (`public` or `private`) to use to construct the ingestion endpoint. Possible values: `string`."
   default     = "private"
   validation {
     error_message = "The specified `endpoint_type` can be `private` or `public` only."
