@@ -41,7 +41,7 @@ variable "cluster_config_endpoint_type" {
 
 variable "log_analysis_enabled" {
   type        = bool
-  description = "When set to `true`, this variable deploys the IBM Cloud logging agent."
+  description = "Whether to deploy the IBM Cloud logging agent."
   default     = true
 }
 
