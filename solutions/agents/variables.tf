@@ -116,7 +116,7 @@ variable "log_analysis_agent_namespace" {
 }
 
 variable "log_analysis_agent_tolerations" {
-  description = "The list of tolerations to apply to the IBM Log Analysis agent. Because the default value is the `Exists` operator, this variable will match any taint on any node. For more information about tolerations and taints, see [Taints and Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)."
+  description = "The list of tolerations to apply to the IBM Log Analysis agent. Because the default value is the `Exists` operator, this variable will match any taint on any node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
   type = list(object({
     key               = optional(string)
     operator          = optional(string)
@@ -174,7 +174,7 @@ variable "cloud_monitoring_metrics_filter" {
     type = string
     name = string
   }))
-  description = "To filter on custom metrics, specify the IBM Cloud Monitoring metrics to include or exclude. For more information about customizing the monitoring agent configuration, see [Including and excluding metrics](https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics)."
+  description = "To filter on custom metrics, specify the IBM Cloud Monitoring metrics to include or exclude. [Learn more](https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics)"
   default     = [] # [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
   validation {
     condition     = length(var.cloud_monitoring_metrics_filter) == 0 || can(regex("^(include|exclude)$", var.cloud_monitoring_metrics_filter[0].type))
