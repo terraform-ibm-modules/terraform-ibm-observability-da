@@ -60,7 +60,7 @@ variable "log_analysis_plan" {
 variable "log_analysis_service_endpoints" {
   description = "The type of the service endpoint that will be set for the Log Analysis instance."
   type        = string
-  default     = "private"
+  default     = "public"
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.log_analysis_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
@@ -95,7 +95,7 @@ variable "enable_platform_logs" {
 variable "enable_at_event_routing_to_log_analysis" {
   type        = bool
   description = "Set to true to enable activity tracker event routing to the provisioned IBM Cloud Logging instance."
-  default     = false
+  default     = true
 }
 
 ##############################################################################
@@ -128,7 +128,7 @@ variable "cloud_monitoring_tags" {
 variable "cloud_monitoring_service_endpoints" {
   description = "The type of the service endpoint that will be set for the IBM cloud monitoring instance."
   type        = string
-  default     = "private"
+  default     = "public"
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.cloud_monitoring_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
@@ -263,7 +263,7 @@ variable "skip_cos_kms_auth_policy" {
 variable "management_endpoint_type_for_bucket" {
   description = "The type of endpoint for the IBM terraform provider to use to manage COS buckets. (`public`, `private` or `direct`). Ensure to enable virtual routing and forwarding (VRF) in your account if using `private`, and that the terraform runtime has access to the the IBM Cloud private network."
   type        = string
-  default     = "private"
+  default     = "public"
   validation {
     condition     = contains(["public", "private", "direct"], var.management_endpoint_type_for_bucket)
     error_message = "The specified management_endpoint_type_for_bucket is not a valid selection!"
@@ -289,7 +289,7 @@ variable "existing_cos_kms_key_crn" {
 variable "kms_endpoint_type" {
   type        = string
   description = "The type of endpoint to be used for commincating with the KMS instance. Allowed values are: 'public' or 'private' (default)"
-  default     = "private"
+  default     = "public"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
     error_message = "The kms_endpoint_type value must be 'public' or 'private'."
