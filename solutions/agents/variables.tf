@@ -135,7 +135,7 @@ variable "log_analysis_agent_tolerations" {
 
 variable "cloud_monitoring_enabled" {
   type        = bool
-  description = "When set to `true`, this variable deploys the IBM Cloud Monitoring agent."
+  description = "Whether to deploy the IBM Cloud Monitoring agent."
   default     = true
 }
 
