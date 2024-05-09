@@ -6,7 +6,7 @@ variable "ibmcloud_api_key" {
 
 variable "prefix" {
   type        = string
-  description = "Optional. The prefix to append to the resources created by this solution."
+  description = "The prefix for resources created by this solution."
   default     = null
 }
 
