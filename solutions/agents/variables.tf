@@ -191,7 +191,7 @@ variable "cloud_monitoring_agent_tags" {
 
 variable "cloud_monitoring_add_cluster_name" {
   type        = bool
-  description = "When set to `true`, this variable configures the IBM Cloud Monitoring agent to attach a tag that contains the cluster name to all log messages."
+  description = "Whether to attach a tag to log messages. Set to `true` to configure the IBM Cloud Monitoring agent to attach a tag that contains the cluster name to all log messages."
   default     = true
 }
 
