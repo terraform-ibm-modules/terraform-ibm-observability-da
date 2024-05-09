@@ -25,7 +25,7 @@ variable "cluster_resource_group_id" {
 }
 
 variable "cluster_config_endpoint_type" {
-  description = "Specify one of the following values to indicate which type of endpoint to use to access the cluster configuration: `default`, `private`, `vpe`, or `link`. The `default` value uses the default endpoint of the cluster."
+  description = "Specify the type of endpoint to use to access the cluster configuration. Possible values: `default`, `private`, `vpe`, `link`. The `default` value uses the default endpoint of the cluster."
   type        = string
   default     = "private"
   nullable    = false # use default if null is passed in
