@@ -373,7 +373,7 @@
                     "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
                     "type": "image/svg+xml"
                   },
-                  "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to a Cloud Object Storage object."
+                  "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to a Cloud Object Storage bucket."
                 }
               ]
             }
