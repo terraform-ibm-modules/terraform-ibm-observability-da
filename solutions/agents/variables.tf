@@ -203,7 +203,7 @@ variable "cloud_monitoring_agent_name" {
 
 variable "cloud_monitoring_agent_namespace" {
   type        = string
-  description = "The namespace to deploy the IBM Cloud Monitoring agent in. The default value of the namespace is `ibm-observe`."
+  description = "The namespace to deploy the IBM Cloud Monitoring agent in. Default value: `ibm-observe`."
   default     = "ibm-observe"
   nullable    = false
 }
