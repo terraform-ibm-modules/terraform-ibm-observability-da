@@ -55,7 +55,7 @@ variable "log_analysis_agent_tags" {
 
 variable "log_analysis_add_cluster_name" {
   type        = bool
-  description = "When set to `true`, this variable configures the IBM Log Analysis agent to attach a tag that contains the cluster name to all log messages."
+  description = "Whether to configure the IBM Log Analysis agent to attach a tag that contains the cluster name to all log messages."
   default     = true
 }
 
