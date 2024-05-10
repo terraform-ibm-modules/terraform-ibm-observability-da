@@ -68,7 +68,7 @@ variable "log_analysis_ingestion_key" {
 
 variable "log_analysis_secret_name" {
   type        = string
-  description = "The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-name` format."
   default     = "logdna-agent"
   nullable    = false
 }
