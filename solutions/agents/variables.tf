@@ -68,7 +68,7 @@ variable "log_analysis_ingestion_key" {
 
 variable "log_analysis_secret_name" {
   type        = string
-  description = "The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-name` format."
+  description = "The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-<name>` format."
   default     = "logdna-agent"
   nullable    = false
 }
@@ -102,7 +102,7 @@ variable "log_analysis_agent_custom_line_exclusion" {
 }
 
 variable "log_analysis_agent_name" {
-  description = "The name of the IBM Log Analysis agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Log Analysis agent is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the IBM Log Analysis agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Log Analysis agent is prefixed to the value in the `<prefix>-<name>` format."
   type        = string
   default     = "logdna-agent"
   nullable    = false
@@ -148,7 +148,7 @@ variable "cloud_monitoring_access_key" {
 
 variable "cloud_monitoring_secret_name" {
   type        = string
-  description = "The name of the secret that will store the access key. If a prefix input variable is passed, the secret name is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the secret that will store the access key. If a prefix input variable is passed, the secret name is prefixed to the value in the `<prefix>-<name>` format."
   default     = "sysdig-agent"
   nullable    = false
 }
@@ -196,7 +196,7 @@ variable "cloud_monitoring_add_cluster_name" {
 }
 
 variable "cloud_monitoring_agent_name" {
-  description = "The name of the IBM Cloud Monitoring agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Cloud Monitoring agent is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the IBM Cloud Monitoring agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Cloud Monitoring agent is prefixed to the value in the `<prefix>-<name>` format."
   type        = string
   default     = "sysdig-agent"
 }
