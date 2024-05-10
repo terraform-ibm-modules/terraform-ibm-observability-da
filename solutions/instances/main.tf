@@ -107,7 +107,6 @@ module "observability_instance" {
   activity_tracker_provision = false
   cos_targets = var.configure_cos_target_and_route_for_atracker_events == true ? [
     {
-      count                             = var.configure_cos_target_and_route_for_atracker_events == true ? 1 : 0
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
       instance_id                       = local.cos_instance_crn
@@ -121,7 +120,6 @@ module "observability_instance" {
   # Routes
   activity_tracker_routes = var.configure_cos_target_and_route_for_atracker_events == true ? [
     {
-      count      = var.configure_cos_target_and_route_for_atracker_events == true ? 1 : 0
       route_name = "at-route"
       locations  = ["*", "global"]
       target_ids = [
