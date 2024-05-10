@@ -40,7 +40,7 @@
         },
         {
           "description": "Configures Activity Tracker event routing to a COS bucket and Log Analysis instance.",
-          "title": "Configures Activity Tracker event routing"
+          "title": "Configures an Activity Tracker event routing"
         }
       ],
       "flavors": [
