@@ -97,7 +97,7 @@ variable "enable_platform_logs" {
 
 variable "enable_at_event_routing_to_cos_bucket" {
   type        = bool
-  description = "Set to true to enable activity tracker event routing to the provisioned Cloud Object Storage bucket."
+  description = "Set to true to enable activity tracker event routing to the Cloud Object Storage (COS) bucket."
   default     = true
 }
 
