@@ -9,8 +9,7 @@ This architecture creates the observability instances on IBM Cloud and supports 
 - Supports creating KMS root keys in an existing KMS instance or using existing keys if creating new buckets.
 - Creates a KMS encrypted COS bucket that is required to store archived logs or using an existing bucket.
 - Creates a KMS encrypted COS bucket for setting up Activity Tracker event routing or using an existing bucket.
-- Configures the Activity Tracker event routing to a COS bucket.
-- Supports configuring the Activity Tracker event routing to the Log Analysis instance.
+- Supports configuring the Activity Tracker event routing to the Cloud Object Storage (COS) bucket and to the Log Analysis instance .
 
 ![observability-instances-deployable-architecture](../../reference-architecture/deployable-architecture-observability-instances.svg)
 

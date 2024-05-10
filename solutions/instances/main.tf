@@ -57,11 +57,11 @@ locals {
   ) : null
 
   kms_region = (length(local.bucket_config_map) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
-  at_cos_route = [{
+  at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
     route_name = "at-cos-route"
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets["cos-target"].id]
-  }]
+  }] : []
 
   at_log_analysis_route = var.enable_at_event_routing_to_log_analysis ? [{
     route_name = "at-log-analysis-route"
@@ -119,7 +119,7 @@ module "observability_instance" {
 
   # Activity Tracker
   activity_tracker_provision = false
-  cos_targets = [
+  cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
@@ -129,7 +129,7 @@ module "observability_instance" {
       skip_atracker_cos_iam_auth_policy = false
       service_to_service_enabled        = true
     }
-  ]
+  ] : []
 
   log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
     {

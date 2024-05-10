@@ -39,8 +39,8 @@
           "title": "Configures Cloud Monitoring. instance and agents."
         },
         {
-          "description": "Configures Activity Tracker event routing",
-          "title": "Configures an Activity Tracker event routing to a COS bucket."
+          "description": "Configures Activity Tracker event routing to a COS bucket and Log Analysis instance.",
+          "title": "Configures Activity Tracker event routing"
         }
       ],
       "flavors": [
@@ -213,6 +213,9 @@
             },
             {
               "key": "enable_at_event_routing_to_log_analysis"
+            },
+            {
+              "key": "enable_at_event_routing_to_cos_bucket"
             },
             {
               "key": "cloud_monitoring_instance_name"
@@ -390,7 +393,7 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports the deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud. It also configures the Activity Tracker event routing.",
+            "descriptions": "This architecture supports the deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud. It also supports configuring the Activity Tracker event routing.",
             "features": [
               {
                 "title": "Creates the Log Analysis instance.",
@@ -409,12 +412,8 @@
                 "description": "Creates and configures the COS bucket with archiving and expiration enabled."
               },
               {
-                "title": "Configures the Activity Tracker event routing to a COS bucket.",
-                "description": "Configures the Activity Tracker event routing to a COS bucket."
-              },
-              {
-                "title": "Supports configuring the Activity Tracker event routing to a Log Analysis instance.",
-                "description": "Supports configuring the Activity Tracker event routing to a Log Analysis instance."
+                "title": "Support Configuring the Activity Tracker event routing.",
+                "description": "Supports configuring the Activity Tracker event routing to a COS bucket and to a Log Analysis instance."
               }
             ],
             "diagrams": [
@@ -424,7 +423,7 @@
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
                   "type": "image/svg+xml"
                 },
-                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and Activity Tracker event routing to a COS target."
+                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and Activity Tracker event routing to a COS bucket and to a Log Analysis instance."
               }
             ]
           }
