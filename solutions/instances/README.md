@@ -3,6 +3,7 @@
 This architecture creates the observability instances on IBM Cloud and supports provisioning the following resources:
 
 - A resource group, if one is not passed in.
+  - Optionally create a resource group for provisioning audit resources, or use an existing audit resource group if one is not passed in
 - A Log Analysis instance.
 - A Cloud Monitoring instance.
 - Creates a Cloud Object Storage (COS) instance or supports using an existing one.

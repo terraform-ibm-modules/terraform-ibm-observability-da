@@ -84,6 +84,13 @@ module "resource_group" {
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
 
+module "audit_resource_group" {
+  source                       = "terraform-ibm-modules/resource-group/ibm"
+  version                      = "1.1.5"
+  resource_group_name          = var.use_existing_audit_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.audit_resource_group_name}" : var.audit_resource_group_name) : null
+  existing_resource_group_name = var.use_existing_audit_resource_group == true ? var.audit_resource_group_name : null
+}
+
 #######################################################################################################################
 # Observability Instance
 #######################################################################################################################
@@ -210,7 +217,7 @@ module "cos_instance" {
   count                    = (var.existing_cos_instance_crn == null) ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "7.5.3"
-  resource_group_id        = module.resource_group.resource_group_id
+  resource_group_id        = try(module.audit_resource_group.resource_group_id, module.resource_group.resource_group_id)
   create_cos_instance      = true
   create_resource_key      = false
   cos_instance_name        = var.prefix != null ? "${var.prefix}-${var.cos_instance_name}" : var.cos_instance_name

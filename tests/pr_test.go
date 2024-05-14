@@ -79,6 +79,7 @@ func TestInstancesInSchematics(t *testing.T) {
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
+		{Name: "audit_resource_group_name", Value: fmt.Sprintf("%s-%s", options.Prefix, "audit"), DataType: "string"},
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
@@ -109,6 +110,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 
 	options.TerraformVars = map[string]interface{}{
 		"resource_group_name":                     options.Prefix,
+		"audit_resource_group_name":               fmt.Sprintf("%s-%s", options.Prefix, "audit"),
 		"cos_instance_access_tags":                permanentResources["accessTags"],
 		"existing_kms_instance_crn":               permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                       "public",
