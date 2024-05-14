@@ -85,6 +85,7 @@ module "resource_group" {
 }
 
 module "audit_resource_group" {
+  count                        = var.enable_audit_resource_group ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.5"
   resource_group_name          = var.use_existing_audit_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.audit_resource_group_name}" : var.audit_resource_group_name) : null

@@ -8,6 +8,12 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
+variable "enable_audit_resource_group" {
+  type        = bool
+  description = "Whether to use a separate resource group for audit resources."
+  default     = false
+}
+
 variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
