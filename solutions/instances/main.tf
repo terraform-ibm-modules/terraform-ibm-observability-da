@@ -57,6 +57,20 @@ locals {
   ) : null
 
   kms_region = (length(local.bucket_config_map) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
+  at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
+    route_name = "at-cos-route"
+    locations  = ["*", "global"]
+    target_ids = [module.observability_instance.activity_tracker_targets["cos-target"].id]
+  }] : []
+
+  at_log_analysis_route = var.enable_at_event_routing_to_log_analysis ? [{
+    route_name = "at-log-analysis-route"
+    locations  = ["*", "global"]
+    target_ids = [module.observability_instance.activity_tracker_targets["log-analysis-target"].id]
+  }] : []
+
+  at_routes = concat(local.at_cos_route, local.at_log_analysis_route)
+
 }
 
 #######################################################################################################################
@@ -105,7 +119,7 @@ module "observability_instance" {
 
   # Activity Tracker
   activity_tracker_provision = false
-  cos_targets = [
+  cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
@@ -115,18 +129,20 @@ module "observability_instance" {
       skip_atracker_cos_iam_auth_policy = false
       service_to_service_enabled        = true
     }
-  ]
+  ] : []
+
+  log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
+    {
+      instance_id   = module.observability_instance.log_analysis_crn
+      ingestion_key = module.observability_instance.log_analysis_ingestion_key
+      target_region = var.region
+      target_name   = "log-analysis-target"
+    }
+  ] : []
 
   # Routes
-  activity_tracker_routes = [
-    {
-      route_name = "at-route"
-      locations  = ["*", "global"]
-      target_ids = [
-        module.observability_instance.activity_tracker_targets["cos-target"].id
-      ]
-    }
-  ]
+  activity_tracker_routes = local.at_routes
+
 }
 
 #######################################################################################################################
@@ -139,7 +155,7 @@ module "kms" {
   }
   count                       = (var.existing_cos_kms_key_crn != null || (length(local.bucket_config_map) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.9.1"
+  version                     = "4.11.2"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid

@@ -79,7 +79,7 @@ output "at_cos_target_bucket_name" {
 }
 
 ## Activity Tracker
-output "at_cos_targets" {
+output "at_targets" {
   value       = module.observability_instance.activity_tracker_targets
   description = "The map of created activity_tracker targets"
 }
