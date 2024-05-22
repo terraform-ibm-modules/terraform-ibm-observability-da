@@ -3,6 +3,10 @@
 #######################################################################################################################
 
 locals {
+
+  # tflint-ignore: terraform_unused_declarations
+  validate_log_analysis_provision = var.enable_at_event_routing_to_log_analysis && var.log_analysis_provision == false ? tobool("log_analysis_provision can't be false if enable_at_event_routing_to_log_analysis is true") : true
+
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
@@ -27,7 +31,7 @@ locals {
     tag   = var.archive_bucket_access_tags
   } : null
 
-  bucket_config_2 = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket == true && var.enable_at_event_routing_to_log_analysis == true ? {
+  bucket_config_2 = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket == true ? {
     class = var.at_cos_target_bucket_class
     name  = local.at_cos_target_bucket_name
     tag   = var.at_cos_bucket_access_tags
