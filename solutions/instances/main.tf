@@ -25,6 +25,12 @@ locals {
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private
 
+  metrics_monitoring = var.cloud_monitoring_provision ? {
+    usage_metrics_enabled   = true
+    request_metrics_enabled = true
+    metrics_monitoring_crn  = module.observability_instance.cloud_monitoring_crn
+  } : null
+
   bucket_config_1 = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true ? {
     class = var.log_archive_cos_bucket_class
     name  = local.log_archive_cos_bucket_name
@@ -250,6 +256,9 @@ module "cos_bucket" {
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
       retention_rule                = null
+      metrics_monitoring            = local.metrics_monitoring
+
     }
+
   ]
 }
