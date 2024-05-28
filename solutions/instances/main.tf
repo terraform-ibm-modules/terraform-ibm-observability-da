@@ -257,8 +257,6 @@ module "cos_bucket" {
       expire_rule                   = local.expire_rule
       retention_rule                = null
       metrics_monitoring            = local.metrics_monitoring
-
     }
-
   ]
 }
