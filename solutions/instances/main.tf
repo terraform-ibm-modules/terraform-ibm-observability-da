@@ -25,10 +25,10 @@ locals {
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private
 
-  metrics_monitoring = var.cloud_monitoring_provision ? {
+  metrics_monitoring = var.cloud_monitoring_provision || (var.existing_cloud_monitoring_crn != null) ? {
     usage_metrics_enabled   = true
     request_metrics_enabled = true
-    metrics_monitoring_crn  = module.observability_instance.cloud_monitoring_crn
+    metrics_monitoring_crn  = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : var.existing_cloud_monitoring_crn
   } : null
 
   bucket_config_1 = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true ? {
@@ -152,7 +152,6 @@ module "observability_instance" {
 
   # Routes
   activity_tracker_routes = local.at_routes
-
 }
 
 #######################################################################################################################

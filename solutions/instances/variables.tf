@@ -123,6 +123,12 @@ variable "cloud_monitoring_provision" {
   default     = true
 }
 
+variable "existing_cloud_monitoring_crn" {
+  description = "The CRN of existing IBM Cloud Monitoring instance"
+  type        = string
+  default     = null
+}
+
 variable "cloud_monitoring_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Monitoring instance to create. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
