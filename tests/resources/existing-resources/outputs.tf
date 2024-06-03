@@ -8,8 +8,8 @@ output "resource_group_name" {
 }
 
 output "prefix" {
-  value       = var.prefix
   description = "Prefix"
+  value       = var.prefix
 }
 
 output "cos_crn" {
@@ -18,21 +18,21 @@ output "cos_crn" {
 }
 
 output "bucket_name" {
-  description = "Bucket name"
+  description = "Log Archive bucket name"
   value       = module.cos.bucket_name
 }
 
 output "bucket_name_at" {
-  description = "Activity Tracker Bucket name"
+  description = "Activity Tracker bucket name"
   value       = module.additional_cos_bucket.bucket_name
 }
 
 output "bucket_endpoint" {
-  description = "Bucket name"
+  description = "Log Archive bucket endpoint"
   value       = module.cos.s3_endpoint_public
 }
 
 output "bucket_endpoint_at" {
-  description = "Activity Tracker Bucket name"
+  description = "Activity Tracker bucket endpoint"
   value       = module.additional_cos_bucket.s3_endpoint_public
 }

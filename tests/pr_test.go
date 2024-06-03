@@ -275,7 +275,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		assert.NotNil(t, output, "Expected some output")
 
 		// ------------------------------------------------------------------------------------
-		// Deploy SCC instances DA passing in existing COS instance (not bucket), and KMS key
+		// Deploy Observability instance DA passing in existing COS instance (not bucket), and KMS key
 		// ------------------------------------------------------------------------------------
 
 		options2 := testhelper.TestOptionsDefault(&testhelper.TestOptions{
