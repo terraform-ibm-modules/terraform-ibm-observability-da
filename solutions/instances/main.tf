@@ -222,7 +222,6 @@ module "cos_instance" {
   version                  = "8.2.13"
   resource_group_id        = module.resource_group.resource_group_id
   create_cos_instance      = true
-  create_resource_key      = false
   cos_instance_name        = var.prefix != null ? "${var.prefix}-${var.cos_instance_name}" : var.cos_instance_name
   cos_tags                 = var.cos_instance_tags
   existing_cos_instance_id = var.existing_cos_instance_crn
