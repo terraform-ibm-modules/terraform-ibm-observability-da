@@ -219,10 +219,9 @@ module "cos_instance" {
   }
   count                    = (var.existing_cos_instance_crn == null) && length(local.bucket_config_map) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "7.5.3"
+  version                  = "8.2.13"
   resource_group_id        = module.resource_group.resource_group_id
   create_cos_instance      = true
-  create_resource_key      = false
   cos_instance_name        = var.prefix != null ? "${var.prefix}-${var.cos_instance_name}" : var.cos_instance_name
   cos_tags                 = var.cos_instance_tags
   existing_cos_instance_id = var.existing_cos_instance_crn
@@ -237,7 +236,7 @@ module "cos_bucket" {
   }
   count   = (length(local.bucket_config_map) != 0) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "7.5.3"
+  version = "8.2.13"
   bucket_configs = [
     for value in local.bucket_config_map :
     {
