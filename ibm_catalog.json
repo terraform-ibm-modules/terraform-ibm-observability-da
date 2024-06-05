@@ -406,25 +406,20 @@
 
             "features": [
               {
-                "title": "Creates the IBM Log Analysis instance.",
-                "description": "Creates and configures the IBM Log Analysis instance."
+                "title": "Creates a Log Analysis instance",
+                "description": "Creates and configures the IBM Cloud Log Analysis instance."
               },
               {
-                "description": "Creates the IBM Cloud Monitoring instance.",
+                "description": "Creates a Monitoring instance",
                 "title": "Creates and configures the IBM Cloud Monitoring instance."
               },
               {
-                "title": "Creates the key management service (KMS) encrypted Cloud Object Storage bucket that is required to archive log files.",
-                "description": "Creates and configures the Cloud Object Storage bucket with archiving and expiration enabled."
+                "title": "Creates KMS-encrypted Object Storage buckets for log files and Activity Tracker events",
+                "description": "Creates and configures the IBM Cloud Object Storage buckets with archiving and expiration enabled."
               },
               {
-                "title": "Creates the key management service (KMS) Cloud Object Storage bucket that is required to route IBM Cloud Activity Tracker events.",
-                "description": "Creates and configures the Cloud Object Storage bucket with archiving and expiration enabled."
-              },
-              {
-
-                "title": "Creates an IBM Cloud Activity Tracker event route and a Cloud Object Storage target.",
-                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing and Cloud Object Storage target."
+                "title": "Creates an IBM Cloud Activity Tracker event route and a Object Storage target",
+                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing and IBM Cloud Object Storage target."
               }
             ],
             "diagrams": [
