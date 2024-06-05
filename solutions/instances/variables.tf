@@ -124,7 +124,7 @@ variable "cloud_monitoring_provision" {
 }
 
 variable "existing_cloud_monitoring_crn" {
-  description = "The CRN of existing IBM Cloud Monitoring instance, if value is provided, then var 'cloud_monitoring_provision' should be false"
+  description = "The CRN of an IBM Cloud Monitoring instance, if value is provided, then var 'cloud_monitoring_provision' should be false."
   type        = string
   default     = null
 }
