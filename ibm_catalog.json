@@ -40,7 +40,7 @@
         },
         {
 
-          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage target.",
+          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage and Log Analysis target.",
           "title": "Configures IBM Cloud Activity Tracker event routing"
         }
       ],
