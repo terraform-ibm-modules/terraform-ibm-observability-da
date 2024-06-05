@@ -40,6 +40,12 @@ variable "prefix" {
 # Log Analysis Variables
 ##############################################################################
 
+variable "log_analysis_provision" {
+  description = "Set it to true to provision an IBM Cloud Logging instance"
+  type        = bool
+  default     = true
+}
+
 variable "log_analysis_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Logging instance to create. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
@@ -110,6 +116,12 @@ variable "enable_at_event_routing_to_log_analysis" {
 ##############################################################################
 # Cloud Monitoring Variables
 ##############################################################################
+
+variable "cloud_monitoring_provision" {
+  description = "Set it to true to provision an IBM cloud monitoring instance"
+  type        = bool
+  default     = true
+}
 
 variable "cloud_monitoring_instance_name" {
   type        = string
