@@ -90,6 +90,7 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "archive_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
+		{Name: "enable_at_event_routing_to_log_analysis", Value: true, DataType: "bool"},
 	}
 
 	err := options.RunSchematicTest()
@@ -107,15 +108,16 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 	})
 
 	options.TerraformVars = map[string]interface{}{
-		"resource_group_name":                 options.Prefix,
-		"cos_instance_access_tags":            permanentResources["accessTags"],
-		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
-		"kms_endpoint_type":                   "public",
-		"management_endpoint_type_for_bucket": "public",
-		"log_analysis_service_endpoints":      "public-and-private",
-		"cloud_monitoring_service_endpoints":  "public",
-		"enable_platform_logs":                "false",
-		"enable_platform_metrics":             "false",
+		"resource_group_name":                     options.Prefix,
+		"cos_instance_access_tags":                permanentResources["accessTags"],
+		"existing_kms_instance_crn":               permanentResources["hpcs_south_crn"],
+		"kms_endpoint_type":                       "public",
+		"management_endpoint_type_for_bucket":     "public",
+		"log_analysis_service_endpoints":          "public-and-private",
+		"cloud_monitoring_service_endpoints":      "public",
+		"enable_platform_logs":                    "false",
+		"enable_platform_metrics":                 "false",
+		"enable_at_event_routing_to_log_analysis": "true",
 	}
 
 	output, err := options.RunTestUpgrade()

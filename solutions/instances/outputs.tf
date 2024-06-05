@@ -4,44 +4,44 @@
 
 ## Log analysis
 output "log_analysis_name" {
-  value       = module.observability_instance.log_analysis_name
+  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_name : null
   description = "The name of the provisioned Log Analysis instance."
 }
 
 output "log_analysis_crn" {
-  value       = module.observability_instance.log_analysis_crn
+  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_crn : null
   description = "The id of the provisioned Log Analysis instance."
 }
 
 output "log_analysis_guid" {
-  value       = module.observability_instance.log_analysis_guid
+  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_guid : null
   description = "vaThe guid of the provisioned Log Analysis instance."
 }
 
 output "log_analysis_ingestion_key" {
-  value       = module.observability_instance.log_analysis_ingestion_key
+  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_ingestion_key : null
   description = "Log Analysis ingest key for agents to use"
   sensitive   = true
 }
 
 ## Cloud Monitoring
 output "cloud_monitoring_name" {
-  value       = module.observability_instance.cloud_monitoring_name
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : null
   description = "The name of the provisioned IBM cloud monitoring instance."
 }
 
 output "cloud_monitoring_crn" {
-  value       = module.observability_instance.cloud_monitoring_crn
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : null
   description = "The id of the provisioned IBM cloud monitoring instance."
 }
 
 output "cloud_monitoring_guid" {
-  value       = module.observability_instance.cloud_monitoring_guid
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_guid : null
   description = "The guid of the provisioned IBM cloud monitoring instance."
 }
 
 output "cloud_monitoring_access_key" {
-  value       = module.observability_instance.cloud_monitoring_access_key
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_access_key : null
   description = "IBM cloud monitoring access key for agents to use"
   sensitive   = true
 }
@@ -79,7 +79,7 @@ output "at_cos_target_bucket_name" {
 }
 
 ## Activity Tracker
-output "at_cos_targets" {
+output "at_targets" {
   value       = module.observability_instance.activity_tracker_targets
   description = "The map of created activity_tracker targets"
 }
