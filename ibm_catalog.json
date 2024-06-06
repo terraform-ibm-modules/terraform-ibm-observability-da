@@ -418,8 +418,8 @@
                 "description": "Creates and configures the IBM Cloud Object Storage buckets with archiving and expiration enabled."
               },
               {
-                "title": "Creates an IBM Cloud Activity Tracker event route and Object Storage and Log Analysis targets",
-                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing and IBM Cloud Object Storage and IBM Cloud Log Analysis targets."
+                "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Log Analysis target",
+                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket and IBM Cloud Log Analysis target."
               }
             ],
             "diagrams": [
