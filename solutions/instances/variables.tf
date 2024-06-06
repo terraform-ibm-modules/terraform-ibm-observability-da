@@ -226,7 +226,7 @@ variable "log_archive_cos_bucket_class" {
   description = "The storage class of the newly provisioned Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
   validation {
     condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.log_archive_cos_bucket_class)
-    error_message = "Specify one of the following values for the `cos_bucket_class`:  \`standard\`, \`vault\`,\`cold\`, \`smart\`, or \`onerate_active\`."
+    error_message = "Specify one of the following values for the `cos_bucket_class`: `standard`, `vault`, `cold`, `smart`, or `onerate_active`."
   }
 }
 
@@ -236,7 +236,7 @@ variable "at_cos_target_bucket_class" {
   description = "The storage class of the newly provisioned Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
   validation {
     condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.at_cos_target_bucket_class)
-    error_message = "Specify one of the following values for the `cos_bucket_class`:  \`standard\`, \`vault\`,\`cold\`, \`smart\`, or \`onerate_active\`."
+    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, `vault`, `cold`, `smart`, or `onerate_active`."
   }
 }
 
