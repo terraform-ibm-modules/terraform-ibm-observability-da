@@ -205,7 +205,7 @@ variable "log_archive_cos_bucket_name" {
 variable "at_cos_target_bucket_name" {
   type        = string
   default     = "at-events-cos-bucket"
-  description = "The name of the Cloud Object Storage bucket to create for the Cloud Object Storage target. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the Cloud Object Storage bucket to create for the Cloud Object Storage target to store AT events. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
 }
 
 variable "archive_bucket_access_tags" {
