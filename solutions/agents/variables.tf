@@ -75,7 +75,7 @@ variable "log_analysis_secret_name" {
 
 variable "log_analysis_instance_region" {
   type        = string
-  description = "The name of the region where the IBM Log Analysis instance is created. This name is used to construct the ingestion endpoint."
+  description = "The name of the region where the IBM Log Analysis instance is created. The value is used in the ingestion endpoint in the format `api.<var-value>.logging.cloud.ibm.com`."
   default     = null
 }
 
