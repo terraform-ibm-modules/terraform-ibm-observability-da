@@ -402,7 +402,8 @@
           ],
           "architecture": {
 
-            "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to either an Object Storage bucket or Log Analysis target.",
+            "descriptions": 
+            "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Log Analysis target.",
 
             "features": [
               {
