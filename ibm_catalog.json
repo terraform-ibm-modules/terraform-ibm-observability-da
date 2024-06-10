@@ -226,6 +226,9 @@
               "key": "cloud_monitoring_provision"
             },
             {
+              "key": "existing_cloud_monitoring_crn"
+            },
+            {
               "key": "cloud_monitoring_instance_name"
             },
             {

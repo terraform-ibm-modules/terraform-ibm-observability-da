@@ -6,6 +6,8 @@ locals {
 
   # tflint-ignore: terraform_unused_declarations
   validate_log_analysis_provision = var.enable_at_event_routing_to_log_analysis && var.log_analysis_provision == false ? tobool("log_analysis_provision can't be false if enable_at_event_routing_to_log_analysis is true") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
 
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
@@ -25,10 +27,10 @@ locals {
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private
 
-  metrics_monitoring = var.cloud_monitoring_provision ? {
+  metrics_monitoring = var.cloud_monitoring_provision || (var.existing_cloud_monitoring_crn != null) ? {
     usage_metrics_enabled   = true
     request_metrics_enabled = true
-    metrics_monitoring_crn  = module.observability_instance.cloud_monitoring_crn
+    metrics_monitoring_crn  = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : var.existing_cloud_monitoring_crn
   } : null
 
   bucket_config_1 = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true ? {
@@ -152,7 +154,6 @@ module "observability_instance" {
 
   # Routes
   activity_tracker_routes = local.at_routes
-
 }
 
 #######################################################################################################################
@@ -165,7 +166,7 @@ module "kms" {
   }
   count                       = (var.existing_cos_kms_key_crn != null || (length(local.bucket_config_map) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.13.1"
+  version                     = "4.13.2"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid
@@ -219,7 +220,7 @@ module "cos_instance" {
   }
   count                    = (var.existing_cos_instance_crn == null) && length(local.bucket_config_map) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "8.2.13"
+  version                  = "8.3.2"
   resource_group_id        = module.resource_group.resource_group_id
   create_cos_instance      = true
   cos_instance_name        = var.prefix != null ? "${var.prefix}-${var.cos_instance_name}" : var.cos_instance_name
@@ -236,7 +237,7 @@ module "cos_bucket" {
   }
   count   = (length(local.bucket_config_map) != 0) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.2.13"
+  version = "8.3.2"
   bucket_configs = [
     for value in local.bucket_config_map :
     {
