@@ -118,9 +118,15 @@ variable "enable_at_event_routing_to_log_analysis" {
 ##############################################################################
 
 variable "cloud_monitoring_provision" {
-  description = "Set it to true to provision an IBM cloud monitoring instance"
+  description = "Whether to create an IBM cloud monitoring instance. Set to `false` if a CRN is specified in `existing_cloud_monitoring_crn`."
   type        = bool
   default     = true
+}
+
+variable "existing_cloud_monitoring_crn" {
+  description = "The CRN of an IBM Cloud Monitoring instance. If specified, set the `cloud_monitoring_provision` variable to `false`."
+  type        = string
+  default     = null
 }
 
 variable "cloud_monitoring_instance_name" {
