@@ -215,7 +215,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	// Provision COS first
 	// ------------------------------------------------------------------------------------
 
-	prefix := fmt.Sprintf("obs-inst-exist-%s", strings.ToLower(random.UniqueId()))
+	prefix := fmt.Sprintf("obs-exist-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := "./resources/existing-resources"
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 	tags := common.GetTagsFromTravis()
