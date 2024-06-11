@@ -25,24 +25,26 @@
         "observability agents"
       ],
       "short_description": "Configures IBM Cloud Observability resources",
-      "long_description": "Solutions which support configuring IBM Cloud Observability resources for logging, monitoring and activity tracking.",
+      "long_description": "Solutions that support configuring IBM Cloud Observability resources for logging, monitoring, and activity tracking.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
       "provider_name": "IBM",
       "features": [
         {
-          "title": "Configures Log Analysis",
-          "description": "Configures Log Analysis instance and agents."
+          "title": "Configures IBM Log Analysis",
+          "description": "Configures the IBM Log Analysis instance and logging agents."
         },
         {
-          "description": "Configures Cloud Monitoring",
-          "title": "Configures Cloud Monitoring. instance and agents."
+          "title": "Configures IBM Cloud Monitoring",
+          "description": "Configures the IBM Cloud Monitoring instance and logging agents."
         },
         {
-          "description": "Configures Activity Tracker event routing to a COS bucket and Log Analysis instance.",
-          "title": "Configures an Activity Tracker event routing"
+
+          "title": "Configures IBM Cloud Activity Tracker Event Routing",
+          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage and Log Analysis target."
         }
       ],
+      "support_details": "This product is in the community registry and support is handled in the source repo. You can open an issue at [https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues). Support is not offered through IBM Cloud Support.",
       "flavors": [
         {
           "label": "Instances",
@@ -155,6 +157,9 @@
               ]
             },
             {
+              "key": "log_analysis_provision"
+            },
+            {
               "key": "log_analysis_instance_name"
             },
             {
@@ -216,6 +221,12 @@
             },
             {
               "key": "enable_at_event_routing_to_cos_bucket"
+            },
+            {
+              "key": "cloud_monitoring_provision"
+            },
+            {
+              "key": "existing_cloud_monitoring_crn"
             },
             {
               "key": "cloud_monitoring_instance_name"
@@ -393,27 +404,25 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports the deployment of Log Analysis and Cloud Monitoring instances on IBM Cloud. It also supports configuring the Activity Tracker event routing.",
+
+            "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Log Analysis target.",
+
             "features": [
               {
-                "title": "Creates the Log Analysis instance.",
-                "description": "Creates and configures the Log Analysis instance."
+                "title": "Creates a Log Analysis instance",
+                "description": "Creates and configures the IBM Cloud Log Analysis instance."
               },
               {
-                "description": "Creates the Cloud Monitoring instance.",
-                "title": "Creates and configures the Cloud Monitoring instance."
+                "description": "Creates a Monitoring instance",
+                "title": "Creates and configures the IBM Cloud Monitoring instance."
               },
               {
-                "title": "Creates the KMS encrypted COS bucket required for the logs archiving.",
-                "description": "Creates and configures the COS bucket with archiving and expiration enabled."
+                "title": "Creates KMS-encrypted Object Storage buckets for log files and Activity Tracker events",
+                "description": "Creates and configures the IBM Cloud Object Storage buckets with archiving and expiration enabled."
               },
               {
-                "title": "Creates the KMS encrypted COS bucket required for routing of ATracker events.",
-                "description": "Creates and configures the COS bucket with archiving and expiration enabled."
-              },
-              {
-                "title": "Support Configuring the Activity Tracker event routing.",
-                "description": "Supports configuring the Activity Tracker event routing to a COS bucket and to a Log Analysis instance."
+                "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Log Analysis target",
+                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket and IBM Cloud Log Analysis target."
               }
             ],
             "diagrams": [
@@ -423,7 +432,9 @@
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
                   "type": "image/svg+xml"
                 },
-                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and Activity Tracker event routing to a COS bucket and to a Log Analysis instance."
+
+                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Log Analysis instance."
+
               }
             ]
           }
@@ -454,29 +465,29 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports deployment of Log Analysis and Cloud Monitoring Agents on an existing OpenShift Cluster on Secure Landing Zone.",
+            "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring agents on an existing Red Hat OpenShift cluster on a secure landing zone.",
             "features": [
               {
-                "title": "Works with the Secure Landing Zone.",
-                "description": "Works with the OpenShift cluster of Secure Landing Zone."
+                "title": "Works with the secure landing zone.",
+                "description": "Works with the Red Hat OpenShift cluster on a secure landing zone."
               },
               {
-                "title": "Deploys Log Analysis agent on an existing cluster on Secure Landing Zone.",
-                "description": "Deploys Log Analysis agent on an existing OpenShift cluster on Secure Landing Zone."
+                "title": "Deploys the IBM Log Analysis agent on an existing cluster on a secure landing zone.",
+                "description": "Deploys the IBM Log Analysis agent on an existing Red Hat OpenShift cluster on a secure landing zone."
               },
               {
-                "title": "Deploys Cloud Monitoring agent on an existing cluster on Secure Landing Zone.",
-                "description": "Deploys Cloud Monitoring agent on an existing OpenShift cluster on Secure Landing Zone."
+                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster on a secure landing zone.",
+                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster on a secure landing zone."
               }
             ],
             "diagrams": [
               {
                 "diagram": {
-                  "caption": "Observability Agents on an OpenShift cluster",
+                  "caption": "Observability agents on a Red Hat OpenShift cluster",
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
                   "type": "image/svg+xml"
                 },
-                "description": "Deployment of Observability agents on an OpenShift cluster of Secure Landing Zone."
+                "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
               }
             ]
           }
