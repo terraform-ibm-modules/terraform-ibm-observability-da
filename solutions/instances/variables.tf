@@ -8,6 +8,12 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
+variable "ibmcloud_kms_api_key" {
+  type        = string
+  description = "The API key to use for IBM Cloud in which kms instance is located."
+  sensitive   = true
+}
+
 variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
