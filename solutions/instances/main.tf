@@ -203,15 +203,16 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 # Data source to account settings for retrieving cross account id
 data "ibm_iam_account_settings" "iam_account_settings" {
-  count    = var.ibmcloud_kms_api_key != null ? 1 : 0
-  provider = ibm.kms
+  count = var.ibmcloud_kms_api_key != null ? 1 : 0
 }
 
 # The auth policy is being created here instead of in COS module because of this limitation: https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/8
 
 # Create IAM Authorization Policy to allow COS to access KMS for the encryption key
 resource "ibm_iam_authorization_policy" "policy" {
-  count                       = (var.skip_cos_kms_auth_policy || (length(local.bucket_config_map) == 0)) ? 0 : 1
+  count = (var.skip_cos_kms_auth_policy || (length(local.bucket_config_map) == 0)) ? 0 : 1
+  # Conditionals with providers aren't possible, using ibm.kms as provider incase cross account is enabled
+  provider                    = ibm.kms
   source_service_account      = var.ibmcloud_kms_api_key != null ? data.ibm_iam_account_settings.iam_account_settings[0].account_id : null
   source_service_name         = "cloud-object-storage"
   source_resource_instance_id = local.cos_instance_guid
