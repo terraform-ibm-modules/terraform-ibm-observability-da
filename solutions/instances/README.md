@@ -1,16 +1,16 @@
-# IBM Observability Instances Deployable Architecture
+# IBM Cloud observability instances deployable architecture
 
-This architecture creates the observability instances on IBM Cloud and supports provisioning the following resources:
+This deployable architecture creates observability instances in IBM Cloud and supports provisioning the following resources:
 
-- A resource group, if one is not passed in.
-- A Log Analysis instance.
-- A Cloud Monitoring instance.
-- Creates a Cloud Object Storage (COS) instance or supports using an existing one.
-- Supports creating KMS root keys in an existing KMS instance or using existing keys if creating new buckets.
-- Creates a KMS encrypted COS bucket that is required to store archived logs or using an existing bucket.
-- Creates a KMS encrypted COS bucket for setting up Activity Tracker event routing or using an existing bucket.
-- Supports configuring the Activity Tracker event routing to the Cloud Object Storage (COS) bucket and to the Log Analysis instance .
+* A resource group, if one is not passed in.
+* An IBM Cloud Log Analysis instance.
+* An IBM Cloud Monitoring instance.
+* An IBM Cloud Object Storage instance, if one does not exist.
+* The root keys in an existing key management service (KMS) if the keys do not exist. These keys are used when Object Storage buckets are created.
+* A KMS-encrypted Object Storage bucket to store archived logs, if one is not passed in.
+* A KMS-encrypted Object Storage bucket for Activity Tracker event routing, if one is not passed in.
+* An Activity Tracker event route to an Object Storage and Log Analysis target.
 
 ![observability-instances-deployable-architecture](../../reference-architecture/deployable-architecture-observability-instances.svg)
 
-**NB:** This solution is not intended to be called by one or more other modules since it contains a provider configurations, meaning it is not compatible with the `for_each`, `count`, and `depends_on` arguments. For more information see [Providers Within Modules](https://developer.hashicorp.com/terraform/language/modules/develop/providers)
+**Important:** Because this solution contains a provider configuration and is not compatible with the `for_each`, `count`, and `depends_on` arguments, do not call this solution from one or more other modules. For more information about how resources are associated with provider configurations with multiple modules, see [Providers Within Modules](https://developer.hashicorp.com/terraform/language/modules/develop/providers).
