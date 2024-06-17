@@ -10,7 +10,7 @@ variable "ibmcloud_api_key" {
 
 variable "ibmcloud_kms_api_key" {
   type        = string
-  description = "The API key to use for IBM Cloud in which kms instance is located."
+  description = "The IBM Cloud API key with access to create a root key and key ring in the key management service instance. If the KMS instance is in a different account, specify a key from that account. If not specified, the ibmcloud_api_key variable is used."
   sensitive   = true
   default     = null
 }
@@ -317,7 +317,7 @@ variable "existing_kms_instance_crn" {
 variable "existing_cos_kms_key_crn" {
   type        = string
   default     = null
-  description = "Optional. The CRN of an existing key management service (KMS) key to use to encrypt the Cloud Object Storage buckets that this solution creates. To create a key ring and key, pass a value for the `existing_kms_instance_crn` input variable. To use existing Cloud Object Storage buckets, pass a value for the `existing_log_archive_cos_bucket_name` and `existing_at_cos_target_bucket_name` input variables. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`."
+  description = "Optional. The CRN of an existing key management service (KMS) key to use to encrypt the Cloud Object Storage buckets that this solution creates. To create a key ring and key, pass a value for the `existing_kms_instance_crn` input variable. To use existing Cloud Object Storage buckets, pass a value for the `existing_log_archive_cos_bucket_name` and `existing_at_cos_target_bucket_name` input variables."
 }
 
 variable "kms_endpoint_type" {
