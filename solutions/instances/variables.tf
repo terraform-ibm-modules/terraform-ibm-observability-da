@@ -82,13 +82,13 @@ variable "log_analysis_tags" {
 variable "log_analysis_enable_archive" {
   type        = bool
   description = "Enable archive on log analysis instances"
-  default     = false
+  default     = true
 }
 
 variable "activity_tracker_enable_archive" {
   type        = bool
   description = "Enable archive on activity tracker instances"
-  default     = false
+  default     = true
 }
 
 variable "log_archive_api_key" {
