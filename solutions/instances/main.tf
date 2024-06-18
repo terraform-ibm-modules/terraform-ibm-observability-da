@@ -102,15 +102,16 @@ module "resource_group" {
 
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.12.2"
+  version = "2.13.2"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
   }
-  region            = var.region
-  resource_group_id = module.resource_group.resource_group_id
-  enable_archive    = var.enable_log_archive
-  ibmcloud_api_key  = local.archive_api_key
+  region                          = var.region
+  resource_group_id               = module.resource_group.resource_group_id
+  log_analysis_enable_archive     = var.log_analysis_enable_archive
+  activity_tracker_enable_archive = var.activity_tracker_enable_archive
+  ibmcloud_api_key                = local.archive_api_key
   # Log Analysis
   log_analysis_provision           = var.log_analysis_provision
   log_analysis_instance_name       = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
