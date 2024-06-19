@@ -86,9 +86,15 @@ variable "log_analysis_tags" {
   default     = []
 }
 
-variable "enable_log_archive" {
+variable "log_analysis_enable_archive" {
   type        = bool
-  description = "Enable the archive file for the IBM Log Analysis instance."
+  description = "Enable archive on log analysis instances"
+  default     = true
+}
+
+variable "activity_tracker_enable_archive" {
+  type        = bool
+  description = "Enable archive on activity tracker instances"
   default     = true
 }
 
