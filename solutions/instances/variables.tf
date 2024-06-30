@@ -8,7 +8,19 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
+variable "enable_audit_resource_group" {
+  type        = bool
+  description = "Whether to use a separate resource group for audit resources."
+  default     = false
+}
+
 variable "use_existing_resource_group" {
+  type        = bool
+  description = "Whether to use an existing resource group."
+  default     = false
+}
+
+variable "use_existing_audit_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
   default     = false
@@ -17,6 +29,12 @@ variable "use_existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision resources to. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+}
+
+variable "audit_resource_group_name" {
+  type        = string
+  description = "(Optional) The name of a new or an existing resource group in which to provision audit resources to. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'. If no value is provided, the value for `observability_resource_group_name` is used."
+  default     = null
 }
 
 variable "region" {

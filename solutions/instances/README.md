@@ -3,6 +3,7 @@
 This deployable architecture creates observability instances in IBM Cloud and supports provisioning the following resources:
 
 * A resource group, if one is not passed in.
+  * Optionally create a resource group for provisioning audit resources, or use an existing audit resource group if one is not passed in
 * An IBM Cloud Log Analysis instance.
 * An IBM Cloud Monitoring instance.
 * An IBM Cloud Object Storage instance, if one does not exist.
