@@ -10,7 +10,7 @@ variable "ibmcloud_api_key" {
 
 variable "ibmcloud_kms_api_key" {
   type        = string
-  description = "The IBM Cloud API key with access to create a root key and key ring in the key management service instance. If the KMS instance is in a different account, specify a key from that account. If not specified, the ibmcloud_api_key variable is used."
+  description = "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Object Storage instance. Leave empty if the same account owns both instances."
   sensitive   = true
   default     = null
 }
@@ -317,7 +317,7 @@ variable "management_endpoint_type_for_bucket" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the key management service (KMS) that is used for the Cloud Object Storage bucket root key. If you are not using an existing KMS root key, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`."
+  description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Applies only if `existing_kms_instance_crn` or `existing_cos_kms_key_crn` is not specified. If the KMS instance is in a different account, provide a value for `ibmcloud_kms_api_key`."
 }
 
 variable "existing_cos_kms_key_crn" {
@@ -328,7 +328,7 @@ variable "existing_cos_kms_key_crn" {
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to use to communicate with the key management service (KMS). Specify one of the following values for the endpoint type: `public` or `private` (default). To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`."
+  description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_cos_kms_key_crn` is not specified."
   default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))

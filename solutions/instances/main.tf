@@ -213,7 +213,7 @@ data "ibm_iam_account_settings" "iam_account_settings" {
 
 # Create IAM Authorization Policy to allow COS to access KMS for the encryption key
 resource "ibm_iam_authorization_policy" "policy" {
-  count                       = (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config_map, [])) == 0)) ? 0 : 1
+  count = (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config_map, [])) == 0)) ? 0 : 1
   # Conditionals with providers aren't possible, using ibm.kms as provider incase cross account is enabled
   provider                    = ibm.kms
   source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
