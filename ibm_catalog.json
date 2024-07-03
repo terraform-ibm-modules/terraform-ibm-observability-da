@@ -452,17 +452,6 @@
               ]
             }
           ],
-          "dependencies": [
-            {
-              "flavors": [
-                "quickstart",
-                "standard"
-              ],
-              "id": "95fccffc-ae3b-42df-b6d9-80be5914d852-global",
-              "name": "deploy-arch-ibm-slz-ocp",
-              "version": ">=v3.0.0"
-            }
-          ],
           "architecture": {
             "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring agents on an existing Red Hat OpenShift cluster on a secure landing zone.",
             "features": [
