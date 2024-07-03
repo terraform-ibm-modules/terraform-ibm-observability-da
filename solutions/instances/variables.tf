@@ -296,7 +296,7 @@ variable "existing_at_cos_target_bucket_endpoint" {
 
 variable "skip_cos_kms_auth_policy" {
   type        = bool
-  description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`."
+  description = "Whether to create an IAM authorization policy that permits the Object Storage instance to read the encryption key from the KMS instance. An authorization policy must exist before an encrypted bucket can be created. Set to `true` to avoid creating the policy. If set to `false`, specify a value for `ibmcloud_kms_api_key`."
   default     = false
 }
 
