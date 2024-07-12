@@ -27,12 +27,6 @@ locals {
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private
 
-  metrics_monitoring = var.cloud_monitoring_provision || (var.existing_cloud_monitoring_crn != null) ? {
-    usage_metrics_enabled   = true
-    request_metrics_enabled = true
-    metrics_monitoring_crn  = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : var.existing_cloud_monitoring_crn
-  } : null
-
   bucket_config_1 = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true ? {
     class = var.log_archive_cos_bucket_class
     name  = local.log_archive_cos_bucket_name
@@ -238,7 +232,7 @@ module "cos_bucket" {
   }
   count   = (length(coalesce(local.bucket_config_map, [])) != 0) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.5.3"
+  version = "8.6.2"
   bucket_configs = [
     for value in local.bucket_config_map :
     {
@@ -257,7 +251,17 @@ module "cos_bucket" {
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
       retention_rule                = null
-      metrics_monitoring            = local.metrics_monitoring
+      metrics_monitoring = {
+        usage_metrics_enabled   = true
+        request_metrics_enabled = true
+        # if DA is creating monitoring instance, use that. If its passing existing instance, use that. If neither, pass null, meaning metrics are sent to the instance associated to the container's location unless otherwise specified in the Metrics Router service configuration.
+        metrics_monitoring_crn = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : var.existing_cloud_monitoring_crn != null ? var.existing_cloud_monitoring_crn : null
+      }
+      activity_tracking = {
+        read_data_events  = true
+        write_data_events = true
+        management_events = true
+      }
     }
   ]
 }
