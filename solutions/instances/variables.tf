@@ -296,7 +296,7 @@ variable "existing_at_cos_target_bucket_endpoint" {
 
 variable "skip_cos_kms_auth_policy" {
   type        = bool
-  description = "Whether to create an IAM authorization policy that permits the Object Storage instance to read the encryption key from the KMS instance. An authorization policy must exist before an encrypted bucket can be created. Set to `true` to avoid creating the policy. If set to `false`, specify a value for `ibmcloud_kms_api_key`."
+  description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
   default     = false
 }
 
@@ -317,7 +317,7 @@ variable "management_endpoint_type_for_bucket" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Applies only if `existing_kms_instance_crn` or `existing_cos_kms_key_crn` is not specified. If the KMS instance is in a different account, provide a value for `ibmcloud_kms_api_key`."
+  description = "The CRN of the key management service (KMS) that is used for the Cloud Object Storage bucket root key. If you are not using an existing KMS root key, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required."
 }
 
 variable "existing_cos_kms_key_crn" {
