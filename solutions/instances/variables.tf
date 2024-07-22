@@ -8,6 +8,13 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
+variable "ibmcloud_kms_api_key" {
+  type        = string
+  description = "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Object Storage instance. Leave empty if the same account owns both instances."
+  sensitive   = true
+  default     = null
+}
+
 variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
@@ -321,7 +328,7 @@ variable "existing_cos_kms_key_crn" {
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to use to communicate with the key management service (KMS). Specify one of the following values for the endpoint type: `public` or `private` (default)."
+  description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_cos_kms_key_crn` is not specified."
   default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
