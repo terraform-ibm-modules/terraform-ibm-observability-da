@@ -61,7 +61,7 @@ variable "log_analysis_instance_name" {
 
 variable "log_analysis_plan" {
   type        = string
-  description = "The Log Analysis plan to provision. Possible values: 7-day, 14-day, 30-day, and hipaa-30-day."
+  description = "The Log Analysis plan to provision. Possible values: `7-day`, `14-day`, `30-day`, and `hipaa-30-day`."
   default     = "7-day"
 
   validation {
