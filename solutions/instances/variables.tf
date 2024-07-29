@@ -71,7 +71,7 @@ variable "log_analysis_plan" {
 }
 
 variable "log_analysis_service_endpoints" {
-  description = "The type of endpoint for the Log Analysis instance. Possible values: public, private, public-and-private."
+  description = "The type of endpoint for the Log Analysis instance. Possible values: `public`, `private`, `public-and-private`."
   type        = string
   default     = "private"
   validation {
