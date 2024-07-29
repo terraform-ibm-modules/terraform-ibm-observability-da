@@ -23,7 +23,7 @@ variable "use_existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or existing resource group to provision resources to. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of a new or existing resource group to provision resources in."
 }
 
 variable "region" {
@@ -39,7 +39,7 @@ variable "region" {
 
 variable "prefix" {
   type        = string
-  description = "Optional. The prefix to append to all resources that this solution creates."
+  description = "The prefix to add to all resources that this solution creates."
   default     = null
 }
 
@@ -55,13 +55,13 @@ variable "log_analysis_provision" {
 
 variable "log_analysis_instance_name" {
   type        = string
-  description = "The name of the IBM Cloud Logging instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the IBM Cloud Log Analysis instance to create. If a prefix input variable is specified, it's added to the value in the <prefix>-value format."
   default     = "log-analysis"
 }
 
 variable "log_analysis_plan" {
   type        = string
-  description = "The IBM Cloud Logging plan to provision. Available values are `7-day`, `14-day`, `30-day`, and `hipaa-30-day`."
+  description = "The Log Analysis plan to provision. Possible values: 7-day, 14-day, 30-day, and hipaa-30-day."
   default     = "7-day"
 
   validation {
@@ -71,7 +71,7 @@ variable "log_analysis_plan" {
 }
 
 variable "log_analysis_service_endpoints" {
-  description = "The type of the service endpoint that will be set for the IBM Log Analysis instance."
+  description = "The type of endpoint for the Log Analysis instance. Possible values: public, private, public-and-private."
   type        = string
   default     = "private"
   validation {
@@ -88,26 +88,26 @@ variable "log_analysis_tags" {
 
 variable "log_analysis_enable_archive" {
   type        = bool
-  description = "Enable archive on log analysis instances"
+  description = "Whether to enable archiving on Log Analysis instances."
   default     = true
 }
 
 variable "activity_tracker_enable_archive" {
   type        = bool
-  description = "Enable archive on activity tracker instances"
+  description = "Whether to enable archiving on Activity Tracker."
   default     = true
 }
 
 variable "log_archive_api_key" {
   type        = string
-  description = "Optional. The API key to use to configure log analysis archiving with Cloud Object Storage. If no value is passed, the API key value that was passed in the `ibmcloud_api_key` variable is used."
+  description = "The API key to use to configure archiving from Log Analysis to Object Storage. If not specified, the API key value in ibmcloud_api_key is used."
   sensitive   = true
   default     = null
 }
 
 variable "enable_platform_logs" {
   type        = bool
-  description = "When set to `true`, the IBM Cloud Logging instance collects the platform log files."
+  description = "Whether Log Analysis collects platform log files."
   default     = true
 }
 ##############################################################################
@@ -116,13 +116,13 @@ variable "enable_platform_logs" {
 
 variable "enable_at_event_routing_to_cos_bucket" {
   type        = bool
-  description = "Set to true to enable activity tracker event routing to the Cloud Object Storage (COS) bucket."
+  description = "Whether to enable event routing from Activity Tracker to the Object Storage bucket."
   default     = true
 }
 
 variable "enable_at_event_routing_to_log_analysis" {
   type        = bool
-  description = "Set to true to enable activity tracker event routing to the provisioned IBM Cloud Logging instance."
+  description = "Whether to enable event from Activity Tracker to Log Analysis."
   default     = false
 }
 
