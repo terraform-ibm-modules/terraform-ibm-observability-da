@@ -17,17 +17,17 @@ locals {
   log_archive_cos_bucket_name = var.prefix != null ? "${var.prefix}-${var.log_archive_cos_bucket_name}" : var.log_archive_cos_bucket_name
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
-  cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : module.cos_instance[0].cos_instance_crn
+  cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
   existing_kms_guid           = (var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (var.log_analysis_provision == false && var.enable_at_event_routing_to_cos_bucket == false) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
-  cos_instance_guid           = var.existing_cos_instance_crn == null ? module.cos_instance[0].cos_instance_guid : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
-  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name
-  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private
+  cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
+  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
+  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
   cos_kms_key_crn             = (var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
 
-  cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name
-  cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private
+  cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
+  cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
 
-  bucket_config_1 = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true ? {
+  bucket_config_1 = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true && var.log_analysis_enable_archive == true ? {
     class = var.log_archive_cos_bucket_class
     name  = local.log_archive_cos_bucket_name
     tag   = var.archive_bucket_access_tags
@@ -103,11 +103,10 @@ module "observability_instance" {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
   }
-  region                          = var.region
-  resource_group_id               = module.resource_group.resource_group_id
-  log_analysis_enable_archive     = var.log_analysis_enable_archive
-  activity_tracker_enable_archive = var.activity_tracker_enable_archive
-  ibmcloud_api_key                = local.archive_api_key
+  region                      = var.region
+  resource_group_id           = module.resource_group.resource_group_id
+  log_analysis_enable_archive = var.log_analysis_enable_archive
+  ibmcloud_api_key            = local.archive_api_key
   # Log Analysis
   log_analysis_provision           = var.log_analysis_provision
   log_analysis_instance_name       = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
@@ -127,7 +126,8 @@ module "observability_instance" {
   enable_platform_metrics            = var.enable_platform_metrics
 
   # Activity Tracker
-  activity_tracker_provision = false
+  activity_tracker_provision      = false
+  activity_tracker_enable_archive = false
   cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
@@ -207,7 +207,7 @@ data "ibm_iam_account_settings" "iam_account_settings" {
 
 # Create IAM Authorization Policy to allow COS to access KMS for the encryption key
 resource "ibm_iam_authorization_policy" "policy" {
-  count = (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config_map, [])) == 0)) ? 0 : 1
+  count = !(var.log_analysis_enable_archive || var.enable_at_event_routing_to_cos_bucket) || (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config_map, [])) == 0)) ? 0 : 1
   # Conditionals with providers aren't possible, using ibm.kms as provider incase cross account is enabled
   provider                    = ibm.kms
   source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
@@ -223,7 +223,7 @@ module "cos_instance" {
   providers = {
     ibm = ibm.cos
   }
-  count                    = (var.existing_cos_instance_crn == null) && length(coalesce(local.bucket_config_map, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
+  count                    = (var.log_analysis_enable_archive || var.enable_at_event_routing_to_cos_bucket) && (var.existing_cos_instance_crn == null) && length(coalesce(local.bucket_config_map, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "8.6.2"
   resource_group_id        = module.resource_group.resource_group_id
@@ -240,7 +240,7 @@ module "cos_bucket" {
   providers = {
     ibm = ibm.cos
   }
-  count   = (length(coalesce(local.bucket_config_map, [])) != 0) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
+  count   = (var.log_analysis_enable_archive || var.enable_at_event_routing_to_cos_bucket) && (length(coalesce(local.bucket_config_map, [])) != 0) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "8.6.2"
   bucket_configs = [
@@ -272,6 +272,6 @@ module "cos_bucket" {
         write_data_events = true
         management_events = true
       }
-    }
+    } if value != null
   ]
 }
