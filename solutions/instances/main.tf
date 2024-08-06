@@ -79,6 +79,9 @@ locals {
 
   apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config_map, [])) == 0)) ? 0 : 1
 
+  cloud_log_data_bucket     = var.prefix != null ? "${var.prefix}-${var.cloud_log_data_bucket_name}" : var.cloud_log_data_bucket_name
+  cloud_log_metric_bucket   = var.prefix != null ? "${var.prefix}-${var.cloud_log_metric_bucket_name}" : var.cloud_log_metric_bucket_name
+
 }
 
 #######################################################################################################################
@@ -98,7 +101,7 @@ module "resource_group" {
 
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.13.2"
+  version = "2.14.0"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -125,6 +128,31 @@ module "observability_instance" {
   cloud_monitoring_tags              = var.cloud_monitoring_tags
   cloud_monitoring_service_endpoints = var.cloud_monitoring_service_endpoints
   enable_platform_metrics            = var.enable_platform_metrics
+
+  # IBM Cloud Logs
+  cloud_logs_provision = var.cloud_logs_provision
+  cloud_logs_region = var.cloud_logs_region
+  cloud_logs_instance_name = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
+  cloud_logs_plan = "standard"
+  cloud_logs_tags = var.cloud_logs_tags
+  cloud_logs_service_endpoints = var.cloud_logs_service_endpoints
+  cloud_logs_retention_period = var.cloud_logs_retention_period
+  cloud_logs_data_storage = {
+    logs_data = {
+      enabled         = var.enable_cloud_logs_data
+      bucket_crn      = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cloud_logs_buckets.buckets[local.cloud_log_data_bucket].bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint !=null ? var.existing_cloud_logs_data_bucket_endpoint : module.cloud_logs_buckets.buckets[local.cloud_log_data_bucket].s3_endpoint_direct
+    },
+    metrics_data = {
+      enabled         = var.enable_cloud_logs_metrics
+      bucket_crn      = var.existing_cloud_logs_metric_bucket_crn != null ? var.existing_cloud_logs_metric_bucket_crn : module.cloud_logs_buckets.buckets[local.cloud_log_metric_bucket].bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_metric_bucket_endpoint != null ? var.existing_cloud_logs_metric_bucket_endpoint : module.cloud_logs_buckets.buckets[local.cloud_log_metric_bucket].s3_endpoint_direct
+    }
+  }
+  cloud_logs_existing_en_instances = [{
+    en_instance_id = module.event_notification.guid
+    en_region      = var.en_region
+  }]
 
   # Activity Tracker
   activity_tracker_provision = false
@@ -274,4 +302,47 @@ module "cos_bucket" {
       }
     }
   ]
+}
+
+module "cloud_logs_buckets" {
+  count   = (var.existing_cloud_logs_data_bucket_crn != null || var.existing_cloud_logs_metric_bucket_crn !=null) ? 1 : 0 # no need to create buckets if consumer is using existing COS bucket
+  source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
+  version = "8.6.2"
+  bucket_configs = [
+    {
+      bucket_name                   = local.cloud_log_data_bucket
+      kms_encryption_enabled        = true
+      add_bucket_name_suffix        = true
+      region_location               = local.default_cos_region
+      resource_instance_id          = local.cos_instance_crn
+      kms_encryption_enabled        = true
+      kms_guid                      = local.existing_kms_guid
+      kms_key_crn                   = local.cos_kms_key_crn
+      skip_iam_authorization_policy = true
+    },
+    {
+      bucket_name                   = local.cloud_log_metric_bucket
+      kms_encryption_enabled        = true
+      add_bucket_name_suffix        = true
+      region_location               = local.default_cos_region
+      resource_instance_id          = local.cos_instance_crn
+      kms_encryption_enabled        = true
+      kms_guid                      = local.existing_kms_guid
+      kms_key_crn                   = local.cos_kms_key_crn
+      skip_iam_authorization_policy = true
+    }
+  ]
+}
+
+##############################################################################
+# Event Notification
+##############################################################################
+module "event_notification" {
+  source            = "terraform-ibm-modules/event-notifications/ibm"
+  version           = "1.6.5"
+  resource_group_id = module.resource_group.resource_group_id
+  name              = var.prefix != null ? "${var.prefix}-${var.en_instance_name}" : "${var.en_instance_name}"
+  plan              = "standard"
+  service_endpoints = "public"
+  region            = var.en_region
 }

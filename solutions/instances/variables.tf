@@ -44,6 +44,113 @@ variable "prefix" {
 }
 
 ##############################################################################
+# IBM Cloud Logs
+##############################################################################
+variable "cloud_logs_provision" {
+  description = "Provision a IBM Cloud Logs instance?"
+  type        = bool
+  default     = true
+}
+
+variable "cloud_logs_instance_name" {
+  type        = string
+  description = "The name of the IBM Cloud Logs instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  default     = "cloud-logs"
+}
+
+variable "cloud_logs_region" {
+  description = "The IBM Cloud region where Cloud Logs instances will be created."
+  type        = string
+  default     = "eu-es"
+}
+
+variable "cloud_logs_tags" {
+  type        = list(string)
+  description = "Tags associated with the IBM Cloud Logs instance (Optional, array of strings)."
+  default     = []
+}
+
+variable "cloud_logs_service_endpoints" {
+  description = "The type of the service endpoint that will be set for the IBM Cloud Logs instance."
+  type        = string
+  default     = "public-and-private"
+  validation {
+    condition     = contains(["public", "private", "public-and-private"], var.cloud_logs_service_endpoints)
+    error_message = "The specified service_endpoints is not a valid selection"
+  }
+}
+
+variable "enable_cloud_logs_data" {
+  type = bool
+  description = "Enable data bucket for a IBM Cloud Logs instance"
+  default = true
+}
+
+variable "enable_cloud_logs_metrics" {
+  type = bool
+  description = "Enable metrics bucket for a IBM Cloud Logs instance"
+  default = true
+}
+
+variable "cloud_logs_retention_period" {
+  type        = number
+  description = "The number of days IBM Cloud Logs will retain the logs data in Priority insights."
+  default     = 7
+}
+
+variable "cloud_log_data_bucket_name" {
+  type        = string
+  default     = "cloud-logs-bucket"
+  description = "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
+}
+
+variable "cloud_log_metric_bucket_name" {
+  type        = string
+  default     = "metrics-bucket"
+  description = "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
+}
+
+variable "existing_cloud_logs_data_bucket_crn" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
+}
+
+variable "existing_cloud_logs_metric_bucket_crn" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs metric data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
+}
+
+variable "existing_cloud_logs_data_bucket_endpoint" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The name of an existing Cloud Object Storage bucket endpoint to use for storing the IBM Cloud Logs data. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
+}
+
+variable "existing_cloud_logs_metric_bucket_endpoint" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The name of an existing Cloud Object Storage bucket endpoint to use for storing the IBM Cloud Logs metric data. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
+}
+variable "existing_at_cos_target_bucket_name" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The name of an existing bucket within the Cloud Object Storage instance in which to store IBM Cloud Activity Tracker Event Routing. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
+}
+
+variable "existing_log_archive_cos_bucket_endpoint" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The name of an existing Cloud Object Storage bucket endpoint to use for storing the log archive file. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
+}
+##############################################################################
 # Log Analysis Variables
 ##############################################################################
 
@@ -346,4 +453,19 @@ variable "cos_key_name" {
   type        = string
   default     = "observability-cos-key"
   description = "The name of the key to create for the Cloud Object Storage bucket. This name will be used by both the log archive bucket and the IBM Cloud Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key is prefixed to the value in the `prefix-value` format."
+}
+
+########################################################################################################################
+# Event Notification variables
+########################################################################################################################
+
+variable "en_instance_name" {
+  type = string
+  description = "The name of the event notification instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  default = "event-notification"
+}
+variable "en_region" {
+  type        = string
+  description = "Region where event notification will be created"
+  default     = "au-syd"
 }

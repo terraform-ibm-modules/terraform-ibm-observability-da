@@ -2,6 +2,22 @@
 # Outputs
 ##############################################################################
 
+## Cloud logs
+output "crn" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : null
+  description = "The id of the provisioned Cloud Logs instance."
+}
+
+output "guid" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_guid : null
+  description = "The guid of the provisioned Cloud Logs instance."
+}
+
+output "name" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_name : null
+  description = "The name of the provisioned Cloud Logs instance."
+}
+
 ## Log analysis
 output "log_analysis_name" {
   value       = var.log_analysis_provision ? module.observability_instance.log_analysis_name : null
