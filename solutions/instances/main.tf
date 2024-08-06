@@ -26,6 +26,10 @@ locals {
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
+  cos_target_name            = var.prefix != null ? "${var.prefix}-cos-target" : "cos-target"
+  log_analysis_target_name   = var.prefix != null ? "${var.prefix}-log-analysis-target" : "log-analysis-target"
+  at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
+  at_log_analysis_route_name = var.prefix != null ? "${var.prefix}-at-log-analysis-route" : "at-log-analysis-route"
 
   bucket_config_1 = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true && var.log_analysis_enable_archive == true ? {
     class = var.log_archive_cos_bucket_class
@@ -64,15 +68,15 @@ locals {
 
   kms_region = (length(coalesce(local.bucket_config_map, [])) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
-    route_name = "at-cos-route"
+    route_name = local.at_cos_route_name
     locations  = ["*", "global"]
-    target_ids = [module.observability_instance.activity_tracker_targets["cos-target"].id]
+    target_ids = [module.observability_instance.activity_tracker_targets[local.cos_target_name].id]
   }] : []
 
   at_log_analysis_route = var.enable_at_event_routing_to_log_analysis ? [{
-    route_name = "at-log-analysis-route"
+    route_name = local.at_log_analysis_route_name
     locations  = ["*", "global"]
-    target_ids = [module.observability_instance.activity_tracker_targets["log-analysis-target"].id]
+    target_ids = [module.observability_instance.activity_tracker_targets[local.log_analysis_target_name].id]
   }] : []
 
   at_routes = concat(local.at_cos_route, local.at_log_analysis_route)
@@ -134,7 +138,7 @@ module "observability_instance" {
       endpoint                          = local.cos_target_bucket_endpoint
       instance_id                       = local.cos_instance_crn
       target_region                     = local.default_cos_region
-      target_name                       = "cos-target"
+      target_name                       = local.cos_target_name
       skip_atracker_cos_iam_auth_policy = false
       service_to_service_enabled        = true
     }
@@ -145,7 +149,7 @@ module "observability_instance" {
       instance_id   = module.observability_instance.log_analysis_crn
       ingestion_key = module.observability_instance.log_analysis_ingestion_key
       target_region = var.region
-      target_name   = "log-analysis-target"
+      target_name   = local.log_analysis_target_name
     }
   ] : []
 
