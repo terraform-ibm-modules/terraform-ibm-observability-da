@@ -239,7 +239,7 @@ module "cos_bucket" {
   providers = {
     ibm = ibm.cos
   }
-  count   = (var.log_analysis_enable_archive || var.enable_at_event_routing_to_cos_bucket) && (length(coalesce(local.bucket_config_map, [])) != 0) ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
+  count   = length(coalesce(local.bucket_config_map, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "8.6.2"
   bucket_configs = [
@@ -271,6 +271,6 @@ module "cos_bucket" {
         write_data_events = true
         management_events = true
       }
-    } if value != null
+    }
   ]
 }
