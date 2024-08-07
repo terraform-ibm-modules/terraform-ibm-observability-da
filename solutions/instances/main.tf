@@ -153,10 +153,10 @@ module "observability_instance" {
       bucket_endpoint = var.existing_cloud_logs_metric_bucket_endpoint != null ? var.existing_cloud_logs_metric_bucket_endpoint : module.cloud_logs_buckets.buckets[local.cloud_log_metric_bucket].s3_endpoint_direct
     }
   }
-  cloud_logs_existing_en_instances = [{
-    en_instance_id = module.event_notification.guid
-    en_region      = var.en_region
-  }]
+  cloud_logs_existing_en_instances = var.enable_en_integration ? [{
+    en_instance_id = var.existing_en_instance_crn != null ? local.existing_en_guid : module.event_notification.guid
+    en_region      = var.existing_en_instance_crn != null ? local.en_region : var.en_region
+  }] : []
 
   # Activity Tracker
   activity_tracker_provision = false
@@ -308,6 +308,8 @@ module "cos_bucket" {
   ]
 }
 
+# Cloud Logs COS bucket
+
 module "cloud_logs_buckets" {
   count   = (var.existing_cloud_logs_data_bucket_crn != null || var.existing_cloud_logs_metric_bucket_crn !=null) ? 1 : 0 # no need to create buckets if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
@@ -341,7 +343,14 @@ module "cloud_logs_buckets" {
 ##############################################################################
 # Event Notification
 ##############################################################################
+
+locals {
+  parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
+  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
+  en_region                       = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
+}
 module "event_notification" {
+  count = var.existing_en_instance_crn !=null ? 0 : 1
   source            = "terraform-ibm-modules/event-notifications/ibm"
   version           = "1.6.5"
   resource_group_id = module.resource_group.resource_group_id

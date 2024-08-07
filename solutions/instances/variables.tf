@@ -92,6 +92,18 @@ variable "enable_cloud_logs_metrics" {
   default = true
 }
 
+variable "enable_en_integration" {
+  type = bool
+  description = "Enable event notification integration for IBM Cloud Logs instance"
+  default = true
+}
+
+variable "existing_en_instance_crn" {
+  type = string
+  description = "The CRN of existing event notification instance. If not supplied, a new instance is created."
+  default = null
+}
+
 variable "cloud_logs_retention_period" {
   type        = number
   description = "The number of days IBM Cloud Logs will retain the logs data in Priority insights."
