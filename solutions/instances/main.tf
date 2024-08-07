@@ -43,11 +43,7 @@ locals {
     tag   = var.at_cos_bucket_access_tags
   } : null
 
-  bucket_config_map = var.existing_log_archive_cos_bucket_name == null ? (
-    var.existing_at_cos_target_bucket_name == null ? [local.bucket_config_1, local.bucket_config_2] : [local.bucket_config_1]
-    ) : (
-    var.existing_at_cos_target_bucket_name == null ? [local.bucket_config_2] : null
-  )
+  bucket_config_map = local.bucket_config_1 != null && local.bucket_config_2 != null ? [local.bucket_config_1, local.bucket_config_2] : local.bucket_config_1 != null ? [local.bucket_config_1] : local.bucket_config_2 != null ? [local.bucket_config_2] : null
 
   archive_rule = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? {
     enable = true
@@ -130,8 +126,7 @@ module "observability_instance" {
   enable_platform_metrics            = var.enable_platform_metrics
 
   # Activity Tracker
-  activity_tracker_provision      = false
-  activity_tracker_enable_archive = false
+  activity_tracker_provision = false
   cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
@@ -211,7 +206,7 @@ data "ibm_iam_account_settings" "iam_account_settings" {
 
 # Create IAM Authorization Policy to allow COS to access KMS for the encryption key
 resource "ibm_iam_authorization_policy" "policy" {
-  count = !(var.log_analysis_enable_archive || var.enable_at_event_routing_to_cos_bucket) || (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config_map, [])) == 0)) ? 0 : 1
+  count = (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config_map, [])) == 0)) ? 0 : 1
   # Conditionals with providers aren't possible, using ibm.kms as provider incase cross account is enabled
   provider                    = ibm.kms
   source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
@@ -227,7 +222,7 @@ module "cos_instance" {
   providers = {
     ibm = ibm.cos
   }
-  count                    = (var.log_analysis_enable_archive || var.enable_at_event_routing_to_cos_bucket) && (var.existing_cos_instance_crn == null) && length(coalesce(local.bucket_config_map, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
+  count                    = var.existing_cos_instance_crn == null && length(coalesce(local.bucket_config_map, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "8.6.2"
   resource_group_id        = module.resource_group.resource_group_id
