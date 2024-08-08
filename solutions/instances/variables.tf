@@ -92,12 +92,6 @@ variable "log_analysis_enable_archive" {
   default     = true
 }
 
-variable "activity_tracker_enable_archive" {
-  type        = bool
-  description = "Whether to enable archiving on Activity Tracker."
-  default     = true
-}
-
 variable "log_archive_api_key" {
   type        = string
   description = "The API key to use to configure archiving from Log Analysis to Object Storage. If not specified, the API key value in ibmcloud_api_key is used."
