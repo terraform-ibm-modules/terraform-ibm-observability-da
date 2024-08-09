@@ -65,32 +65,32 @@ output "cloud_monitoring_access_key" {
 ## COS Instance
 output "cos_instance_id" {
   description = "COS instance id"
-  value       = var.existing_cos_instance_crn == null ? module.cos_instance[0].cos_instance_id : null
+  value       = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_id : null : null
 }
 
 output "cos_instance_guid" {
   description = "COS instance guid"
-  value       = var.existing_cos_instance_crn == null ? module.cos_instance[0].cos_instance_guid : null
+  value       = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : null
 }
 
 output "cos_instance_name" {
   description = "COS instance name"
-  value       = var.existing_cos_instance_crn == null ? module.cos_instance[0].cos_instance_name : null
+  value       = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_name : null : null
 }
 
 output "cos_instance_crn" {
   description = "COS instance crn"
-  value       = var.existing_cos_instance_crn == null ? module.cos_instance[0].cos_instance_crn : null
+  value       = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null : null
 }
 
 ## COS Buckets
 output "log_archive_cos_bucket_name" {
-  value       = var.existing_log_archive_cos_bucket_name == null ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : var.existing_log_archive_cos_bucket_name
+  value       = var.existing_log_archive_cos_bucket_name == null ? var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null : var.existing_log_archive_cos_bucket_name
   description = "The name of log archive COS bucket"
 }
 
 output "at_cos_target_bucket_name" {
-  value       = var.existing_at_cos_target_bucket_name == null ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : var.existing_at_cos_target_bucket_name
+  value       = var.existing_at_cos_target_bucket_name == null ? var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null : var.existing_at_cos_target_bucket_name
   description = "The name of the AT target COS bucket"
 }
 
