@@ -26,17 +26,17 @@ output "log_analysis_ingestion_key" {
 
 ## Cloud Monitoring
 output "cloud_monitoring_name" {
-  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : null
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : data.ibm_resource_instance.existing_cloud_monitoring[0].name
   description = "The name of the provisioned IBM cloud monitoring instance."
 }
 
 output "cloud_monitoring_crn" {
-  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : null
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : var.existing_cloud_monitoring_crn
   description = "The id of the provisioned IBM cloud monitoring instance."
 }
 
 output "cloud_monitoring_guid" {
-  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_guid : null
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_guid : local.existing_cloud_monitoring_guid
   description = "The guid of the provisioned IBM cloud monitoring instance."
 }
 
