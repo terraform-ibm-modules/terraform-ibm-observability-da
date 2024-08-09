@@ -81,27 +81,27 @@ variable "cloud_logs_service_endpoints" {
 }
 
 variable "enable_cloud_logs_data" {
-  type = bool
+  type        = bool
   description = "Enable data bucket for a IBM Cloud Logs instance"
-  default = true
+  default     = true
 }
 
 variable "enable_cloud_logs_metrics" {
-  type = bool
+  type        = bool
   description = "Enable metrics bucket for a IBM Cloud Logs instance"
-  default = true
+  default     = true
 }
 
 variable "enable_en_integration" {
-  type = bool
+  type        = bool
   description = "Enable event notification integration for IBM Cloud Logs instance"
-  default = true
+  default     = true
 }
 
 variable "existing_en_instance_crn" {
-  type = string
+  type        = string
   description = "The CRN of existing event notification instance. If not supplied, a new instance is created."
-  default = null
+  default     = null
 }
 
 variable "cloud_logs_retention_period" {
@@ -149,19 +149,7 @@ variable "existing_cloud_logs_metric_bucket_endpoint" {
   default     = null
   description = "The name of an existing Cloud Object Storage bucket endpoint to use for storing the IBM Cloud Logs metric data. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
 }
-variable "existing_at_cos_target_bucket_name" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The name of an existing bucket within the Cloud Object Storage instance in which to store IBM Cloud Activity Tracker Event Routing. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
-}
 
-variable "existing_log_archive_cos_bucket_endpoint" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The name of an existing Cloud Object Storage bucket endpoint to use for storing the log archive file. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
-}
 ##############################################################################
 # Log Analysis Variables
 ##############################################################################
@@ -472,9 +460,9 @@ variable "cos_key_name" {
 ########################################################################################################################
 
 variable "en_instance_name" {
-  type = string
+  type        = string
   description = "The name of the event notification instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
-  default = "event-notification"
+  default     = "event-notification"
 }
 variable "en_region" {
   type        = string
