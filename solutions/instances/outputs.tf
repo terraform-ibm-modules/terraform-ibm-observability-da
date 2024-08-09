@@ -26,7 +26,7 @@ output "log_analysis_ingestion_key" {
 
 ## Cloud Monitoring
 output "cloud_monitoring_name" {
-  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : data.ibm_resource_instance.existing_cloud_monitoring[0].name
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : null
   description = "The name of the provisioned IBM cloud monitoring instance."
 }
 

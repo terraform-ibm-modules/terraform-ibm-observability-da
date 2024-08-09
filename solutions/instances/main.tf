@@ -101,11 +101,6 @@ locals {
   existing_cloud_monitoring_guid       = length(local.parsed_existing_cloud_monitoring_crn) > 0 ? local.parsed_existing_cloud_monitoring_crn[7] : null
 }
 
-data "ibm_resource_instance" "existing_cloud_monitoring" {
-  count      = var.existing_cloud_monitoring_crn != null ? 1 : 0
-  identifier = var.existing_cloud_monitoring_crn
-}
-
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
   version = "2.13.2"
