@@ -139,17 +139,17 @@ module "observability_instance" {
   cloud_logs_data_storage = {
     logs_data = {
       enabled         = var.enable_cloud_logs_data
-      bucket_crn      = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cloud_logs_buckets.buckets[local.cloud_log_data_bucket].bucket_crn
-      bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cloud_logs_buckets.buckets[local.cloud_log_data_bucket].s3_endpoint_direct
+      bucket_crn      = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cloud_logs_buckets[0].buckets[local.cloud_log_data_bucket].bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cloud_logs_buckets[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
     },
     metrics_data = {
       enabled         = var.enable_cloud_logs_metrics
-      bucket_crn      = var.existing_cloud_logs_metric_bucket_crn != null ? var.existing_cloud_logs_metric_bucket_crn : module.cloud_logs_buckets.buckets[local.cloud_log_metric_bucket].bucket_crn
-      bucket_endpoint = var.existing_cloud_logs_metric_bucket_endpoint != null ? var.existing_cloud_logs_metric_bucket_endpoint : module.cloud_logs_buckets.buckets[local.cloud_log_metric_bucket].s3_endpoint_direct
+      bucket_crn      = var.existing_cloud_logs_metric_bucket_crn != null ? var.existing_cloud_logs_metric_bucket_crn : module.cloud_logs_buckets[0].buckets[local.cloud_log_metric_bucket].bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_metric_bucket_endpoint != null ? var.existing_cloud_logs_metric_bucket_endpoint : module.cloud_logs_buckets[0].buckets[local.cloud_log_metric_bucket].s3_endpoint_direct
     }
   }
   cloud_logs_existing_en_instances = var.enable_en_integration ? [{
-    en_instance_id = var.existing_en_instance_crn != null ? local.existing_en_guid : module.event_notification.guid
+    en_instance_id = var.existing_en_instance_crn != null ? local.existing_en_guid : module.event_notification[0].guid
     en_region      = var.existing_en_instance_crn != null ? local.en_region : var.en_region
   }] : []
 
