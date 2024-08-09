@@ -306,7 +306,7 @@ module "cos_bucket" {
 # Cloud Logs COS bucket
 
 module "cloud_logs_buckets" {
-  count   = (var.existing_cloud_logs_data_bucket_crn != null || var.existing_cloud_logs_metric_bucket_crn != null) ? 1 : 0 # no need to create buckets if consumer is using existing COS bucket
+  count   = (var.existing_cloud_logs_data_bucket_crn != null || var.existing_cloud_logs_metric_bucket_crn != null) ? 0 : 1 # no need to create buckets if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "8.6.2"
   bucket_configs = [
