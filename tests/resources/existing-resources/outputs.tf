@@ -36,3 +36,28 @@ output "bucket_endpoint_at" {
   description = "Activity Tracker bucket endpoint"
   value       = module.additional_cos_bucket.s3_endpoint_public
 }
+
+output "data_bucket_crn" {
+  description = "Cloud Logs data bucket CRN"
+  value       = module.cloud_log_buckets.buckets["${var.prefix}-data-bucket"].bucket_crn
+}
+
+output "data_bucket_endpoint" {
+  description = "Cloud Logs data bucket endpoint"
+  value       = module.cloud_log_buckets.buckets["${var.prefix}-data-bucket"].s3_endpoint_public
+}
+
+output "metric_bucket_crn" {
+  description = "Cloud Logs metric bucket CRN"
+  value       = module.cloud_log_buckets.buckets["${var.prefix}-metric-bucket"].bucket_crn
+}
+
+output "metric_bucket_endpoint" {
+  description = "Cloud Logs metric bucket endpoint"
+  value       = module.cloud_log_buckets.buckets["${var.prefix}-metric-bucket"].s3_endpoint_public
+}
+
+output "en_crn" {
+  description = "Event Notification CRN"
+  value       = module.event_notification.crn
+}

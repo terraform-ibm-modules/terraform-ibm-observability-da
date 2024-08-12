@@ -83,6 +83,7 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
+		{Name: "cloud_logs_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
@@ -213,7 +214,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	t.Parallel()
 
 	// ------------------------------------------------------------------------------------
-	// Provision COS first
+	// Provision COS & EN first
 	// ------------------------------------------------------------------------------------
 
 	prefix := fmt.Sprintf("obs-exist-%s", strings.ToLower(random.UniqueId()))
@@ -258,17 +259,22 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			ImplicitRequired: false,
 			Region:           region,
 			TerraformVars: map[string]interface{}{
-				"cos_region":                               region,
-				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
-				"use_existing_resource_group":              true,
-				"existing_log_archive_cos_bucket_name":     terraform.Output(t, existingTerraformOptions, "bucket_name"),
-				"existing_at_cos_target_bucket_name":       terraform.Output(t, existingTerraformOptions, "bucket_name_at"),
-				"existing_log_archive_cos_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "bucket_endpoint"),
-				"existing_at_cos_target_bucket_endpoint":   terraform.Output(t, existingTerraformOptions, "bucket_endpoint_at"),
-				"existing_cos_instance_crn":                terraform.Output(t, existingTerraformOptions, "cos_crn"),
-				"management_endpoint_type_for_bucket":      "public",
-				"log_analysis_service_endpoints":           "public",
-				"enable_platform_metrics":                  "false",
+				"cos_region":                                 region,
+				"resource_group_name":                        terraform.Output(t, existingTerraformOptions, "resource_group_name"),
+				"use_existing_resource_group":                true,
+				"existing_log_archive_cos_bucket_name":       terraform.Output(t, existingTerraformOptions, "bucket_name"),
+				"existing_at_cos_target_bucket_name":         terraform.Output(t, existingTerraformOptions, "bucket_name_at"),
+				"existing_log_archive_cos_bucket_endpoint":   terraform.Output(t, existingTerraformOptions, "bucket_endpoint"),
+				"existing_at_cos_target_bucket_endpoint":     terraform.Output(t, existingTerraformOptions, "bucket_endpoint_at"),
+				"existing_cos_instance_crn":                  terraform.Output(t, existingTerraformOptions, "cos_crn"),
+				"existing_cloud_logs_data_bucket_crn":        terraform.Output(t, existingTerraformOptions, "data_bucket_crn"),
+				"existing_cloud_logs_metric_bucket_crn":      terraform.Output(t, existingTerraformOptions, "metric_bucket_crn"),
+				"existing_cloud_logs_data_bucket_endpoint":   terraform.Output(t, existingTerraformOptions, "data_bucket_endpoint"),
+				"existing_cloud_logs_metric_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "metric_bucket_endpoint"),
+				"existing_en_instance_crn":                   terraform.Output(t, existingTerraformOptions, "en_crn"),
+				"management_endpoint_type_for_bucket":        "public",
+				"log_analysis_service_endpoints":             "public",
+				"enable_platform_metrics":                    "false",
 			},
 		})
 

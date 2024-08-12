@@ -29,3 +29,9 @@ variable "resource_tags" {
   description = "The tags to add to the created resources."
   default     = []
 }
+
+variable "en_region" {
+  type        = string
+  description = "Region where event notification will be created"
+  default     = "au-syd"
+}
