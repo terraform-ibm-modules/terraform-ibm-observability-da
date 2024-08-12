@@ -96,6 +96,11 @@ module "resource_group" {
 # Observability Instance
 #######################################################################################################################
 
+locals {
+  parsed_existing_cloud_monitoring_crn = var.existing_cloud_monitoring_crn != null ? split(":", var.existing_cloud_monitoring_crn) : []
+  existing_cloud_monitoring_guid       = length(local.parsed_existing_cloud_monitoring_crn) > 0 ? local.parsed_existing_cloud_monitoring_crn[7] : null
+}
+
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
   version = "2.13.2"
