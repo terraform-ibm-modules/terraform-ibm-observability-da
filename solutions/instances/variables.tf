@@ -52,6 +52,12 @@ variable "cloud_logs_provision" {
   default     = true
 }
 
+variable "cloud_logs_plan" {
+  type        = string
+  description = "The IBM Cloud Logs plan to provision. Available: standard"
+  default     = "standard"
+}
+
 variable "cloud_logs_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Logs instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
@@ -462,4 +468,16 @@ variable "en_region" {
   type        = string
   description = "Region where event notification will be created"
   default     = "au-syd"
+}
+
+variable "en_plan" {
+  type        = string
+  description = "The pricing plan of the Event Notifications instance. Possible values: `Lite`, `Standard`"
+  default     = "standard"
+}
+
+variable "en_service_endpoint" {
+  type        = string
+  description = "Specify whether you want to enable public, or both public and private service endpoints. Possible values: `public`, `public-and-private`"
+  default     = "public-and-private"
 }

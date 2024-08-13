@@ -137,7 +137,7 @@ module "observability_instance" {
   cloud_logs_provision         = var.cloud_logs_provision
   cloud_logs_region            = var.cloud_logs_region
   cloud_logs_instance_name     = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
-  cloud_logs_plan              = "standard"
+  cloud_logs_plan              = var.cloud_logs_plan
   cloud_logs_tags              = var.cloud_logs_tags
   cloud_logs_service_endpoints = var.cloud_logs_service_endpoints
   cloud_logs_retention_period  = var.cloud_logs_retention_period
@@ -355,7 +355,7 @@ module "event_notification" {
   version           = "1.6.5"
   resource_group_id = module.resource_group.resource_group_id
   name              = var.prefix != null ? "${var.prefix}-${var.en_instance_name}" : var.en_instance_name
-  plan              = "standard"
-  service_endpoints = "public"
+  plan              = var.en_plan
+  service_endpoints = var.en_service_endpoint
   region            = var.en_region
 }
