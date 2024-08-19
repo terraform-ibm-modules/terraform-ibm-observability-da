@@ -55,17 +55,6 @@ locals {
     tag   = var.cloud_log_metric_bucket_access_tag
   } : null
 
-  # bucket_config_map = length(compact([
-  #   local.archive_bucket_config != null ? [local.archive_bucket_config] : null,
-  #   local.at_bucket_config != null ? [local.at_bucket_config] : null,
-  #   local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : null,
-  #   local.cloud_log_metric_bucket_config != null ? [local.cloud_log_metric_bucket_config] : null
-  #   ])) > 0 ? flatten(compact([
-  #   local.archive_bucket_config != null ? [local.archive_bucket_config] : null,
-  #   local.at_bucket_config != null ? [local.at_bucket_config] : null,
-  #   local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : null,
-  #   local.cloud_log_metric_bucket_config != null ? [local.cloud_log_metric_bucket_config] : null
-  # ])) : null
   bucket_config_map = length(concat(
     local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
     local.at_bucket_config != null ? [local.at_bucket_config] : [],
@@ -341,38 +330,6 @@ module "cos_bucket" {
     }
   ]
 }
-
-# Cloud Logs COS bucket
-
-# module "cloud_logs_buckets" {
-#   count   = (var.existing_cloud_logs_data_bucket_crn != null || var.existing_cloud_logs_metric_bucket_crn != null) ? 0 : 1 # no need to create buckets if consumer is using existing COS bucket
-#   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-#   version = "8.6.2"
-#   bucket_configs = [
-#     {
-#       bucket_name                   = local.cloud_log_data_bucket
-#       kms_encryption_enabled        = true
-#       add_bucket_name_suffix        = true
-#       region_location               = local.default_cos_region
-#       resource_instance_id          = local.cos_instance_crn
-#       kms_encryption_enabled        = true
-#       kms_guid                      = local.existing_kms_guid
-#       kms_key_crn                   = local.cos_kms_key_crn
-#       skip_iam_authorization_policy = true
-#     },
-#     {
-#       bucket_name                   = local.cloud_log_metric_bucket
-#       kms_encryption_enabled        = true
-#       add_bucket_name_suffix        = true
-#       region_location               = local.default_cos_region
-#       resource_instance_id          = local.cos_instance_crn
-#       kms_encryption_enabled        = true
-#       kms_guid                      = local.existing_kms_guid
-#       kms_key_crn                   = local.cos_kms_key_crn
-#       skip_iam_authorization_policy = true
-#     }
-#   ]
-# }
 
 ##############################################################################
 # Event Notification
