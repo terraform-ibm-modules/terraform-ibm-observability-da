@@ -84,6 +84,7 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_logs_tags", Value: options.Tags, DataType: "list(string)"},
+		{Name: "cloud_logs_provision", Value: true, DataType: "bool"},
 		{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "enable_platform_metrics", Value: false, DataType: "bool"},

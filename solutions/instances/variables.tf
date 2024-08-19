@@ -24,6 +24,7 @@ variable "use_existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision resources in."
+  default     = "anam-rg"
 }
 
 variable "region" {
@@ -49,7 +50,7 @@ variable "prefix" {
 variable "cloud_logs_provision" {
   description = "Provision a IBM Cloud Logs instance?"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "cloud_logs_plan" {
@@ -154,6 +155,38 @@ variable "existing_cloud_logs_metric_bucket_endpoint" {
   nullable    = true
   default     = null
   description = "The name of an existing Cloud Object Storage bucket endpoint to use for storing the IBM Cloud Logs metric data. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
+}
+
+variable "cloud_log_data_bucket_class" {
+  type        = string
+  default     = "smart"
+  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
+  validation {
+    condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.cloud_log_data_bucket_class)
+    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, `vault`, `cold`, `smart`, or `onerate_active`."
+  }
+}
+
+variable "cloud_log_metric_bucket_class" {
+  type        = string
+  default     = "smart"
+  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
+  validation {
+    condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.cloud_log_metric_bucket_class)
+    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, `vault`, `cold`, `smart`, or `onerate_active`."
+  }
+}
+
+variable "cloud_log_data_bucket_access_tag" {
+  type        = list(string)
+  default     = []
+  description = "A list of optional tags to add to the cloud log data Cloud Object Storage bucket."
+}
+
+variable "cloud_log_metric_bucket_access_tag" {
+  type        = list(string)
+  default     = []
+  description = "A list of optional access tags to add to the cloud log metric Cloud Object Storage bucket."
 }
 
 ##############################################################################
@@ -423,7 +456,7 @@ variable "management_endpoint_type_for_bucket" {
 
 variable "existing_kms_instance_crn" {
   type        = string
-  default     = null
+  default     = "crn:v1:bluemix:public:hs-crypto:us-south:a/abac0df06b644a9cabc6e44f55b3880e:e6dce284-e80f-46e1-a3c1-830f7adff7a9::"
   description = "The CRN of the key management service (KMS) that is used for the Cloud Object Storage bucket root key. If you are not using an existing KMS root key, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required."
 }
 

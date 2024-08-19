@@ -31,19 +31,53 @@ locals {
   at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
   at_log_analysis_route_name = var.prefix != null ? "${var.prefix}-at-log-analysis-route" : "at-log-analysis-route"
 
-  bucket_config_1 = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true && var.log_analysis_enable_archive == true ? {
+  archive_bucket_config = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision == true && var.log_analysis_enable_archive == true ? {
     class = var.log_archive_cos_bucket_class
     name  = local.log_archive_cos_bucket_name
     tag   = var.archive_bucket_access_tags
   } : null
 
-  bucket_config_2 = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket == true ? {
+  at_bucket_config = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket == true ? {
     class = var.at_cos_target_bucket_class
     name  = local.at_cos_target_bucket_name
     tag   = var.at_cos_bucket_access_tags
   } : null
 
-  bucket_config_map = local.bucket_config_1 != null && local.bucket_config_2 != null ? [local.bucket_config_1, local.bucket_config_2] : local.bucket_config_1 != null ? [local.bucket_config_1] : local.bucket_config_2 != null ? [local.bucket_config_2] : null
+  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? {
+    class = var.cloud_log_data_bucket_class
+    name  = local.cloud_log_data_bucket
+    tag   = var.cloud_log_data_bucket_access_tag
+  } : null
+
+  cloud_log_metric_bucket_config = var.existing_cloud_logs_metric_bucket_crn == null && var.cloud_logs_provision ? {
+    class = var.cloud_log_metric_bucket_class
+    name  = local.cloud_log_metric_bucket
+    tag   = var.cloud_log_metric_bucket_access_tag
+  } : null
+
+  # bucket_config_map = length(compact([
+  #   local.archive_bucket_config != null ? [local.archive_bucket_config] : null,
+  #   local.at_bucket_config != null ? [local.at_bucket_config] : null,
+  #   local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : null,
+  #   local.cloud_log_metric_bucket_config != null ? [local.cloud_log_metric_bucket_config] : null
+  #   ])) > 0 ? flatten(compact([
+  #   local.archive_bucket_config != null ? [local.archive_bucket_config] : null,
+  #   local.at_bucket_config != null ? [local.at_bucket_config] : null,
+  #   local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : null,
+  #   local.cloud_log_metric_bucket_config != null ? [local.cloud_log_metric_bucket_config] : null
+  # ])) : null
+  bucket_config_map = length(concat(
+    local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
+    local.at_bucket_config != null ? [local.at_bucket_config] : [],
+    local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : [],
+    local.cloud_log_metric_bucket_config != null ? [local.cloud_log_metric_bucket_config] : []
+    )) > 0 ? concat(
+    local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
+    local.at_bucket_config != null ? [local.at_bucket_config] : [],
+    local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : [],
+    local.cloud_log_metric_bucket_config != null ? [local.cloud_log_metric_bucket_config] : []
+  ) : null
+
 
   archive_rule = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? {
     enable = true
@@ -141,18 +175,18 @@ module "observability_instance" {
   cloud_logs_tags              = var.cloud_logs_tags
   cloud_logs_service_endpoints = var.cloud_logs_service_endpoints
   cloud_logs_retention_period  = var.cloud_logs_retention_period
-  cloud_logs_data_storage = {
+  cloud_logs_data_storage = var.cloud_logs_provision ? {
     logs_data = {
       enabled         = var.enable_cloud_logs_data
-      bucket_crn      = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cloud_logs_buckets[0].buckets[local.cloud_log_data_bucket].bucket_crn
-      bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cloud_logs_buckets[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
+      bucket_crn      = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
     },
     metrics_data = {
       enabled         = var.enable_cloud_logs_metrics
-      bucket_crn      = var.existing_cloud_logs_metric_bucket_crn != null ? var.existing_cloud_logs_metric_bucket_crn : module.cloud_logs_buckets[0].buckets[local.cloud_log_metric_bucket].bucket_crn
-      bucket_endpoint = var.existing_cloud_logs_metric_bucket_endpoint != null ? var.existing_cloud_logs_metric_bucket_endpoint : module.cloud_logs_buckets[0].buckets[local.cloud_log_metric_bucket].s3_endpoint_direct
+      bucket_crn      = var.existing_cloud_logs_metric_bucket_crn != null ? var.existing_cloud_logs_metric_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metric_bucket].bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_metric_bucket_endpoint != null ? var.existing_cloud_logs_metric_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metric_bucket].s3_endpoint_direct
     }
-  }
+  } : null
   cloud_logs_existing_en_instances = var.enable_en_integration ? [{
     en_instance_id = var.existing_en_instance_crn != null ? local.existing_en_guid : module.event_notification[0].guid
     en_region      = var.existing_en_instance_crn != null ? local.en_region : var.en_region
@@ -310,35 +344,35 @@ module "cos_bucket" {
 
 # Cloud Logs COS bucket
 
-module "cloud_logs_buckets" {
-  count   = (var.existing_cloud_logs_data_bucket_crn != null || var.existing_cloud_logs_metric_bucket_crn != null) ? 0 : 1 # no need to create buckets if consumer is using existing COS bucket
-  source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.6.2"
-  bucket_configs = [
-    {
-      bucket_name                   = local.cloud_log_data_bucket
-      kms_encryption_enabled        = true
-      add_bucket_name_suffix        = true
-      region_location               = local.default_cos_region
-      resource_instance_id          = local.cos_instance_crn
-      kms_encryption_enabled        = true
-      kms_guid                      = local.existing_kms_guid
-      kms_key_crn                   = local.cos_kms_key_crn
-      skip_iam_authorization_policy = true
-    },
-    {
-      bucket_name                   = local.cloud_log_metric_bucket
-      kms_encryption_enabled        = true
-      add_bucket_name_suffix        = true
-      region_location               = local.default_cos_region
-      resource_instance_id          = local.cos_instance_crn
-      kms_encryption_enabled        = true
-      kms_guid                      = local.existing_kms_guid
-      kms_key_crn                   = local.cos_kms_key_crn
-      skip_iam_authorization_policy = true
-    }
-  ]
-}
+# module "cloud_logs_buckets" {
+#   count   = (var.existing_cloud_logs_data_bucket_crn != null || var.existing_cloud_logs_metric_bucket_crn != null) ? 0 : 1 # no need to create buckets if consumer is using existing COS bucket
+#   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
+#   version = "8.6.2"
+#   bucket_configs = [
+#     {
+#       bucket_name                   = local.cloud_log_data_bucket
+#       kms_encryption_enabled        = true
+#       add_bucket_name_suffix        = true
+#       region_location               = local.default_cos_region
+#       resource_instance_id          = local.cos_instance_crn
+#       kms_encryption_enabled        = true
+#       kms_guid                      = local.existing_kms_guid
+#       kms_key_crn                   = local.cos_kms_key_crn
+#       skip_iam_authorization_policy = true
+#     },
+#     {
+#       bucket_name                   = local.cloud_log_metric_bucket
+#       kms_encryption_enabled        = true
+#       add_bucket_name_suffix        = true
+#       region_location               = local.default_cos_region
+#       resource_instance_id          = local.cos_instance_crn
+#       kms_encryption_enabled        = true
+#       kms_guid                      = local.existing_kms_guid
+#       kms_key_crn                   = local.cos_kms_key_crn
+#       skip_iam_authorization_policy = true
+#     }
+#   ]
+# }
 
 ##############################################################################
 # Event Notification
