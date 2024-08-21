@@ -115,3 +115,25 @@ output "kms_keys" {
   description = "IDs of new KMS Keys created"
   value       = length(module.kms) > 0 ? module.kms[0].keys : null
 }
+
+# Cloud Logs
+
+output "cloud_logs_crn" {
+  description = "The id of the provisioned Cloud Logs instance."
+  value = var.cloud_monitoring_provision ? module.observability_instance.cloud_logs_crn : null
+}
+
+output "cloud_logs_guid" {
+  description = "The guid of the provisioned Cloud Logs instance."
+  value = var.cloud_monitoring_provision ? module.observability_instance.cloud_logs_guid :  null
+}
+
+output "cloud_logs_name" {
+  description = "The name of the provisioned Cloud Logs instance."
+  value = var.cloud_monitoring_provision ? module.observability_instance.cloud_logs_name :  null
+}
+
+output "cloud_logs_resource_group_id" {
+  description = "The resource group where Cloud Logs instance resides."
+  value = var.cloud_monitoring_provision ? module.resource_group.resource_group_name : null
+}

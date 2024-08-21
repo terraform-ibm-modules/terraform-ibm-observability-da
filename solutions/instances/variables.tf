@@ -118,13 +118,13 @@ variable "cloud_logs_retention_period" {
 
 variable "cloud_log_data_bucket_name" {
   type        = string
-  default     = "cloud-logs-bucket"
+  default     = "cloud-logs-data-bucket"
   description = "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
 }
 
 variable "cloud_log_metric_bucket_name" {
   type        = string
-  default     = "metrics-bucket"
+  default     = "cloud-logs-metrics-bucket"
   description = "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
 }
 
