@@ -1,56 +1,31 @@
 {
   "products": [
     {
-      "name": "deploy-arch-ibm-observability",
+      "name": "Observability_Instance",
       "label": "Observability",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
-        "target_terraform",
-        "terraform",
-        "logging_monitoring",
-        "solution"
-      ],
-      "keywords": [
-        "IaC",
-        "infrastructure as code",
-        "terraform",
-        "solution",
-        "observability",
-        "observability instances",
-        "log analysis",
-        "cloud monitoring",
-        "ATracker",
-        "Activity Tracker",
-        "observability agents"
+        "logging_monitoring"
       ],
       "short_description": "Configures IBM Cloud Observability resources",
       "long_description": "Solutions that support configuring IBM Cloud Observability resources for logging, monitoring, and activity tracking.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
-      "provider_name": "IBM",
-      "features": [
-        {
-          "title": "Configures IBM Log Analysis",
-          "description": "Configures the IBM Log Analysis instance and logging agents."
-        },
-        {
-          "title": "Configures IBM Cloud Monitoring",
-          "description": "Configures the IBM Cloud Monitoring instance and logging agents."
-        },
-        {
-
-          "title": "Configures IBM Cloud Activity Tracker Event Routing",
-          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage and Log Analysis target."
-        }
-      ],
-      "support_details": "This product is in the community registry and support is handled in the source repo. You can open an issue at [https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues). Support is not offered through IBM Cloud Support.",
       "flavors": [
         {
           "label": "Instances",
           "name": "instances",
-          "install_type": "fullstack",
+          "install_type": "extension",
           "working_directory": "solutions/instances",
+          "licenses": [
+            {
+              "id": "LICENSE",
+              "name": "LICENSE",
+              "type": "text/plain",
+              "description": "LICENSE"
+            }
+          ],
           "iam_permissions": [
             {
               "service_name": "atracker",
@@ -109,13 +84,17 @@
               "key": "ibmcloud_api_key"
             },
             {
-              "key": "prefix"
+              "key": "prefix",
+              "type": "string",
+              "default_value": "",
+              "description": "The prefix to add to all resources created by this solution. Used to make sure that names are unique when you deploy the solution more than one time.",
+              "required": true
             },
             {
-              "key": "use_existing_resource_group"
-            },
-            {
-              "key": "resource_group_name"
+              "key": "resource_group_name",
+              "type": "string",
+              "default_value": "default",
+              "required": true
             },
             {
               "key": "region",
@@ -380,7 +359,10 @@
               "required": true
             },
             {
-              "key": "existing_kms_instance_crn"
+              "key": "existing_kms_instance_crn",
+              "type": "string",
+              "default_value": "",
+              "required": false
             },
             {
               "key": "cos_key_name"
@@ -398,6 +380,40 @@
                 {
                   "displayname": "private",
                   "value": "private"
+                }
+              ]
+            }
+          ],
+          "dependencies": [
+            {
+              "name": "Core_Security_Services",
+              "id": "f3dabaf3-5150-43c4-81ff-f28126db83e2",
+              "version": "^1.0.0",
+              "flavors": [
+                ""
+              ],
+              "catalog_id": "9212a6da-ac9b-4f3c-94d8-83a866e1a250",
+              "optional": true,
+              "input_mapping": [
+                {
+                  "dependency_output": "kms_instance_crn",
+                  "version_input": "existing_kms_instance_crn"
+                }
+              ]
+            },
+            {
+              "name": "deploy-arch-ibm-account-infra-base",
+              "id": "9fcd1945-8ebc-4072-85dc-6400653e7077-global",
+              "version": "^1.11.6",
+              "flavors": [
+                "standard"
+              ],
+              "catalog_id": "0fbd7aba-de09-43bf-b848-ade81f4ad0ff",
+              "optional": true,
+              "input_mapping": [
+                {
+                  "dependency_output": "workload_resource_group_name",
+                  "version_input": "existing_resource_group_name"
                 }
               ]
             }
