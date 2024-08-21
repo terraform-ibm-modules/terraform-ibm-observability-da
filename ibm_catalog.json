@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "name": "Observability_Instance",
+      "name": "deploy-arch-ibm-observability",
       "label": "Observability",
       "product_kind": "solution",
       "tags": [
