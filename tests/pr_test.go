@@ -263,6 +263,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"cos_region":                                 region,
 				"resource_group_name":                        terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":                true,
+				"cloud_logs_provision":                       true,
 				"existing_log_archive_cos_bucket_name":       terraform.Output(t, existingTerraformOptions, "bucket_name"),
 				"existing_at_cos_target_bucket_name":         terraform.Output(t, existingTerraformOptions, "bucket_name_at"),
 				"existing_log_archive_cos_bucket_endpoint":   terraform.Output(t, existingTerraformOptions, "bucket_endpoint"),
