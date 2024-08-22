@@ -18,11 +18,11 @@ locals {
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
-  existing_kms_guid           = ((var.existing_cloud_logs_data_bucket_crn !=null && var.existing_cloud_logs_metric_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) && (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
+  existing_kms_guid           = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_cloud_logs_metric_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) && (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
-  cos_kms_key_crn             = ((var.existing_cloud_logs_data_bucket_crn !=null && var.existing_cloud_logs_metric_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) && (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
+  cos_kms_key_crn             = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_cloud_logs_metric_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) && (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
@@ -43,7 +43,7 @@ locals {
     tag   = var.at_cos_bucket_access_tags
   } : null
 
-  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision  && var.enable_cloud_logs_data ? {
+  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision && var.enable_cloud_logs_data ? {
     class = var.cloud_log_data_bucket_class
     name  = local.cloud_log_data_bucket
     tag   = var.cloud_log_data_bucket_access_tag
