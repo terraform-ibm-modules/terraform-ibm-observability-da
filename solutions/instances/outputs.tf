@@ -2,6 +2,16 @@
 # Outputs
 ##############################################################################
 
+output "resource_group_name" {
+  value       = module.resource_group.resource_group_name
+  description = "The name of the Resource Group the instances are provisioned in."
+}
+
+output "resource_group_id" {
+  value       = module.resource_group.resource_group_id
+  description = "The ID of the Resource Group the instances are provisioned in."
+}
+
 ## Log analysis
 output "log_analysis_name" {
   value       = var.log_analysis_provision ? module.observability_instance.log_analysis_name : null
