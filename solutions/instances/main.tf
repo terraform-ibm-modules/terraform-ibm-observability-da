@@ -18,11 +18,11 @@ locals {
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
-  existing_kms_guid           = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_cloud_logs_metric_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
+  existing_kms_guid           = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_cloud_logs_metric_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_enable_archive && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
-  cos_kms_key_crn             = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_cloud_logs_metric_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
+  cos_kms_key_crn             = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_cloud_logs_metric_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_enable_archive && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
@@ -55,7 +55,7 @@ locals {
     tag   = var.cloud_log_metric_bucket_access_tag
   } : null
 
-  bucket_config = concat(
+  buckets_config = concat(
     local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
     local.at_bucket_config != null ? [local.at_bucket_config] : [],
     local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : [],
@@ -80,7 +80,7 @@ locals {
     )
   ) : null
 
-  kms_region = (length(coalesce(local.bucket_config, [])) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
+  kms_region = (length(coalesce(local.buckets_config, [])) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
     route_name = local.at_cos_route_name
     locations  = ["*", "global"]
@@ -95,10 +95,15 @@ locals {
 
   at_routes = concat(local.at_cos_route, local.at_log_analysis_route)
 
-  apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config, [])) == 0)) ? 0 : 1
+  apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
 
   cloud_log_data_bucket   = var.prefix != null ? "${var.prefix}-${var.cloud_log_data_bucket_name}" : var.cloud_log_data_bucket_name
   cloud_log_metric_bucket = var.prefix != null ? "${var.prefix}-${var.cloud_log_metric_bucket_name}" : var.cloud_log_metric_bucket_name
+
+  # Event Notifications
+  parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
+  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
+  en_region                       = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[5] : null
 
 }
 
@@ -153,7 +158,7 @@ module "observability_instance" {
 
   # IBM Cloud Logs
   cloud_logs_provision         = var.cloud_logs_provision
-  cloud_logs_region            = var.cloud_logs_region
+  cloud_logs_region            = var.cloud_logs_region != null ? var.cloud_logs_region : var.region
   cloud_logs_instance_name     = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
   cloud_logs_plan              = var.cloud_logs_plan
   cloud_logs_tags              = var.cloud_logs_tags
@@ -171,9 +176,9 @@ module "observability_instance" {
       bucket_endpoint = var.enable_cloud_logs_metrics ? var.existing_cloud_logs_metric_bucket_endpoint != null ? var.existing_cloud_logs_metric_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metric_bucket].s3_endpoint_direct : null
     }
   } : null
-  cloud_logs_existing_en_instances = var.enable_en_integration ? [{
-    en_instance_id = var.existing_en_instance_crn != null ? local.existing_en_guid : module.event_notification[0].guid
-    en_region      = var.existing_en_instance_crn != null ? local.en_region : var.en_region
+  cloud_logs_existing_en_instances = var.enable_en_cloud_logs_integration && var.existing_en_instance_crn != null ? [{
+    en_instance_id = local.existing_en_guid
+    en_region      = local.en_region
   }] : []
 
   # Activity Tracker
@@ -211,7 +216,7 @@ module "kms" {
   providers = {
     ibm = ibm.kms
   }
-  count                       = (var.existing_cos_kms_key_crn != null || (length(coalesce(local.bucket_config, [])) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
+  count                       = (var.existing_cos_kms_key_crn != null || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.13.4"
   create_key_protect_instance = false
@@ -257,7 +262,7 @@ data "ibm_iam_account_settings" "iam_account_settings" {
 
 # Create IAM Authorization Policy to allow COS to access KMS for the encryption key
 resource "ibm_iam_authorization_policy" "policy" {
-  count = (var.skip_cos_kms_auth_policy || (length(coalesce(local.bucket_config, [])) == 0)) ? 0 : 1
+  count = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
   # Conditionals with providers aren't possible, using ibm.kms as provider incase cross account is enabled
   provider                    = ibm.kms
   source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
@@ -273,7 +278,7 @@ module "cos_instance" {
   providers = {
     ibm = ibm.cos
   }
-  count                    = var.existing_cos_instance_crn == null && length(coalesce(local.bucket_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
+  count                    = var.existing_cos_instance_crn == null && length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "8.6.2"
   resource_group_id        = module.resource_group.resource_group_id
@@ -290,11 +295,11 @@ module "cos_bucket" {
   providers = {
     ibm = ibm.cos
   }
-  count   = length(coalesce(local.bucket_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
+  count   = length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "8.6.2"
   bucket_configs = [
-    for value in local.bucket_config :
+    for value in local.buckets_config :
     {
       access_tags                   = value.tag
       bucket_name                   = value.name
@@ -324,24 +329,4 @@ module "cos_bucket" {
       }
     }
   ]
-}
-
-##############################################################################
-# Event Notification
-##############################################################################
-
-locals {
-  parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
-  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
-  en_region                       = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[5] : null
-}
-module "event_notification" {
-  count             = var.existing_en_instance_crn != null ? 0 : 1
-  source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "1.6.5"
-  resource_group_id = module.resource_group.resource_group_id
-  name              = var.prefix != null ? "${var.prefix}-${var.en_instance_name}" : var.en_instance_name
-  plan              = var.en_plan
-  service_endpoints = var.en_service_endpoint
-  region            = var.en_region
 }

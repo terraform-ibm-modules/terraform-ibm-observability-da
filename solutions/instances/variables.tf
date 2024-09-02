@@ -47,14 +47,14 @@ variable "prefix" {
 # IBM Cloud Logs
 ##############################################################################
 variable "cloud_logs_provision" {
-  description = "Provision a IBM Cloud Logs instance?"
+  description = "Set it to true to provision an IBM Cloud Logs instance"
   type        = bool
   default     = false
 }
 
 variable "cloud_logs_plan" {
   type        = string
-  description = "The IBM Cloud Logs plan to provision. Available: standard"
+  description = "The IBM Cloud Logs plan to provision. Possible values: standard"
   default     = "standard"
 }
 
@@ -65,19 +65,19 @@ variable "cloud_logs_instance_name" {
 }
 
 variable "cloud_logs_region" {
-  description = "The IBM Cloud region where Cloud Logs instances will be created."
+  description = "The region where Cloud Logs instances resources are created."
   type        = string
-  default     = "eu-es"
+  default     = null
 }
 
 variable "cloud_logs_tags" {
   type        = list(string)
-  description = "Tags associated with the IBM Cloud Logs instance (Optional, array of strings)."
+  description = "The resource tags that are associated with the IBM Cloud Logs instance (`Optional`, `array of strings`)."
   default     = []
 }
 
 variable "cloud_logs_service_endpoints" {
-  description = "The type of the service endpoint that will be set for the IBM Cloud Logs instance."
+  description = "The type of endpoint for the IBM Cloud Logs instance. Possible values: `public`, `private`, `public-and-private`."
   type        = string
   default     = "public-and-private"
   validation {
@@ -88,31 +88,31 @@ variable "cloud_logs_service_endpoints" {
 
 variable "enable_cloud_logs_data" {
   type        = bool
-  description = "Enable data bucket for a IBM Cloud Logs instance"
+  description = "Whether to enable cloud logs data to the Object Storage bucket."
   default     = true
 }
 
 variable "enable_cloud_logs_metrics" {
   type        = bool
-  description = "Enable metrics bucket for a IBM Cloud Logs instance"
+  description = "Whether to enable cloud logs metric data to the Object Storage bucket."
   default     = true
 }
 
-variable "enable_en_integration" {
+variable "enable_en_cloud_logs_integration" {
   type        = bool
-  description = "Enable event notification integration for IBM Cloud Logs instance"
-  default     = true
+  description = "Whether to enable event notification integration for IBM Cloud Logs instance"
+  default     = false
 }
 
 variable "existing_en_instance_crn" {
   type        = string
-  description = "The CRN of existing event notification instance. If not supplied, a new instance is created."
+  description = "The CRN of existing event notification instance."
   default     = null
 }
 
 variable "cloud_logs_retention_period" {
   type        = number
-  description = "The number of days IBM Cloud Logs will retain the logs data in Priority insights."
+  description = "The number of days IBM Cloud Logs will retain the logs data in priority insights."
   default     = 7
 }
 
@@ -125,7 +125,7 @@ variable "cloud_log_data_bucket_name" {
 variable "cloud_log_metric_bucket_name" {
   type        = string
   default     = "cloud-logs-metrics-bucket"
-  description = "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the Cloud Object Storage bucket to create to store cloud log metric data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
 }
 
 variable "existing_cloud_logs_data_bucket_crn" {
@@ -179,13 +179,13 @@ variable "cloud_log_metric_bucket_class" {
 variable "cloud_log_data_bucket_access_tag" {
   type        = list(string)
   default     = []
-  description = "A list of optional tags to add to the cloud log data Cloud Object Storage bucket."
+  description = "A list of optional tags to add to the cloud log data object storage bucket."
 }
 
 variable "cloud_log_metric_bucket_access_tag" {
   type        = list(string)
   default     = []
-  description = "A list of optional access tags to add to the cloud log metric Cloud Object Storage bucket."
+  description = "A list of optional access tags to add to the cloud log metric object storage bucket."
 }
 
 ##############################################################################
@@ -485,31 +485,4 @@ variable "cos_key_name" {
   type        = string
   default     = "observability-cos-key"
   description = "The name of the key to create for the Cloud Object Storage bucket. This name will be used by both the log archive bucket and the IBM Cloud Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key is prefixed to the value in the `prefix-value` format."
-}
-
-########################################################################################################################
-# Event Notification variables
-########################################################################################################################
-
-variable "en_instance_name" {
-  type        = string
-  description = "The name of the event notification instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
-  default     = "event-notification"
-}
-variable "en_region" {
-  type        = string
-  description = "Region where event notification will be created"
-  default     = "au-syd"
-}
-
-variable "en_plan" {
-  type        = string
-  description = "The pricing plan of the Event Notifications instance. Possible values: `Lite`, `Standard`"
-  default     = "standard"
-}
-
-variable "en_service_endpoint" {
-  type        = string
-  description = "Specify whether you want to enable public, or both public and private service endpoints. Possible values: `public`, `public-and-private`"
-  default     = "public-and-private"
 }
