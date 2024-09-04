@@ -141,7 +141,7 @@ variable "en_source_id" {
   default     = null
 
   validation {
-    condition     = (length(var.en_source_id) >= 1 && length(var.en_source_id) <= 4096 && can(regex("^([A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+)$", var.en_source_id)))
+    condition     = length(var.en_source_id) == 0 || (length(var.en_source_id) >= 1 && length(var.en_source_id) <= 4096 && can(regex("^([A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+)$", var.en_source_id)))
     error_message = "The en_source_id must be between 1 and 4096 characters long and match the regular expression /^[A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+$/."
   }
 }
@@ -152,7 +152,7 @@ variable "en_source_name" {
   default     = null
 
   validation {
-    condition     = (length(var.en_source_name) >= 1 && length(var.en_source_name) <= 4096 && can(regex("^([A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+)$", var.en_source_name)))
+    condition     = length(var.en_source_name) == 0 || (length(var.en_source_name) >= 1 && length(var.en_source_name) <= 4096 && can(regex("^([A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+)$", var.en_source_name)))
     error_message = "The en_source_name must be between 1 and 4096 characters long and match the regular expression /^[A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+$/."
   }
 }
