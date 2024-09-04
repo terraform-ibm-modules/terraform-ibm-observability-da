@@ -139,22 +139,12 @@ variable "en_source_id" {
   type        = string
   description = "The ID of the created source in the IBM Event Notifications instance"
   default     = null
-
-  validation {
-    condition     = length(var.en_source_id) == 0 || (length(var.en_source_id) >= 1 && length(var.en_source_id) <= 4096 && can(regex("^([A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+)$", var.en_source_id)))
-    error_message = "The en_source_id must be between 1 and 4096 characters long and match the regular expression /^[A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+$/."
-  }
 }
 
 variable "en_source_name" {
   type        = string
   description = "The name of the created source in the IBM Event Notifications instance"
   default     = null
-
-  validation {
-    condition     = length(var.en_source_name) == 0 || (length(var.en_source_name) >= 1 && length(var.en_source_name) <= 4096 && can(regex("^([A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+)$", var.en_source_name)))
-    error_message = "The en_source_name must be between 1 and 4096 characters long and match the regular expression /^[A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+$/."
-  }
 }
 
 variable "cloud_logs_retention_period" {
@@ -502,7 +492,7 @@ variable "management_endpoint_type_for_bucket" {
 
 variable "existing_kms_instance_crn" {
   type        = string
-  default     = null
+  default     = "crn:v1:bluemix:public:hs-crypto:us-south:a/abac0df06b644a9cabc6e44f55b3880e:e6dce284-e80f-46e1-a3c1-830f7adff7a9::"
   description = "The CRN of the key management service (KMS) that is used for the Cloud Object Storage bucket root key. If you are not using an existing KMS root key, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required."
 }
 
