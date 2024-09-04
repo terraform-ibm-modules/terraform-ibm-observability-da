@@ -8,6 +8,9 @@ locals {
   validate_log_analysis_provision = var.enable_at_event_routing_to_log_analysis && var.log_analysis_provision == false ? tobool("log_analysis_provision can't be false if enable_at_event_routing_to_log_analysis is true") : true
   # tflint-ignore: terraform_unused_declarations
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_existing_event_notification = var.enable_en_cloud_logs_integration && var.existing_en_instance_crn == null ? tobool("if enable_en_cloud_logs_integration is set to true, then existing_en_instance_crn should not be null and vice versa") : true
+
 
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
@@ -161,6 +164,7 @@ module "observability_instance" {
   cloud_logs_region            = var.cloud_logs_region != null ? var.cloud_logs_region : var.region
   cloud_logs_instance_name     = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
   cloud_logs_plan              = var.cloud_logs_plan
+  cloud_logs_access_tags       = var.cloud_logs_access_tags
   cloud_logs_tags              = var.cloud_logs_tags
   cloud_logs_service_endpoints = var.cloud_logs_service_endpoints
   cloud_logs_retention_period  = var.cloud_logs_retention_period
@@ -177,8 +181,12 @@ module "observability_instance" {
     }
   } : null
   cloud_logs_existing_en_instances = var.enable_en_cloud_logs_integration && var.existing_en_instance_crn != null ? [{
-    en_instance_id = local.existing_en_guid
-    en_region      = local.en_region
+    en_instance_id      = local.existing_en_guid
+    en_region           = local.en_region
+    en_instance_name    = var.existing_en_instance_name
+    skip_en_auth_policy = var.skip_en_auth_policy
+    source_id           = var.en_source_id
+    source_name         = var.en_source_name
   }] : []
 
   # Activity Tracker

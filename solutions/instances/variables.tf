@@ -76,6 +76,19 @@ variable "cloud_logs_tags" {
   default     = []
 }
 
+variable "cloud_logs_access_tags" {
+  type        = list(string)
+  description = "A list of access tags to apply to the Cloud Logs instance. Maximum length: 128 characters. Possible characters are A-Z, 0-9, spaces, underscores, hyphens, periods, and colons. [Learn more](https://cloud.ibm.com/docs/account?topic=account-access-tags-tutorial)."
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for tag in var.cloud_logs_access_tags : can(regex("[\\w\\-_\\.]+:[\\w\\-_\\.]+", tag)) && length(tag) <= 128
+    ])
+    error_message = "Tags must match the regular expression \"[\\w\\-_\\.]+:[\\w\\-_\\.]+\". For more information, see https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#limits."
+  }
+}
+
 variable "cloud_logs_service_endpoints" {
   description = "The type of endpoint for the IBM Cloud Logs instance. Possible values: `public`, `private`, `public-and-private`."
   type        = string
@@ -108,6 +121,40 @@ variable "existing_en_instance_crn" {
   type        = string
   description = "The CRN of existing event notification instance."
   default     = null
+}
+
+variable "existing_en_instance_name" {
+  type        = string
+  description = "The name of existing event notification instance"
+  default     = null
+}
+
+variable "skip_en_auth_policy" {
+  type        = bool
+  description = "To skip creating auth policy that allows Cloud Logs access on the Event Notification instance."
+  default     = false
+}
+
+variable "en_source_id" {
+  type        = string
+  description = "The ID of the created source in the IBM Event Notifications instance"
+  default     = null
+
+  validation {
+    condition     = (length(var.en_source_id) >= 1 && length(var.en_source_id) <= 4096 && can(regex("^([A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+)$", var.en_source_id)))
+    error_message = "The en_source_id must be between 1 and 4096 characters long and match the regular expression /^[A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+$/."
+  }
+}
+
+variable "en_source_name" {
+  type        = string
+  description = "The name of the created source in the IBM Event Notifications instance"
+  default     = null
+
+  validation {
+    condition     = (length(var.en_source_name) >= 1 && length(var.en_source_name) <= 4096 && can(regex("^([A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+)$", var.en_source_name)))
+    error_message = "The en_source_name must be between 1 and 4096 characters long and match the regular expression /^[A-Za-z0-9_\\.,\\-\"{}()\\[\\]=!:#\\/\\$|' ]+$/."
+  }
 }
 
 variable "cloud_logs_retention_period" {
