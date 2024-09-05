@@ -235,6 +235,9 @@
               "key": "en_source_name"
             },
             {
+              "key": "log_analysis_provision"
+            },
+            {
               "key": "log_analysis_instance_name"
             },
             {
