@@ -71,5 +71,5 @@ module "event_notification" {
   tags              = var.resource_tags
   plan              = "standard"
   service_endpoints = "public"
-  region            = var.en_region
+  region            = var.region
 }

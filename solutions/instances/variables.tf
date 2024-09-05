@@ -64,12 +64,6 @@ variable "cloud_logs_instance_name" {
   default     = "cloud-logs"
 }
 
-variable "cloud_logs_region" {
-  description = "The region where Cloud Logs instances resources are created."
-  type        = string
-  default     = null
-}
-
 variable "cloud_logs_tags" {
   type        = list(string)
   description = "The resource tags that are associated with the IBM Cloud Logs instance (`Optional`, `array of strings`)."
@@ -92,7 +86,7 @@ variable "cloud_logs_access_tags" {
 variable "cloud_logs_service_endpoints" {
   description = "The type of endpoint for the IBM Cloud Logs instance. Possible values: `public`, `private`, `public-and-private`."
   type        = string
-  default     = "public-and-private"
+  default     = "private"
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.cloud_logs_service_endpoints)
     error_message = "The specified service_endpoints is not a valid selection"
@@ -113,25 +107,25 @@ variable "enable_cloud_logs_metrics" {
 
 variable "enable_en_cloud_logs_integration" {
   type        = bool
-  description = "Whether to enable event notification integration for IBM Cloud Logs instance"
+  description = "Whether to enable event notification integration for IBM Cloud Logs instance. When set to true, a value is required for `existing_en_instance_crn`."
   default     = false
 }
 
 variable "existing_en_instance_crn" {
   type        = string
-  description = "The CRN of the existing event notification instance."
+  description = "The CRN of the existing event notification instance. If a value is provided here, `enable_en_cloud_logs_integration` must be set to true in order to enable the integration."
   default     = null
 }
 
-variable "existing_en_instance_name" {
+variable "en_integration_name" {
   type        = string
-  description = "The name of the existing event notification instance."
-  default     = null
+  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  default     = "cloud-logs-en-integration"
 }
 
 variable "skip_en_auth_policy" {
   type        = bool
-  description = "To skip creating auth policy that allows Cloud Logs access in the existing event notification instance."
+  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance."
   default     = false
 }
 
@@ -149,8 +143,13 @@ variable "en_source_name" {
 
 variable "cloud_logs_retention_period" {
   type        = number
-  description = "The number of days IBM Cloud Logs will retain the logs data in priority insights."
+  description = "The number of days IBM Cloud Logs will retain the logs data in priority insights. Possible Values: 7, 14, 30, 60, 90"
   default     = 7
+
+  validation {
+    condition     = contains([7, 14, 30, 60, 90], var.cloud_logs_retention_period)
+    error_message = "The retention period must be one of the following values: 7, 14, 30, 60, or 90 days."
+  }
 }
 
 variable "cloud_log_data_bucket_name" {

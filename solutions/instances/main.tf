@@ -103,10 +103,17 @@ locals {
   cloud_log_data_bucket   = var.prefix != null ? "${var.prefix}-${var.cloud_log_data_bucket_name}" : var.cloud_log_data_bucket_name
   cloud_log_metric_bucket = var.prefix != null ? "${var.prefix}-${var.cloud_log_metric_bucket_name}" : var.cloud_log_metric_bucket_name
 
+  parsed_log_data_bucket_name         = var.existing_cloud_logs_data_bucket_crn != null ? split(":", var.existing_cloud_logs_data_bucket_crn) : []
+  existing_cloud_log_data_bucket_name = length(local.parsed_log_data_bucket_name) > 0 ? local.parsed_log_data_bucket_name[1] : null
+
+  parsed_metrics_data_bucket_name       = var.existing_cloud_logs_metric_bucket_crn != null ? split(":", var.existing_cloud_logs_metric_bucket_crn) : []
+  existing_cloud_log_metric_bucket_name = length(local.parsed_metrics_data_bucket_name) > 0 ? local.parsed_metrics_data_bucket_name[1] : null
+
   # Event Notifications
   parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
   existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
   en_region                       = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[5] : null
+  en_integration_name             = var.prefix != null ? "${var.prefix}-${var.en_integration_name}" : var.en_integration_name
 
 }
 
@@ -161,7 +168,7 @@ module "observability_instance" {
 
   # IBM Cloud Logs
   cloud_logs_provision         = var.cloud_logs_provision
-  cloud_logs_region            = var.cloud_logs_region != null ? var.cloud_logs_region : var.region
+  cloud_logs_region            = var.region
   cloud_logs_instance_name     = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
   cloud_logs_plan              = var.cloud_logs_plan
   cloud_logs_access_tags       = var.cloud_logs_access_tags
@@ -183,7 +190,7 @@ module "observability_instance" {
   cloud_logs_existing_en_instances = var.enable_en_cloud_logs_integration && var.existing_en_instance_crn != null ? [{
     en_instance_id      = local.existing_en_guid
     en_region           = local.en_region
-    en_instance_name    = var.existing_en_instance_name
+    en_instance_name    = local.en_integration_name
     skip_en_auth_policy = var.skip_en_auth_policy
     source_id           = var.en_source_id
     source_name         = var.en_source_name
