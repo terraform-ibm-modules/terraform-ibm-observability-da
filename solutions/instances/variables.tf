@@ -119,31 +119,31 @@ variable "enable_en_cloud_logs_integration" {
 
 variable "existing_en_instance_crn" {
   type        = string
-  description = "The CRN of existing event notification instance."
+  description = "The CRN of the existing event notification instance."
   default     = null
 }
 
 variable "existing_en_instance_name" {
   type        = string
-  description = "The name of existing event notification instance"
+  description = "The name of the existing event notification instance."
   default     = null
 }
 
 variable "skip_en_auth_policy" {
   type        = bool
-  description = "To skip creating auth policy that allows Cloud Logs access on the Event Notification instance."
+  description = "To skip creating auth policy that allows Cloud Logs access in the existing event notification instance."
   default     = false
 }
 
 variable "en_source_id" {
   type        = string
-  description = "The ID of the created source in the IBM Event Notifications instance"
+  description = "The id of the created source in the existing event notification instance."
   default     = null
 }
 
 variable "en_source_name" {
   type        = string
-  description = "The name of the created source in the IBM Event Notifications instance"
+  description = "The name of the created source in the existing event notification instance."
   default     = null
 }
 
