@@ -47,14 +47,6 @@ module "cloud_log_buckets" {
       create_cos_instance    = false
       resource_instance_id   = module.cos.cos_instance_id
       kms_encryption_enabled = false
-    },
-    {
-      bucket_name            = "${var.prefix}-metric-bucket"
-      add_bucket_name_suffix = true
-      region_location        = var.region
-      create_cos_instance    = false
-      resource_instance_id   = module.cos.cos_instance_id
-      kms_encryption_enabled = false
     }
   ]
 }
