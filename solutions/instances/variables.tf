@@ -216,7 +216,7 @@ variable "log_analysis_tags" {
 variable "log_analysis_enable_archive" {
   type        = bool
   description = "Whether to enable archiving on Log Analysis instances. If set to true, `log_analysis_provision` must also be set to true."
-  default     = true
+  default     = false
 }
 
 variable "log_archive_api_key" {
