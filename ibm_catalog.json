@@ -239,9 +239,6 @@
               "key": "skip_en_auth_policy"
             },
             {
-              "key": "existing_en_instance_name"
-            },
-            {
               "key": "log_analysis_provision"
             },
             {

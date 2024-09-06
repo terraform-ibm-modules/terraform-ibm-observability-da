@@ -95,7 +95,7 @@ variable "cloud_logs_service_endpoints" {
 
 variable "enable_cloud_logs_data" {
   type        = bool
-  description = "Whether to enable cloud logs data to the Object Storage bucket."
+  description = "Whether to enable cloud logs data to the Object Storage bucket. If set to true, `cloud_logs_provision` must also be set to true."
   default     = true
 }
 
@@ -215,7 +215,7 @@ variable "log_analysis_tags" {
 
 variable "log_analysis_enable_archive" {
   type        = bool
-  description = "Whether to enable archiving on Log Analysis instances."
+  description = "Whether to enable archiving on Log Analysis instances. If set to true, `log_analysis_provision` must also be set to true."
   default     = true
 }
 
