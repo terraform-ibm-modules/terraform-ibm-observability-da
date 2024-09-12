@@ -1,8 +1,8 @@
 {
   "products": [
     {
-      "name": "deploy-arch-ibm-observability",
-      "label": "Observability",
+      "name": "testing-deploy-arch-ibm-observability",
+      "label": "Testing-Observability",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
