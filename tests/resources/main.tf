@@ -3,7 +3,7 @@
 ##############################################################################
 
 module "landing_zone" {
-  source                 = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v5.25.1"
+  source                 = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v5.31.3"
   region                 = var.region
   prefix                 = var.prefix
   tags                   = var.resource_tags
@@ -20,7 +20,7 @@ locals {
 }
 
 module "observability_instances" {
-  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.13.2"
+  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.18.0"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
