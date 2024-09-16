@@ -46,7 +46,7 @@
         {
 
           "title": "Configures IBM Cloud Activity Tracker Event Routing",
-          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage and Log Analysis target."
+          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage, Log Analysis and Cloud Logs target."
         }
       ],
       "support_details": "This product is in the community registry and support is handled in the source repo. You can open an issue at [https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues). Support is not offered through IBM Cloud Support.",
@@ -98,6 +98,13 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "cloud-object-storage"
+            },
+            {
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ],
+              "service_name": "logs"
             }
           ],
           "compliance": {
@@ -185,14 +192,6 @@
               "key": "cloud_logs_service_endpoints",
               "options": [
                 {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
                   "displayname": "public-and-private",
                   "value": "public-and-private"
                 }
@@ -237,6 +236,12 @@
             },
             {
               "key": "skip_en_auth_policy"
+            },
+            {
+              "key": "skip_logs_routing_auth_policy"
+            },
+            {
+              "key": "logs_routing_tenant_regions"
             },
             {
               "key": "log_analysis_provision"
@@ -303,6 +308,9 @@
             },
             {
               "key": "enable_at_event_routing_to_cos_bucket"
+            },
+            {
+              "key": "enable_at_event_routing_to_cloud_logs"
             },
             {
               "key": "cloud_monitoring_provision"
