@@ -36,8 +36,10 @@ locals {
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
   cos_target_name            = var.prefix != null ? "${var.prefix}-cos-target" : "cos-target"
   log_analysis_target_name   = var.prefix != null ? "${var.prefix}-log-analysis-target" : "log-analysis-target"
+  cloud_logs_target_name     = var.prefix != null ? "${var.prefix}-cloud-logs-target" : "cloud-logs-target"
   at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
   at_log_analysis_route_name = var.prefix != null ? "${var.prefix}-at-log-analysis-route" : "at-log-analysis-route"
+  at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
 
   archive_bucket_config = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision && var.log_analysis_enable_archive ? {
     class = var.log_archive_cos_bucket_class
@@ -94,7 +96,13 @@ locals {
     target_ids = [module.observability_instance.activity_tracker_targets[local.log_analysis_target_name].id]
   }] : []
 
-  at_routes = concat(local.at_cos_route, local.at_log_analysis_route)
+  at_cloud_logs_route = var.enable_at_event_routing_to_cloud_logs ? [{
+    route_name = local.at_cloud_logs_route_name
+    locations  = ["*", "global"]
+    target_ids = [module.observability_instance.activity_tracker_targets[local.cloud_logs_target_name].id]
+  }] : []
+
+  at_routes = concat(local.at_cos_route, local.at_log_analysis_route, local.at_cloud_logs_route)
 
   apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
 
@@ -129,11 +137,15 @@ module "resource_group" {
 locals {
   parsed_existing_cloud_monitoring_crn = var.existing_cloud_monitoring_crn != null ? split(":", var.existing_cloud_monitoring_crn) : []
   existing_cloud_monitoring_guid       = length(local.parsed_existing_cloud_monitoring_crn) > 0 ? local.parsed_existing_cloud_monitoring_crn[7] : null
+
+  log_analysis_instance_name     = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
+  cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
+  cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
 }
 
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.14.0"
+  version = "2.18.0"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -144,7 +156,7 @@ module "observability_instance" {
   ibmcloud_api_key            = local.archive_api_key
   # Log Analysis
   log_analysis_provision           = var.log_analysis_provision
-  log_analysis_instance_name       = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
+  log_analysis_instance_name       = local.log_analysis_instance_name
   log_analysis_plan                = var.log_analysis_plan
   log_analysis_tags                = var.log_analysis_tags
   log_analysis_service_endpoints   = var.log_analysis_service_endpoints
@@ -154,7 +166,7 @@ module "observability_instance" {
   enable_platform_logs             = var.enable_platform_logs
   # IBM Cloud Monitoring
   cloud_monitoring_provision         = var.cloud_monitoring_provision
-  cloud_monitoring_instance_name     = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
+  cloud_monitoring_instance_name     = local.cloud_monitoring_instance_name
   cloud_monitoring_plan              = var.cloud_monitoring_plan
   cloud_monitoring_tags              = var.cloud_monitoring_tags
   cloud_monitoring_service_endpoints = var.cloud_monitoring_service_endpoints
@@ -162,8 +174,7 @@ module "observability_instance" {
 
   # IBM Cloud Logs
   cloud_logs_provision         = var.cloud_logs_provision
-  cloud_logs_region            = var.region
-  cloud_logs_instance_name     = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
+  cloud_logs_instance_name     = local.cloud_logs_instance_name
   cloud_logs_plan              = var.cloud_logs_plan
   cloud_logs_access_tags       = var.cloud_logs_access_tags
   cloud_logs_tags              = var.cloud_logs_tags
@@ -187,10 +198,12 @@ module "observability_instance" {
     en_instance_name    = local.en_integration_name
     skip_en_auth_policy = var.skip_en_auth_policy
   }] : []
+  skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
+  logs_routing_tenant_regions   = var.logs_routing_tenant_regions
 
   # Activity Tracker
   activity_tracker_provision = false
-  cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
+  at_cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
@@ -202,12 +215,20 @@ module "observability_instance" {
     }
   ] : []
 
-  log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
+  at_log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
     {
       instance_id   = module.observability_instance.log_analysis_crn
       ingestion_key = module.observability_instance.log_analysis_ingestion_key
       target_region = var.region
       target_name   = local.log_analysis_target_name
+    }
+  ] : []
+
+  at_cloud_logs_targets = var.enable_at_event_routing_to_cloud_logs ? [
+    {
+      instance_id   = module.observability_instance.cloud_logs_crn
+      target_region = var.region
+      target_name   = local.cloud_logs_target_name
     }
   ] : []
 
