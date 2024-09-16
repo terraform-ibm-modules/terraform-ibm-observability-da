@@ -82,7 +82,7 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
-		{Name: "logs_analysis_provision", Value: true, DataType: "bool"},
+		{Name: "log_analysis_provision", Value: true, DataType: "bool"},
 		{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_logs_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "enable_platform_logs", Value: false, DataType: "bool"},

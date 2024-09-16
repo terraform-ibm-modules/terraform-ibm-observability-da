@@ -241,9 +241,6 @@
               "key": "skip_logs_routing_auth_policy"
             },
             {
-              "key": "logs_routing_tenant_regions"
-            },
-            {
               "key": "log_analysis_provision"
             },
             {

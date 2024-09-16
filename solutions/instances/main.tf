@@ -199,7 +199,7 @@ module "observability_instance" {
     skip_en_auth_policy = var.skip_en_auth_policy
   }] : []
   skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
-  logs_routing_tenant_regions   = var.logs_routing_tenant_regions
+  logs_routing_tenant_regions   = [var.region]
 
   # Activity Tracker
   activity_tracker_provision = false
