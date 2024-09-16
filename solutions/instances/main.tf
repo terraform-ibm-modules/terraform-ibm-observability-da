@@ -187,7 +187,7 @@ module "observability_instance" {
       bucket_endpoint = var.enable_cloud_logs_data ? var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct : null
     },
     metrics_data = {
-      enabled         = false
+      enabled         = false # Support for metrics is dependent on the resolution of https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances/issues/555
       bucket_crn      = null
       bucket_endpoint = null
     }

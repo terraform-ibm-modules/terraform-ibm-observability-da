@@ -188,7 +188,7 @@ variable "logs_routing_tenant_regions" {
 ##############################################################################
 
 variable "log_analysis_provision" {
-  description = "Set it to true to provision an IBM Cloud Logging instance"
+  description = "Set it to true to provision an IBM Cloud Logging instance. This service is deprecated, and will no longer be supported as of 30 March 2025. For more information, see https://cloud.ibm.com/docs/log-analysis?topic=log-analysis-getting-started"
   type        = bool
   default     = false
 }
