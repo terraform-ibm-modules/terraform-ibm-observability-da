@@ -247,14 +247,6 @@
               "key": "cloud_monitoring_service_endpoints",
               "options": [
                 {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
                   "displayname": "public-and-private",
                   "value": "public-and-private"
                 }

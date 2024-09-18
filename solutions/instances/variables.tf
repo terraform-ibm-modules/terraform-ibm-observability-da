@@ -160,12 +160,12 @@ variable "cloud_monitoring_tags" {
 }
 
 variable "cloud_monitoring_service_endpoints" {
-  description = "The type of service endpoint to set for the IBM Cloud Monitoring instance."
+  description = "The type of service endpoint to set for the IBM Cloud Monitoring instance. Allowed values: `public-and-private`"
   type        = string
-  default     = "private"
+  default     = "public-and-private"
   validation {
-    condition     = contains(["public", "private", "public-and-private"], var.cloud_monitoring_service_endpoints)
-    error_message = "The specified service endpoint is not valid. Specify a valid service endpoint to set for the IBM Cloud Monitoring instance."
+    condition     = contains(["public-and-private"], var.cloud_monitoring_service_endpoints)
+    error_message = "The specified service endpoint is not valid. Specify a valid service endpoint to set for the IBM Cloud Monitoring instance.  Allowed values: `public-and-private`."
   }
 }
 
