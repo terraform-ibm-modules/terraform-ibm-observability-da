@@ -216,7 +216,7 @@ variable "enable_platform_logs" {
 variable "enable_at_event_routing_to_cos_bucket" {
   type        = bool
   description = "Whether to enable event routing from Activity Tracker to the Object Storage bucket."
-  default     = true
+  default     = false
 }
 
 variable "enable_at_event_routing_to_log_analysis" {
@@ -228,7 +228,7 @@ variable "enable_at_event_routing_to_log_analysis" {
 variable "enable_at_event_routing_to_cloud_logs" {
   type        = bool
   description = "Whether to enable event routing from Activity Tracker to Cloud Log."
-  default     = false
+  default     = true
 }
 
 ##############################################################################

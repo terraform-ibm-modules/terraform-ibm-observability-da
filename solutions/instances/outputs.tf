@@ -85,7 +85,7 @@ output "cos_instance_crn" {
 
 ## COS Buckets
 output "log_archive_cos_bucket_name" {
-  value       = var.existing_log_archive_cos_bucket_name == null ? var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null : var.existing_log_archive_cos_bucket_name
+  value       = var.existing_log_archive_cos_bucket_name == null ? var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null : var.existing_log_archive_cos_bucket_name
   description = "The name of log archive COS bucket"
 }
 
