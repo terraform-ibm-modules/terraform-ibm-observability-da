@@ -132,7 +132,7 @@ module "observability_instance" {
 
   # Activity Tracker
   activity_tracker_provision = false
-  cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
+  at_cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
@@ -144,7 +144,7 @@ module "observability_instance" {
     }
   ] : []
 
-  log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
+  at_log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
     {
       instance_id   = module.observability_instance.log_analysis_crn
       ingestion_key = module.observability_instance.log_analysis_ingestion_key
@@ -170,7 +170,7 @@ module "kms" {
   version                     = "4.15.13"
   create_key_protect_instance = false
   region                      = local.kms_region
-  existing_kms_instance_guid  = local.existing_kms_guid
+  existing_kms_instance_crn   = var.existing_kms_instance_crn
   key_ring_endpoint_type      = var.kms_endpoint_type
   key_endpoint_type           = var.kms_endpoint_type
   keys = [
