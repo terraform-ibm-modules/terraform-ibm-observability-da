@@ -189,15 +189,6 @@
               "key": "cloud_logs_access_tags"
             },
             {
-              "key": "cloud_logs_service_endpoints",
-              "options": [
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
-                }
-              ]
-            },
-            {
               "key": "cloud_logs_retention_period",
               "options": [
                 {
@@ -221,12 +212,6 @@
                   "value": "90"
                 }
               ]
-            },
-            {
-              "key": "enable_cloud_logs_data"
-            },
-            {
-              "key": "enable_en_cloud_logs_integration"
             },
             {
               "key": "existing_en_instance_crn"
@@ -328,23 +313,6 @@
                 {
                   "displayname": "graduated-tier",
                   "value": "graduated-tier"
-                }
-              ]
-            },
-            {
-              "key": "cloud_monitoring_service_endpoints",
-              "options": [
-                {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
                 }
               ]
             },

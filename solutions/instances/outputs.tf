@@ -95,7 +95,7 @@ output "at_cos_target_bucket_name" {
 }
 
 output "cloud_log_data_bucket_name" {
-  value       = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision && var.enable_cloud_logs_data ? module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_name : local.existing_cloud_log_data_bucket_name
+  value       = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_name : local.existing_cloud_log_data_bucket_name
   description = "The name of the Cloud logs data COS bucket"
 }
 

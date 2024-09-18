@@ -7,15 +7,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_log_analysis_provision = var.enable_at_event_routing_to_log_analysis && var.log_analysis_provision == false ? tobool("log_analysis_provision can't be false if enable_at_event_routing_to_log_analysis is true") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_log_analysis_archive_provision = var.log_analysis_enable_archive && var.log_analysis_provision == false ? tobool("log_analysis_provision can't be false if log_analysis_enable_archive is true") : true
-  # tflint-ignore: terraform_unused_declarations
-  validate_cloud_log_provision = var.enable_cloud_logs_data && var.cloud_logs_provision == false ? tobool("cloud_logs_provision can't be false if enable_cloud_logs_data is true") : null
-  # tflint-ignore: terraform_unused_declarations
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
-  # tflint-ignore: terraform_unused_declarations
-  validate_existing_event_notification = var.enable_en_cloud_logs_integration && var.existing_en_instance_crn == null ? tobool("if enable_en_cloud_logs_integration is set to true, then existing_en_instance_crn should not be null and vice versa") : true
-
-
 
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
@@ -26,11 +18,11 @@ locals {
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
-  existing_kms_guid           = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_enable_archive && !var.enable_at_event_routing_to_cos_bucket && !var.enable_cloud_logs_data)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
+  existing_kms_guid           = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
-  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
-  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
-  cos_kms_key_crn             = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_enable_archive && !var.enable_at_event_routing_to_cos_bucket && !var.enable_cloud_logs_data)) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
+  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
+  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
+  cos_kms_key_crn             = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
@@ -41,7 +33,7 @@ locals {
   at_log_analysis_route_name = var.prefix != null ? "${var.prefix}-at-log-analysis-route" : "at-log-analysis-route"
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
 
-  archive_bucket_config = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision && var.log_analysis_enable_archive ? {
+  archive_bucket_config = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision ? {
     class = var.log_archive_cos_bucket_class
     name  = local.log_archive_cos_bucket_name
     tag   = var.archive_bucket_access_tags
@@ -53,7 +45,7 @@ locals {
     tag   = var.at_cos_bucket_access_tags
   } : null
 
-  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision && var.enable_cloud_logs_data ? {
+  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? {
     class = var.cloud_log_data_bucket_class
     name  = local.cloud_log_data_bucket
     tag   = var.cloud_log_data_bucket_access_tag
@@ -169,22 +161,22 @@ module "observability_instance" {
   cloud_monitoring_instance_name     = local.cloud_monitoring_instance_name
   cloud_monitoring_plan              = var.cloud_monitoring_plan
   cloud_monitoring_tags              = var.cloud_monitoring_tags
-  cloud_monitoring_service_endpoints = var.cloud_monitoring_service_endpoints
+  cloud_monitoring_service_endpoints = "public-and-private"
   enable_platform_metrics            = var.enable_platform_metrics
 
   # IBM Cloud Logs
   cloud_logs_provision         = var.cloud_logs_provision
   cloud_logs_instance_name     = local.cloud_logs_instance_name
-  cloud_logs_plan              = var.cloud_logs_plan
+  cloud_logs_plan              = "standard"
   cloud_logs_access_tags       = var.cloud_logs_access_tags
   cloud_logs_tags              = var.cloud_logs_tags
-  cloud_logs_service_endpoints = var.cloud_logs_service_endpoints
+  cloud_logs_service_endpoints = "public-and-private"
   cloud_logs_retention_period  = var.cloud_logs_retention_period
   cloud_logs_data_storage = var.cloud_logs_provision ? {
     logs_data = {
-      enabled         = var.enable_cloud_logs_data
-      bucket_crn      = var.enable_cloud_logs_data ? var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn : null
-      bucket_endpoint = var.enable_cloud_logs_data ? var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct : null
+      enabled         = true
+      bucket_crn      = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
     },
     metrics_data = {
       enabled         = false # Support for metrics is dependent on the resolution of https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances/issues/555
@@ -192,14 +184,14 @@ module "observability_instance" {
       bucket_endpoint = null
     }
   } : null
-  cloud_logs_existing_en_instances = var.enable_en_cloud_logs_integration && var.existing_en_instance_crn != null ? [{
+  cloud_logs_existing_en_instances = var.existing_en_instance_crn != null ? [{
     en_instance_id      = local.existing_en_guid
     en_region           = local.en_region
     en_instance_name    = local.en_integration_name
     skip_en_auth_policy = var.skip_en_auth_policy
   }] : []
   skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
-  # logs_routing_tenant_regions   = [var.region]
+  logs_routing_tenant_regions   = [var.region]
 
   # Activity Tracker
   activity_tracker_provision = false

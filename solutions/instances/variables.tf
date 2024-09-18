@@ -52,12 +52,6 @@ variable "cloud_logs_provision" {
   default     = true
 }
 
-variable "cloud_logs_plan" {
-  type        = string
-  description = "The IBM Cloud Logs plan to provision. Possible values: standard"
-  default     = "standard"
-}
-
 variable "cloud_logs_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Logs instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
@@ -81,28 +75,6 @@ variable "cloud_logs_access_tags" {
     ])
     error_message = "Tags must match the regular expression \"[\\w\\-_\\.]+:[\\w\\-_\\.]+\". For more information, see https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#limits."
   }
-}
-
-variable "cloud_logs_service_endpoints" {
-  description = "The type of endpoint for the IBM Cloud Logs instance. Possible values: `public`, `private`, `public-and-private`."
-  type        = string
-  default     = "public-and-private"
-  validation {
-    condition     = contains(["public-and-private"], var.cloud_logs_service_endpoints)
-    error_message = "The specified service_endpoints is not a valid selection"
-  }
-}
-
-variable "enable_cloud_logs_data" {
-  type        = bool
-  description = "Whether to enable cloud logs data to the Object Storage bucket. If set to true, `cloud_logs_provision` must also be set to true."
-  default     = true
-}
-
-variable "enable_en_cloud_logs_integration" {
-  type        = bool
-  description = "Whether to enable event notification integration for IBM Cloud Logs instance. When set to true, a value is required for `existing_en_instance_crn`."
-  default     = false
 }
 
 variable "existing_en_instance_crn" {
@@ -151,7 +123,7 @@ variable "existing_cloud_logs_data_bucket_endpoint" {
   type        = string
   nullable    = true
   default     = null
-  description = "The name of an existing Cloud Object Storage bucket endpoint to use for storing the IBM Cloud Logs data. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
+  description = "The endpoint of an existing Cloud Object Storage bucket to use for storing the IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
 }
 
 variable "cloud_log_data_bucket_class" {
@@ -181,7 +153,7 @@ variable "skip_logs_routing_auth_policy" {
 ##############################################################################
 
 variable "log_analysis_provision" {
-  description = "Set it to true to provision an IBM Cloud Logging instance. This service is deprecated, and will no longer be supported as of 30 March 2025. For more information, see https://cloud.ibm.com/docs/log-analysis?topic=log-analysis-getting-started"
+  description = "Set it to true to provision an IBM Cloud Logging instance. IBM Cloud Log Analysis is now deprecated and new instances cannot be provisioned after November 30, 2024, and all existing instances will be destroyed on March 30, 2025. For more information, see https://cloud.ibm.com/docs/log-analysis?topic=log-analysis-getting-started"
   type        = bool
   default     = false
 }
@@ -222,7 +194,7 @@ variable "log_analysis_tags" {
 variable "log_analysis_enable_archive" {
   type        = bool
   description = "Whether to enable archiving on Log Analysis instances. If set to true, `log_analysis_provision` must also be set to true."
-  default     = false
+  default     = true
 }
 
 variable "log_archive_api_key" {
@@ -249,7 +221,7 @@ variable "enable_at_event_routing_to_cos_bucket" {
 
 variable "enable_at_event_routing_to_log_analysis" {
   type        = bool
-  description = "Whether to enable event routing from Activity Tracker to Log Analysis."
+  description = "Whether to enable event routing from Activity Tracker to Log Analysis. IBM Cloud Log Analysis is now deprecated and new instances cannot be provisioned after November 30, 2024, and all existing instances will be destroyed on March 30, 2025."
   default     = false
 }
 
@@ -296,16 +268,6 @@ variable "cloud_monitoring_tags" {
   type        = list(string)
   description = "The tags that are associated with the IBM Cloud Monitoring instance (`Optional`, `array of strings`)."
   default     = []
-}
-
-variable "cloud_monitoring_service_endpoints" {
-  description = "The type of service endpoint to set for the IBM Cloud Monitoring instance."
-  type        = string
-  default     = "public-and-private"
-  validation {
-    condition     = contains(["public", "private", "public-and-private"], var.cloud_monitoring_service_endpoints)
-    error_message = "The specified service endpoint is not valid. Specify a valid service endpoint to set for the IBM Cloud Monitoring instance."
-  }
 }
 
 variable "enable_platform_metrics" {
