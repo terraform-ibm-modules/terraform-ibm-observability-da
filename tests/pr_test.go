@@ -125,6 +125,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"enable_platform_logs":                    "false",
 		"enable_platform_metrics":                 "false",
 		"enable_at_event_routing_to_log_analysis": "true",
+		"enable_at_event_routing_to_cos_bucket":   "true",
 	}
 
 	output, err := options.RunTestUpgrade()
@@ -268,7 +269,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":              true,
 				"log_analysis_provision":                   true,
-				"enable_en_cloud_logs_integration":         true,
 				"existing_log_archive_cos_bucket_name":     terraform.Output(t, existingTerraformOptions, "bucket_name"),
 				"existing_at_cos_target_bucket_name":       terraform.Output(t, existingTerraformOptions, "bucket_name_at"),
 				"existing_log_archive_cos_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "bucket_endpoint"),
@@ -280,6 +280,8 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"management_endpoint_type_for_bucket":      "public",
 				"log_analysis_service_endpoints":           "public",
 				"enable_platform_metrics":                  "false",
+				"enable_at_event_routing_to_cos_bucket":    "true",
+				"enable_at_event_routing_to_log_analysis":  "true",
 			},
 		})
 
@@ -304,6 +306,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"kms_endpoint_type":                   "public",
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",
+				"log_analysis_provision":              "true",
 				"log_analysis_service_endpoints":      "public",
 				"enable_platform_metrics":             "false",
 			},
