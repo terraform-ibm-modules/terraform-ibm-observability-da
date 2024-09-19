@@ -94,7 +94,6 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "cloud_log_data_bucket_access_tag", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
 		{Name: "enable_at_event_routing_to_log_analysis", Value: true, DataType: "bool"},
-		{Name: "enable_at_event_routing_to_cos_bucket", Value: true, DataType: "bool"},
 	}
 
 	err := options.RunSchematicTest()
@@ -120,12 +119,9 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"management_endpoint_type_for_bucket":     "public",
 		"log_analysis_provision":                  "true",
 		"log_analysis_service_endpoints":          "public-and-private",
-		"cloud_logs_service_endpoints":            "public-and-private",
-		"cloud_monitoring_service_endpoints":      "public",
 		"enable_platform_logs":                    "false",
 		"enable_platform_metrics":                 "false",
 		"enable_at_event_routing_to_log_analysis": "true",
-		"enable_at_event_routing_to_cos_bucket":   "true",
 	}
 
 	output, err := options.RunTestUpgrade()
@@ -280,7 +276,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"management_endpoint_type_for_bucket":      "public",
 				"log_analysis_service_endpoints":           "public",
 				"enable_platform_metrics":                  "false",
-				"enable_at_event_routing_to_cos_bucket":    "true",
 				"enable_at_event_routing_to_log_analysis":  "true",
 			},
 		})
