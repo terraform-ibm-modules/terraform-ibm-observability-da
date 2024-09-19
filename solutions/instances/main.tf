@@ -103,7 +103,7 @@ locals {
 
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.13.2"
+  version = "2.18.0"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -132,7 +132,7 @@ module "observability_instance" {
 
   # Activity Tracker
   activity_tracker_provision = false
-  cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
+  at_cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
       endpoint                          = local.cos_target_bucket_endpoint
@@ -144,7 +144,7 @@ module "observability_instance" {
     }
   ] : []
 
-  log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
+  at_log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
     {
       instance_id   = module.observability_instance.log_analysis_crn
       ingestion_key = module.observability_instance.log_analysis_ingestion_key
@@ -167,10 +167,10 @@ module "kms" {
   }
   count                       = (var.existing_cos_kms_key_crn != null || (length(coalesce(local.bucket_config_map, [])) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.13.4"
+  version                     = "4.15.13"
   create_key_protect_instance = false
   region                      = local.kms_region
-  existing_kms_instance_guid  = local.existing_kms_guid
+  existing_kms_instance_crn   = var.existing_kms_instance_crn
   key_ring_endpoint_type      = var.kms_endpoint_type
   key_endpoint_type           = var.kms_endpoint_type
   keys = [
@@ -229,7 +229,7 @@ module "cos_instance" {
   }
   count                    = var.existing_cos_instance_crn == null && length(coalesce(local.bucket_config_map, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "8.6.2"
+  version                  = "8.11.11"
   resource_group_id        = module.resource_group.resource_group_id
   create_cos_instance      = true
   cos_instance_name        = var.prefix != null ? "${var.prefix}-${var.cos_instance_name}" : var.cos_instance_name
@@ -246,7 +246,7 @@ module "cos_bucket" {
   }
   count   = length(coalesce(local.bucket_config_map, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.6.2"
+  version = "8.11.11"
   bucket_configs = [
     for value in local.bucket_config_map :
     {
