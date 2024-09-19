@@ -28,11 +28,11 @@ module "observability_instances" {
   resource_group_id                  = local.cluster_resource_group_id
   region                             = var.region
   log_analysis_plan                  = "7-day"
-  log_analysis_service_endpoints     = "private"
+  log_analysis_service_endpoints     = "public-and-private"
   log_analysis_instance_name         = "${var.prefix}-log-analysis"
   enable_platform_logs               = false
   cloud_monitoring_plan              = "graduated-tier"
-  cloud_monitoring_service_endpoints = "private"
+  cloud_monitoring_service_endpoints = "public-and-private"
   cloud_monitoring_instance_name     = "${var.prefix}-cloud-monitoring"
   enable_platform_metrics            = false
   activity_tracker_provision         = false

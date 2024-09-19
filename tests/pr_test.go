@@ -115,7 +115,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"kms_endpoint_type":                       "public",
 		"management_endpoint_type_for_bucket":     "public",
 		"log_analysis_service_endpoints":          "public-and-private",
-		"cloud_monitoring_service_endpoints":      "public",
+		"cloud_monitoring_service_endpoints":      "public-and-private",
 		"enable_platform_logs":                    "false",
 		"enable_platform_metrics":                 "false",
 		"enable_at_event_routing_to_log_analysis": "true",
