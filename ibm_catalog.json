@@ -18,6 +18,7 @@
         "solution",
         "observability",
         "observability instances",
+        "cloud logs",
         "log analysis",
         "cloud monitoring",
         "ATracker",
@@ -31,6 +32,10 @@
       "provider_name": "IBM",
       "features": [
         {
+          "title": "Configures IBM Cloud Logs",
+          "description": "Configures an IBM Cloud Logs instance."
+        },
+        {
           "title": "Configures IBM Log Analysis",
           "description": "Configures the IBM Log Analysis instance and logging agents."
         },
@@ -41,7 +46,7 @@
         {
 
           "title": "Configures IBM Cloud Activity Tracker Event Routing",
-          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage and Log Analysis target."
+          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage, Log Analysis and Cloud Logs target."
         }
       ],
       "support_details": "This product is in the community registry and support is handled in the source repo. You can open an issue at [https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues). Support is not offered through IBM Cloud Support.",
@@ -93,6 +98,13 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "cloud-object-storage"
+            },
+            {
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ],
+              "service_name": "logs"
             }
           ],
           "compliance": {
@@ -154,6 +166,58 @@
                   "value": "us-east"
                 }
               ]
+            },
+            {
+              "key": "cloud_logs_provision"
+            },
+            {
+              "key": "cloud_logs_instance_name"
+            },
+            {
+              "key": "cloud_logs_tags"
+            },
+            {
+              "key": "cloud_logs_access_tags"
+            },
+            {
+              "key": "cloud_logs_retention_period",
+              "options": [
+                {
+                  "displayname": "7-days",
+                  "value": "7"
+                },
+                {
+                  "displayname": "14-days",
+                  "value": "14"
+                },
+                {
+                  "displayname": "30-days",
+                  "value": "30"
+                },
+                {
+                  "displayname": "60-days",
+                  "value": "60"
+                },
+                {
+                  "displayname": "90-days",
+                  "value": "90"
+                }
+              ]
+            },
+            {
+              "key": "existing_en_instance_crn"
+            },
+            {
+              "key": "en_integration_name"
+            },
+            {
+              "key": "skip_en_auth_policy"
+            },
+            {
+              "key": "skip_logs_routing_auth_policy"
+            },
+            {
+              "key": "logs_routing_tenant_regions"
             },
             {
               "key": "log_analysis_provision"
@@ -222,6 +286,9 @@
               "key": "enable_at_event_routing_to_cos_bucket"
             },
             {
+              "key": "enable_at_event_routing_to_cloud_logs"
+            },
+            {
               "key": "cloud_monitoring_provision"
             },
             {
@@ -240,15 +307,6 @@
                 {
                   "displayname": "graduated-tier",
                   "value": "graduated-tier"
-                }
-              ]
-            },
-            {
-              "key": "cloud_monitoring_service_endpoints",
-              "options": [
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
                 }
               ]
             },
@@ -333,6 +391,37 @@
               ]
             },
             {
+              "key": "cloud_log_data_bucket_name"
+            },
+            {
+              "key": "cloud_log_data_bucket_class",
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "cloud_log_data_bucket_access_tag"
+            },
+            {
               "key": "management_endpoint_type_for_bucket",
               "options": [
                 {
@@ -363,6 +452,12 @@
             },
             {
               "key": "existing_at_cos_target_bucket_endpoint"
+            },
+            {
+              "key": "existing_cloud_logs_data_bucket_crn"
+            },
+            {
+              "key": "existing_cloud_logs_data_bucket_endpoint"
             },
             {
               "key": "skip_cos_kms_auth_policy"
@@ -396,9 +491,13 @@
           ],
           "architecture": {
 
-            "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Log Analysis target.",
+            "descriptions": "This architecture supports the deployment of IBM Log Analysis, IBM Cloud Monitoring and IBM Cloud Logs instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket, Log Analysis and Cloud Logs target.",
 
             "features": [
+              {
+                "title": "Creates a Cloud Logs instance",
+                "description": "Creates and configures the IBM Cloud Logs instance."
+              },
               {
                 "title": "Creates a Log Analysis instance",
                 "description": "Creates and configures the IBM Cloud Log Analysis instance."
@@ -413,7 +512,7 @@
               },
               {
                 "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Log Analysis target",
-                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket and IBM Cloud Log Analysis target."
+                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket, IBM Cloud Log Analysis and IBM Cloud Logs target."
               }
             ],
             "diagrams": [
@@ -424,7 +523,7 @@
                   "type": "image/svg+xml"
                 },
 
-                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Log Analysis instance."
+                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket, Log Analysis and Cloud Logs instance."
 
               }
             ]

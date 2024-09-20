@@ -44,13 +44,125 @@ variable "prefix" {
 }
 
 ##############################################################################
+# IBM Cloud Logs
+##############################################################################
+variable "cloud_logs_provision" {
+  description = "Set it to true to provision an IBM Cloud Logs instance"
+  type        = bool
+  default     = true
+}
+
+variable "cloud_logs_instance_name" {
+  type        = string
+  description = "The name of the IBM Cloud Logs instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  default     = "cloud-logs"
+}
+
+variable "cloud_logs_tags" {
+  type        = list(string)
+  description = "The resource tags that are associated with the IBM Cloud Logs instance (`Optional`, `array of strings`)."
+  default     = []
+}
+
+variable "cloud_logs_access_tags" {
+  type        = list(string)
+  description = "A list of access tags to apply to the Cloud Logs instance. Maximum length: 128 characters. Possible characters are A-Z, 0-9, spaces, underscores, hyphens, periods, and colons. [Learn more](https://cloud.ibm.com/docs/account?topic=account-access-tags-tutorial)."
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for tag in var.cloud_logs_access_tags : can(regex("[\\w\\-_\\.]+:[\\w\\-_\\.]+", tag)) && length(tag) <= 128
+    ])
+    error_message = "Tags must match the regular expression \"[\\w\\-_\\.]+:[\\w\\-_\\.]+\". For more information, see https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#limits."
+  }
+}
+
+variable "existing_en_instance_crn" {
+  type        = string
+  description = "The CRN of the existing event notification instance. If a value is provided here, `enable_en_cloud_logs_integration` must be set to true in order to enable the integration."
+  default     = null
+}
+
+variable "en_integration_name" {
+  type        = string
+  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  default     = "cloud-logs-en-integration"
+}
+
+variable "skip_en_auth_policy" {
+  type        = bool
+  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance."
+  default     = false
+}
+
+variable "cloud_logs_retention_period" {
+  type        = number
+  description = "The number of days IBM Cloud Logs will retain the logs data in priority insights. Possible Values: 7, 14, 30, 60, 90"
+  default     = 7
+
+  validation {
+    condition     = contains([7, 14, 30, 60, 90], var.cloud_logs_retention_period)
+    error_message = "The retention period must be one of the following values: 7, 14, 30, 60, or 90 days."
+  }
+}
+
+variable "cloud_log_data_bucket_name" {
+  type        = string
+  default     = "cloud-logs-data-bucket"
+  description = "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the bucket is prefixed to the value in the `<prefix>-value` format."
+}
+
+variable "existing_cloud_logs_data_bucket_crn" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
+}
+
+variable "existing_cloud_logs_data_bucket_endpoint" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The endpoint of an existing Cloud Object Storage bucket to use for storing the IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
+}
+
+variable "cloud_log_data_bucket_class" {
+  type        = string
+  default     = "smart"
+  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
+  validation {
+    condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.cloud_log_data_bucket_class)
+    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, `vault`, `cold`, `smart`, or `onerate_active`."
+  }
+}
+
+variable "cloud_log_data_bucket_access_tag" {
+  type        = list(string)
+  default     = []
+  description = "A list of optional tags to add to the cloud log data object storage bucket."
+}
+
+variable "skip_logs_routing_auth_policy" {
+  description = "Whether to create an IAM authorization policy that permits Logs Routing Sender access to the IBM Cloud Logs."
+  type        = bool
+  default     = false
+}
+
+variable "logs_routing_tenant_regions" {
+  type        = list(any)
+  default     = []
+  description = "Pass a list of regions to create a tenant that is targetted to the Cloud Logs instance created by this module. To manage platform logs that are generated by IBM Cloud® services in a region of IBM Cloud, you must create a tenant in each region that you operate. Leave the list empty if you don't want to create any tenants."
+  nullable    = false
+}
+
+##############################################################################
 # Log Analysis Variables
 ##############################################################################
 
 variable "log_analysis_provision" {
-  description = "Set it to true to provision an IBM Cloud Logging instance"
+  description = "Set it to true to provision an IBM Cloud Logging instance. IBM Cloud Log Analysis is now deprecated and new instances cannot be provisioned after November 30, 2024, and all existing instances will be destroyed on March 30, 2025. For more information, see https://cloud.ibm.com/docs/log-analysis?topic=log-analysis-getting-started"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "log_analysis_instance_name" {
@@ -88,7 +200,7 @@ variable "log_analysis_tags" {
 
 variable "log_analysis_enable_archive" {
   type        = bool
-  description = "Whether to enable archiving on Log Analysis instances."
+  description = "Whether to enable archiving on Log Analysis instances. If set to true, `log_analysis_provision` must also be set to true."
   default     = true
 }
 
@@ -116,8 +228,14 @@ variable "enable_at_event_routing_to_cos_bucket" {
 
 variable "enable_at_event_routing_to_log_analysis" {
   type        = bool
-  description = "Whether to enable event from Activity Tracker to Log Analysis."
+  description = "Whether to enable event routing from Activity Tracker to Log Analysis. IBM Cloud Log Analysis is now deprecated and new instances cannot be provisioned after November 30, 2024, and all existing instances will be destroyed on March 30, 2025."
   default     = false
+}
+
+variable "enable_at_event_routing_to_cloud_logs" {
+  type        = bool
+  description = "Whether to enable event routing from Activity Tracker to Cloud Log."
+  default     = true
 }
 
 ##############################################################################
@@ -157,16 +275,6 @@ variable "cloud_monitoring_tags" {
   type        = list(string)
   description = "The tags that are associated with the IBM Cloud Monitoring instance (`Optional`, `array of strings`)."
   default     = []
-}
-
-variable "cloud_monitoring_service_endpoints" {
-  description = "The type of service endpoint to set for the IBM Cloud Monitoring instance. Allowed values: `public-and-private`"
-  type        = string
-  default     = "public-and-private"
-  validation {
-    condition     = contains(["public-and-private"], var.cloud_monitoring_service_endpoints)
-    error_message = "The specified service endpoint is not valid. Specify a valid service endpoint to set for the IBM Cloud Monitoring instance.  Allowed values: `public-and-private`."
-  }
 }
 
 variable "enable_platform_metrics" {
