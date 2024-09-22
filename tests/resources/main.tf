@@ -3,7 +3,7 @@
 ##############################################################################
 
 module "landing_zone" {
-  source                 = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v5.31.3"
+  source                 = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v6.0.0"
   region                 = var.region
   prefix                 = var.prefix
   tags                   = var.resource_tags
