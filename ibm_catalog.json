@@ -480,6 +480,7 @@
               "version": ">=v3.0.0"
             }
           ],
+          "dependency_version_2": true,
           "architecture": {
             "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring agents on an existing Red Hat OpenShift cluster on a secure landing zone.",
             "features": [
