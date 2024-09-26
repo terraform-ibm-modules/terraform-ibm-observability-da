@@ -3,12 +3,15 @@
 ##############################################################################
 
 module "landing_zone" {
-  source                 = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v6.0.0"
-  region                 = var.region
-  prefix                 = var.prefix
-  tags                   = var.resource_tags
-  add_atracker_route     = false
-  enable_transit_gateway = false
+  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v6.0.1"
+  region                              = var.region
+  prefix                              = var.prefix
+  tags                                = var.resource_tags
+  add_atracker_route                  = false
+  enable_transit_gateway              = false
+  cluster_force_delete_storage        = true
+  verify_cluster_network_readiness    = false
+  use_ibm_cloud_private_api_endpoints = false
 }
 
 ##############################################################################
