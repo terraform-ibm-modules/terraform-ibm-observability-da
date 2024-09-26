@@ -60,7 +60,7 @@ variable "wait_till" {
 variable "wait_till_timeout" {
   description = "Timeout for wait_till in minutes."
   type        = number
-  default     = 30
+  default     = 90
 }
 
 ##############################################################################
