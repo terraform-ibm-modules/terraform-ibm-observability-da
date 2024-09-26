@@ -18,12 +18,12 @@ output "cluster_data" {
 }
 
 output "workload_cluster_id" {
-  value       = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "id", "")
+  value       = module.landing_zone.workload_cluster_id
   description = "ID of the workload cluster."
 }
 
 output "cluster_resource_group_id" {
-  value       = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "resource_group_id", "")
+  value       = local.cluster_resource_group_id
   description = "Resource group ID of the workload cluster."
 }
 
