@@ -12,6 +12,7 @@ module "landing_zone" {
   cluster_force_delete_storage        = true
   verify_cluster_network_readiness    = false
   use_ibm_cloud_private_api_endpoints = false
+  ignore_vpcs_for_cluster_deployment  = ["management"]
 }
 
 ##############################################################################
@@ -19,7 +20,7 @@ module "landing_zone" {
 ##############################################################################
 
 locals {
-  cluster_resource_group_id = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "resource_group_id", "")
+  cluster_resource_group_id = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].resource_group_id
 }
 
 module "observability_instances" {
