@@ -3,12 +3,16 @@
 ##############################################################################
 
 module "landing_zone" {
-  source                 = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v5.31.3"
-  region                 = var.region
-  prefix                 = var.prefix
-  tags                   = var.resource_tags
-  add_atracker_route     = false
-  enable_transit_gateway = false
+  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v6.0.1"
+  region                              = var.region
+  prefix                              = var.prefix
+  tags                                = var.resource_tags
+  add_atracker_route                  = false
+  enable_transit_gateway              = false
+  cluster_force_delete_storage        = true
+  verify_cluster_network_readiness    = false
+  use_ibm_cloud_private_api_endpoints = false
+  ignore_vpcs_for_cluster_deployment  = ["management"]
 }
 
 ##############################################################################
@@ -16,7 +20,7 @@ module "landing_zone" {
 ##############################################################################
 
 locals {
-  cluster_resource_group_id = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "resource_group_id", "")
+  cluster_resource_group_id = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].resource_group_id
   cluster_crn = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "crn", "")
 }
 

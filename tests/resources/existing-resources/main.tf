@@ -35,3 +35,33 @@ module "additional_cos_bucket" {
   bucket_name              = "${var.prefix}-bucket-at"
   kms_encryption_enabled   = false
 }
+
+module "cloud_log_buckets" {
+  source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
+  version = "8.6.2"
+  bucket_configs = [
+    {
+      bucket_name            = "${var.prefix}-data-bucket"
+      add_bucket_name_suffix = true
+      region_location        = var.region
+      create_cos_instance    = false
+      resource_instance_id   = module.cos.cos_instance_id
+      kms_encryption_enabled = false
+    }
+  ]
+}
+
+##############################################################################
+# Event Notification
+##############################################################################
+
+module "event_notification" {
+  source            = "terraform-ibm-modules/event-notifications/ibm"
+  version           = "1.6.5"
+  resource_group_id = module.resource_group.resource_group_id
+  name              = "${var.prefix}-en"
+  tags              = var.resource_tags
+  plan              = "standard"
+  service_endpoints = "public"
+  region            = var.region
+}
