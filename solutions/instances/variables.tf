@@ -148,6 +148,12 @@ variable "skip_logs_routing_auth_policy" {
   default     = false
 }
 
+variable "enable_platform_logs" {
+  type        = bool
+  description = "Setting this to true will create a tenant in the same region that the Cloud Logs instance is provisioned to enable platform logs for that region. To send platform logs from other regions, you can explicitially specify a list of regions using the `logs_routing_tenant_regions` input. NOTE: You can only have 1 tenant per region in an account. If `log_analysis_provision` is set to true, this variable will also enable platform logs for the Log analysis instance."
+  default     = true
+}
+
 variable "logs_routing_tenant_regions" {
   type        = list(any)
   default     = []
@@ -160,20 +166,20 @@ variable "logs_routing_tenant_regions" {
 ##############################################################################
 
 variable "log_analysis_provision" {
-  description = "Set it to true to provision an IBM Cloud Logging instance. IBM Cloud Log Analysis is now deprecated and new instances cannot be provisioned after November 30, 2024, and all existing instances will be destroyed on March 30, 2025. For more information, see https://cloud.ibm.com/docs/log-analysis?topic=log-analysis-getting-started"
+  description = "DEPRECATED: Set it to true to provision an IBM Cloud Logging instance. IBM Cloud Log Analysis is now deprecated and new instances cannot be provisioned after November 30, 2024, and all existing instances will be destroyed on March 30, 2025. For more information, see https://cloud.ibm.com/docs/log-analysis?topic=log-analysis-getting-started"
   type        = bool
   default     = false
 }
 
 variable "log_analysis_instance_name" {
   type        = string
-  description = "The name of the IBM Cloud Log Analysis instance to create. If a prefix input variable is specified, it's added to the value in the <prefix>-value format."
+  description = "DEPRECATED: The name of the IBM Cloud Log Analysis instance to create. If a prefix input variable is specified, it's added to the value in the <prefix>-value format."
   default     = "log-analysis"
 }
 
 variable "log_analysis_plan" {
   type        = string
-  description = "The Log Analysis plan to provision. Possible values: `7-day`, `14-day`, `30-day`, and `hipaa-30-day`."
+  description = "DEPRECATED: The Log Analysis plan to provision. Possible values: `7-day`, `14-day`, `30-day`, and `hipaa-30-day`."
   default     = "7-day"
 
   validation {
@@ -183,7 +189,7 @@ variable "log_analysis_plan" {
 }
 
 variable "log_analysis_service_endpoints" {
-  description = "The type of endpoint for the Log Analysis instance. Possible values: `public`, `private`, `public-and-private`."
+  description = "DEPRECATED: The type of endpoint for the Log Analysis instance. Possible values: `public`, `private`, `public-and-private`."
   type        = string
   default     = "private"
   validation {
@@ -194,28 +200,23 @@ variable "log_analysis_service_endpoints" {
 
 variable "log_analysis_tags" {
   type        = list(string)
-  description = "The tags that are associated with the IBM Cloud Logging instance (`Optional`, `array of strings`)."
+  description = "DEPRECATED: The tags that are associated with the IBM Cloud Logging instance (`Optional`, `array of strings`)."
   default     = []
 }
 
 variable "log_analysis_enable_archive" {
   type        = bool
-  description = "Whether to enable archiving on Log Analysis instances. If set to true, `log_analysis_provision` must also be set to true."
+  description = "DEPRECATED: Whether to enable archiving on Log Analysis instances. If set to true, `log_analysis_provision` must also be set to true."
   default     = true
 }
 
 variable "log_archive_api_key" {
   type        = string
-  description = "The API key to use to configure archiving from Log Analysis to Object Storage. If not specified, the API key value in ibmcloud_api_key is used."
+  description = "DEPRECATED: The API key to use to configure archiving from Log Analysis to Object Storage. If not specified, the API key value in ibmcloud_api_key is used."
   sensitive   = true
   default     = null
 }
 
-variable "enable_platform_logs" {
-  type        = bool
-  description = "Whether Log Analysis collects platform log files."
-  default     = true
-}
 ##############################################################################
 # Activity Tracker Event Routing Variables
 ##############################################################################
