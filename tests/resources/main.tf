@@ -17,6 +17,7 @@ module "landing_zone" {
 
 locals {
   cluster_resource_group_id = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "resource_group_id", "")
+  cluster_crn = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "crn", "")
 }
 
 module "observability_instances" {
@@ -36,4 +37,37 @@ module "observability_instances" {
   cloud_monitoring_instance_name     = "${var.prefix}-cloud-monitoring"
   enable_platform_metrics            = false
   activity_tracker_provision         = false
+}
+
+##############################################################################
+# Trusted Profile
+##############################################################################
+
+locals {
+  logs_agent_namespace = "ibm-observe"
+  logs_agent_name      = "logger-agent"
+}
+
+module "trusted_profile" {
+  source                      = "terraform-ibm-modules/trusted-profile/ibm"
+  version                     = "1.0.4"
+  trusted_profile_name        = "${var.prefix}-profile"
+  trusted_profile_description = "Example Trusted Profile"
+
+  trusted_profile_policies = [{
+    roles = ["Editor"]
+    resources = [{
+      service = "logs-agent"
+    }]
+  }]
+
+  trusted_profile_links = [{
+    cr_type = "ROKS_SA"
+    links = [{
+      crn       = local.cluster_crn
+      namespace = local.logs_agent_namespace
+      name      = local.logs_agent_name
+    }]
+    }
+  ]
 }

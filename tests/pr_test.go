@@ -186,6 +186,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 			{Name: "log_analysis_instance_region", Value: region, DataType: "string"},
 			{Name: "cloud_monitoring_instance_region", Value: region, DataType: "string"},
 			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "workload_cluster_id"), DataType: "string"},
+			{Name: "logs_agent_trusted_profile", Value: terraform.Output(t, existingTerraformOptions, "workload_cluster_crn"), DataType: "string"},
 			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_resource_group_id"), DataType: "string"},
 			{Name: "log_analysis_ingestion_key", Value: terraform.Output(t, existingTerraformOptions, "log_analysis_ingestion_key"), DataType: "string", Secure: true},
 			{Name: "cloud_monitoring_access_key", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_access_key"), DataType: "string", Secure: true},
