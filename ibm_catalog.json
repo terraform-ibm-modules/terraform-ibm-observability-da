@@ -205,6 +205,12 @@
               ]
             },
             {
+              "key": "enable_platform_logs"
+            },
+            {
+              "key": "logs_routing_tenant_regions"
+            },
+            {
               "key": "existing_en_instance_crn"
             },
             {
@@ -215,9 +221,6 @@
             },
             {
               "key": "skip_logs_routing_auth_policy"
-            },
-            {
-              "key": "logs_routing_tenant_regions"
             },
             {
               "key": "log_analysis_provision"
@@ -277,9 +280,6 @@
               "key": "log_archive_api_key"
             },
             {
-              "key": "enable_platform_logs"
-            },
-            {
               "key": "enable_at_event_routing_to_log_analysis"
             },
             {
@@ -312,9 +312,6 @@
             },
             {
               "key": "cloud_monitoring_tags"
-            },
-            {
-              "key": "enable_platform_metrics"
             },
             {
               "key": "cos_instance_name"
