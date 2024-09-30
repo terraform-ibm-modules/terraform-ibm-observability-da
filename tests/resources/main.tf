@@ -16,7 +16,51 @@ module "landing_zone" {
 }
 
 ##############################################################################
-# Observability Instances
+# COS instance
+##############################################################################
+
+module "cos" {
+  source            = "terraform-ibm-modules/cos/ibm"
+  version           = "8.11.14"
+  resource_group_id = module.resource_group.resource_group_id
+  cos_instance_name = "${var.prefix}-cos"
+  cos_tags          = var.resource_tags
+  create_cos_bucket = false
+}
+
+##############################################################################
+# COS buckets
+##############################################################################
+
+locals {
+  logs_bucket_name    = "${var.prefix}-logs-data"
+  metrics_bucket_name = "${var.prefix}-metrics-data"
+}
+
+module "buckets" {
+  source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
+  version = "8.11.14"
+  bucket_configs = [
+    {
+      bucket_name            = local.logs_bucket_name
+      kms_encryption_enabled = false
+      region_location        = var.region
+      resource_instance_id   = module.cos.cos_instance_id
+    },
+    {
+      bucket_name            = local.metrics_bucket_name
+      kms_encryption_enabled = false
+      region_location        = var.region
+      resource_instance_id   = module.cos.cos_instance_id
+    }
+  ]
+}
+
+##############################################################################
+# Observability:
+# - Log Analysis instance
+# - Cloud Logs instance
+# - Monitoring instance
 ##############################################################################
 
 locals {
@@ -25,7 +69,8 @@ locals {
 }
 
 module "observability_instances" {
-  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.18.0"
+  source  = "terraform-ibm-modules/observability-instances/ibm"
+  version = "2.18.0"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -41,6 +86,20 @@ module "observability_instances" {
   cloud_monitoring_instance_name     = "${var.prefix}-cloud-monitoring"
   enable_platform_metrics            = false
   activity_tracker_provision         = false
+  cloud_logs_tags              = var.resource_tags
+  cloud_logs_data_storage = {
+    # logs and metrics buckets must be different
+    logs_data = {
+      enabled         = true
+      bucket_crn      = module.buckets.buckets[local.logs_bucket_name].bucket_crn
+      bucket_endpoint = module.buckets.buckets[local.logs_bucket_name].s3_endpoint_direct
+    },
+    metrics_data = {
+      enabled         = true
+      bucket_crn      = module.buckets.buckets[local.metrics_bucket_name].bucket_crn
+      bucket_endpoint = module.buckets.buckets[local.metrics_bucket_name].s3_endpoint_direct
+    }
+  }
 }
 
 ##############################################################################
