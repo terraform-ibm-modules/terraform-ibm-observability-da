@@ -45,7 +45,7 @@ module "observability_agents" {
   cloud_monitoring_agent_tolerations = var.cloud_monitoring_agent_tolerations
   cloud_monitoring_add_cluster_name  = var.cloud_monitoring_add_cluster_name
   # Logs Agent
-  logs_agent_enabled = var.logs_agent_enabled
+  logs_agent_enabled                     = var.logs_agent_enabled
   logs_agent_name                        = var.logs_agent_name
   logs_agent_namespace                   = var.logs_agent_namespace
   logs_agent_trusted_profile             = var.logs_agent_trusted_profile

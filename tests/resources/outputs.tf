@@ -23,7 +23,7 @@ output "workload_cluster_id" {
 }
 
 output "workload_cluster_crn" {
-  value = local.cluster_crn
+  value       = local.cluster_crn
   description = "CRN of the workload cluster."
 }
 
@@ -55,11 +55,11 @@ output "cloud_monitoring_access_key" {
 }
 
 output "trusted_profile_id" {
-  value = module.trusted_profile.trusted_profile.id
+  value       = module.trusted_profile.trusted_profile.id
   description = "The ID of the trusted profile."
 }
 
 output "cloud_logs_ingress_private_endpoint" {
-  value = module.observability_instances.cloud_logs_ingress_private_endpoint
+  value       = module.observability_instances.cloud_logs_ingress_private_endpoint
   description = "The private ingress endpoint of the provisioned Cloud Logs instance."
 }

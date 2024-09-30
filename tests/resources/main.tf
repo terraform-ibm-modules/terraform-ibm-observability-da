@@ -77,7 +77,7 @@ module "buckets" {
 
 locals {
   cluster_resource_group_id = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].resource_group_id
-  cluster_crn = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].crn
+  cluster_crn               = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].crn
 }
 
 module "observability_instances" {
@@ -98,7 +98,7 @@ module "observability_instances" {
   cloud_monitoring_instance_name     = "${var.prefix}-cloud-monitoring"
   enable_platform_metrics            = false
   activity_tracker_provision         = false
-  cloud_logs_tags              = var.resource_tags
+  cloud_logs_tags                    = var.resource_tags
   cloud_logs_data_storage = {
     # logs and metrics buckets must be different
     logs_data = {
