@@ -21,7 +21,7 @@ module "landing_zone" {
 
 locals {
   cluster_resource_group_id = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].resource_group_id
-  cluster_crn = lookup([for cluster in module.landing_zone.cluster_data : cluster if strcontains(cluster.resource_group_name, "workload")][0], "crn", "")
+  cluster_crn = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].crn
 }
 
 module "observability_instances" {
