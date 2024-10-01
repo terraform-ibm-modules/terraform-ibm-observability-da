@@ -396,7 +396,7 @@
               "optional": true,
               "input_mapping": [
                 {
-                  "dependency_output": "kms_instance_crn",
+                  "dependency_output": "key_management_service_instance_crn",
                   "version_input": "existing_kms_instance_crn"
                 }
               ]
@@ -411,6 +411,9 @@
                 {
                   "dependency_output": "workload_resource_group_name",
                   "version_input": "existing_resource_group_name"
+                }, {
+                  "dependency_input": "prefix",
+                  "version_input": "prefix"
                 }
               ],
               "name": "deploy-arch-ibm-account-infra-base",
