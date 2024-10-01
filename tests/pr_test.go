@@ -170,8 +170,9 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 	} else {
 
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
-			Testing: t,
-			Prefix:  "obs-agents",
+			TerraformVersion: "terraform_v1.9.0",
+			Testing:          t,
+			Prefix:           "obs-agents",
 			TarIncludePatterns: []string{
 				solutionAgentsDADir + "/*.*",
 				agentsKubeconfigDir + "/*.*",
