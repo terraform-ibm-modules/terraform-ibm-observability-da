@@ -137,7 +137,7 @@ locals {
 
 module "observability_instance" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.18.0"
+  version = "2.19.1"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -179,7 +179,7 @@ module "observability_instance" {
       bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
     },
     metrics_data = {
-      enabled         = false # Support for metrics is dependent on the resolution of https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances/issues/555
+      enabled         = false # Support tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
       bucket_crn      = null
       bucket_endpoint = null
     }
