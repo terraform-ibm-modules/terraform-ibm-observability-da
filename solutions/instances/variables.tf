@@ -101,7 +101,7 @@ variable "cloud_logs_retention_period" {
   default     = 7
 
   validation {
-    condition     = contains([7, 14, 30, 60, 90], var.cloud_logs_retention_period)
+    condition     = contains([7, 14, 30, 60, 90, 180], var.cloud_logs_retention_period)
     error_message = "The retention period must be one of the following values: 7, 14, 30, 60, or 90 days."
   }
 }
