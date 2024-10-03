@@ -58,7 +58,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestInstancesInSchematics(t *testing.T) {
-	t.Skip()
+	t.Parallel()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
@@ -101,7 +101,7 @@ func TestInstancesInSchematics(t *testing.T) {
 }
 
 func TestRunUpgradeSolutionInstances(t *testing.T) {
-	t.Skip()
+	t.Parallel()
 
 	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
 		Testing:      t,
@@ -170,9 +170,8 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 	} else {
 
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
-			TerraformVersion: "terraform_v1.9.0",
-			Testing:          t,
-			Prefix:           "obs-agents",
+			Testing: t,
+			Prefix:  "obs-agents",
 			TarIncludePatterns: []string{
 				solutionAgentsDADir + "/*.*",
 				agentsKubeconfigDir + "/*.*",
@@ -214,7 +213,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 }
 
 func TestRunExistingResourcesInstances(t *testing.T) {
-	t.Skip()
+	t.Parallel()
 
 	// ------------------------------------------------------------------------------------
 	// Provision COS & EN first

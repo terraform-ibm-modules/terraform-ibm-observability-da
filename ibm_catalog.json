@@ -759,7 +759,7 @@
                 "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster on a secure landing zone."
               },
               {
-                "title": "Deploys the IBM Logs agent on an existing cluster on a secure landing zone.",
+                "title": "Deploys the IBM Logs agent on an existing cluster.",
                 "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster on a secure landing zone."
               }
             ],

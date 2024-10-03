@@ -34,6 +34,10 @@ TF_VARS_FILE="terraform.tfvars"
   cloud_monitoring_instance_region_var_name="cloud_monitoring_instance_region"
   cloud_monitoring_access_key_var_name="cloud_monitoring_access_key"
   cloud_monitoring_access_key_value=$(terraform output -state=terraform.tfstate -raw cloud_monitoring_access_key)
+  logs_agent_trusted_profile_var_name="logs_agent_trusted_profile"
+  logs_agent_trusted_profile_value=$(terraform output -state=terraform.tfstate -raw trusted_profile_id)
+  cloud_logs_ingress_endpoint_var_name="cloud_logs_ingress_endpoint"
+  cloud_logs_ingress_endpoint_value=$(terraform output -state=terraform.tfstate -raw cloud_logs_ingress_private_endpoint)
 
   echo "Appending '${cluster_id_var_name}' and '${region_var_name}' input variable values to ${JSON_FILE}.."
 
@@ -48,7 +52,11 @@ TF_VARS_FILE="terraform.tfvars"
         --arg cloud_monitoring_access_key_value "${cloud_monitoring_access_key_value}" \
         --arg cloud_monitoring_instance_region_var_name "${cloud_monitoring_instance_region_var_name}" \
         --arg cloud_monitoring_instance_region_var_value "${REGION}" \
-        '. + {($region_var_name): $region_var_value, ($cluster_id_var_name): $cluster_id_value, ($cluster_resource_group_id_var_name): $cluster_resource_group_id_value, ($cloud_monitoring_instance_region_var_name): $cloud_monitoring_instance_region_var_value, ($cloud_monitoring_access_key_var_name): $cloud_monitoring_access_key_value}' "${JSON_FILE}" > tmpfile && mv tmpfile "${JSON_FILE}" || exit 1
+        --arg logs_agent_trusted_profile_var_name "${logs_agent_trusted_profile_var_name}" \
+        --arg logs_agent_trusted_profile_value "${logs_agent_trusted_profile_value}" \
+        --arg cloud_logs_ingress_endpoint_var_name "${cloud_logs_ingress_endpoint_var_name}" \
+        --arg cloud_logs_ingress_endpoint_value "${cloud_logs_ingress_endpoint_value}" \
+        '. + {($region_var_name): $region_var_value, ($cluster_id_var_name): $cluster_id_value, ($cluster_resource_group_id_var_name): $cluster_resource_group_id_value, ($cloud_monitoring_instance_region_var_name): $cloud_monitoring_instance_region_var_value, ($cloud_monitoring_access_key_var_name): $cloud_monitoring_access_key_value, ($logs_agent_trusted_profile_var_name): $logs_agent_trusted_profile_value, ($cloud_logs_ingress_endpoint_var_name): $cloud_logs_ingress_endpoint_value}' "${JSON_FILE}" > tmpfile && mv tmpfile "${JSON_FILE}" || exit 1
 
   echo "Pre-validation complete successfully"
 )
