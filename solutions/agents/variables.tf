@@ -69,47 +69,47 @@ variable "wait_till_timeout" {
 
 variable "log_analysis_enabled" {
   type        = bool
-  description = "Whether to deploy the IBM Cloud logging agent."
-  default     = true
+  description = "DEPRECATED: Whether to deploy the IBM Cloud logging agent."
+  default     = false
 }
 
 
 variable "log_analysis_agent_tags" {
   type        = list(string)
-  description = "The list of tags to associate with all log records collected by the agent so that you can quickly identify the agent’s data in the logging UI. To add the cluster name as a tag, use the `log_analysis_add_cluster_name` variable."
+  description = "DEPRECATED: The list of tags to associate with all log records collected by the agent so that you can quickly identify the agent’s data in the logging UI. To add the cluster name as a tag, use the `log_analysis_add_cluster_name` variable."
   default     = []
   nullable    = false
 }
 
 variable "log_analysis_add_cluster_name" {
   type        = bool
-  description = "Whether to attach the cluster name to log messages. Set to `true` to configure the IBM Log Analysis agent to tag all log messages with the name."
+  description = "DEPRECATED: Whether to attach the cluster name to log messages. Set to `true` to configure the IBM Log Analysis agent to tag all log messages with the name."
   default     = true
 }
 
 variable "log_analysis_ingestion_key" {
   type        = string
-  description = "The ingestion key that is used by the IBM Cloud logging agent to communicate with the instance."
+  description = "DEPRECATED: The ingestion key that is used by the IBM Cloud logging agent to communicate with the instance."
   sensitive   = true
   default     = null
 }
 
 variable "log_analysis_secret_name" {
   type        = string
-  description = "The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-<name>` format."
+  description = "DEPRECATED: The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-<name>` format."
   default     = "logdna-agent"
   nullable    = false
 }
 
 variable "log_analysis_instance_region" {
   type        = string
-  description = "The name of the region where the IBM Log Analysis instance is created. The value is used in the ingestion endpoint in the format `api.<var-value>.logging.cloud.ibm.com`."
+  description = "DEPRECATED: The name of the region where the IBM Log Analysis instance is created. The value is used in the ingestion endpoint in the format `api.<var-value>.logging.cloud.ibm.com`."
   default     = null
 }
 
 variable "log_analysis_endpoint_type" {
   type        = string
-  description = "Specify the IBM Log Analysis instance endpoint type to use to construct the ingestion endpoint. Possible values: `public` or `private`."
+  description = "DEPRECATED: Specify the IBM Log Analysis instance endpoint type to use to construct the ingestion endpoint. Possible values: `public` or `private`."
   default     = "private"
   validation {
     error_message = "The specified `endpoint_type` can be `private` or `public` only."
@@ -118,19 +118,19 @@ variable "log_analysis_endpoint_type" {
 }
 
 variable "log_analysis_agent_custom_line_inclusion" {
-  description = "The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line inclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)"
+  description = "DEPRECATED: The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line inclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)"
   type        = string
   default     = null # "namespace:default"
 }
 
 variable "log_analysis_agent_custom_line_exclusion" {
-  description = "The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line exclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)"
+  description = "DEPRECATED: The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line exclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)"
   type        = string
   default     = null # "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
 }
 
 variable "log_analysis_agent_name" {
-  description = "The name of the IBM Log Analysis agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Log Analysis agent is prefixed to the value in the `<prefix>-<name>` format."
+  description = "DEPRECATED: The name of the IBM Log Analysis agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Log Analysis agent is prefixed to the value in the `<prefix>-<name>` format."
   type        = string
   default     = "logdna-agent"
   nullable    = false
@@ -138,13 +138,13 @@ variable "log_analysis_agent_name" {
 
 variable "log_analysis_agent_namespace" {
   type        = string
-  description = "The namespace to deploy the IBM Log Analysis agent in. The default value of the namespace is `ibm-observe`."
+  description = "DEPRECATED: The namespace to deploy the IBM Log Analysis agent in. The default value of the namespace is `ibm-observe`."
   default     = "ibm-observe"
   nullable    = false
 }
 
 variable "log_analysis_agent_tolerations" {
-  description = "The list of tolerations to apply to the IBM Log Analysis agent. Because the default value is the `Exists` operator, this variable will match any taint on any node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
+  description = "DEPRECATED: The list of tolerations to apply to the IBM Log Analysis agent. Because the default value is the `Exists` operator, this variable will match any taint on any node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
   type = list(object({
     key               = optional(string)
     operator          = optional(string)
@@ -292,7 +292,7 @@ variable "logs_agent_iam_api_key" {
   default     = null
 }
 
-variable "logs_agent_agent_tolerations" {
+variable "logs_agent_tolerations" {
   description = "List of tolerations to apply to Logs agent."
   type = list(object({
     key               = optional(string)

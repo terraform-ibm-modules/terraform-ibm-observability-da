@@ -10,9 +10,8 @@ data "ibm_container_cluster_config" "cluster_config" {
 }
 
 module "observability_agents" {
-  # source                       = "terraform-ibm-modules/observability-agents/ibm"
-  # version                      = "1.29.0"
-  source                       = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents.git?ref=9800-lr"
+  source                       = "terraform-ibm-modules/observability-agents/ibm"
+  version                      = "1.30.0"
   cluster_id                   = var.cluster_id
   cluster_resource_group_id    = var.cluster_resource_group_id
   cluster_config_endpoint_type = var.cluster_config_endpoint_type
@@ -50,7 +49,7 @@ module "observability_agents" {
   logs_agent_namespace                   = var.logs_agent_namespace
   logs_agent_trusted_profile             = var.logs_agent_trusted_profile
   logs_agent_iam_api_key                 = var.logs_agent_iam_api_key
-  logs_agent_agent_tolerations           = var.logs_agent_agent_tolerations
+  logs_agent_tolerations                 = var.logs_agent_tolerations
   logs_agent_additional_log_source_paths = var.logs_agent_additional_log_source_paths
   logs_agent_exclude_log_source_paths    = var.logs_agent_exclude_log_source_paths
   logs_agent_selected_log_source_paths   = var.logs_agent_selected_log_source_paths
@@ -61,4 +60,5 @@ module "observability_agents" {
   logs_agent_enable_scc                  = var.logs_agent_enable_scc
   cloud_logs_ingress_endpoint            = var.cloud_logs_ingress_endpoint
   cloud_logs_ingress_port                = var.cloud_logs_ingress_port
+  is_vpc_cluster                         = var.is_vpc_cluster
 }

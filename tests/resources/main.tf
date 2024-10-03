@@ -70,7 +70,6 @@ module "buckets" {
 
 ##############################################################################
 # Observability:
-# - Log Analysis instance
 # - Cloud Logs instance
 # - Monitoring instance
 ##############################################################################
@@ -82,22 +81,19 @@ locals {
 
 module "observability_instances" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.18.0"
+  version = "2.19.1"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
   }
   resource_group_id                  = local.cluster_resource_group_id
   region                             = var.region
-  log_analysis_plan                  = "7-day"
-  log_analysis_service_endpoints     = "public-and-private"
-  log_analysis_instance_name         = "${var.prefix}-log-analysis"
-  enable_platform_logs               = false
   cloud_monitoring_plan              = "graduated-tier"
   cloud_monitoring_service_endpoints = "public-and-private"
   cloud_monitoring_instance_name     = "${var.prefix}-cloud-monitoring"
+  cloud_logs_instance_name           = "${var.prefix}-cloud-logs"
   enable_platform_metrics            = false
-  activity_tracker_provision         = false
+  enable_platform_logs               = false
   cloud_logs_tags                    = var.resource_tags
   cloud_logs_data_storage = {
     # logs and metrics buckets must be different

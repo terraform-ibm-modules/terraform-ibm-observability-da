@@ -12,6 +12,12 @@ provider "helm" {
     host  = data.ibm_container_cluster_config.cluster_config.host
     token = data.ibm_container_cluster_config.cluster_config.token
   }
+  # IBM Cloud credentials are required to authenticate to the helm repo
+  registry {
+    url      = "oci://icr.io/ibm/observe/logs-agent-helm"
+    username = "iamapikey"
+    password = var.ibmcloud_api_key
+  }
 }
 
 # Retrieve information about an existing VPC cluster
