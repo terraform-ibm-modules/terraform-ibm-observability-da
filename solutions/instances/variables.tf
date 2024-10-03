@@ -15,6 +15,14 @@ variable "ibmcloud_kms_api_key" {
   default     = null
 }
 
+variable "ibmcloud_cos_api_key" {
+  type        = string
+  description = "The IBM Cloud API key that can manage the IBM Cloud Object Storage (COS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the COS instance is in an account that's different from the one associated Observability resources. Leave empty if the same account owns both instances."
+  sensitive   = true
+  default     = null
+}
+
+
 variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."

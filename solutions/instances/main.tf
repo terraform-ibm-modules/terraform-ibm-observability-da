@@ -275,7 +275,8 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 # Data source to account settings for retrieving cross account id
 data "ibm_iam_account_settings" "iam_account_settings" {
-  count = local.apply_auth_policy
+  provider = ibm.cos
+  count    = local.apply_auth_policy
 }
 
 # The auth policy is being created here instead of in COS module because of this limitation: https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/8
