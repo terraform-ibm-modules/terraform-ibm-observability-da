@@ -17,7 +17,7 @@ variable "ibmcloud_kms_api_key" {
 
 variable "ibmcloud_cos_api_key" {
   type        = string
-  description = "The IBM Cloud API key that can manage the IBM Cloud Object Storage (COS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the COS instance is in an account that's different from the one associated Observability resources. Leave empty if the same account owns both instances."
+  description = "The IBM Cloud API key that can create a Cloud Object Storage (COS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the COS instance is in an account that's different from the one associated Observability resources. Leave empty if the same account owns both instances."
   sensitive   = true
   default     = null
 }
@@ -34,16 +34,16 @@ variable "resource_group_name" {
   description = "The name of a new or existing resource group to provision resources in."
 }
 
-# variable "use_existing_cos_resource_group" {
-#   type        = bool
-#   description = "Whether to use an existing resource group."
-#   default     = false
-# }
+variable "use_existing_cos_resource_group" {
+  type        = bool
+  description = "Whether to use an existing cos resource group."
+  default     = false
+}
 
-# variable "cos_resource_group_name" {
-#   type        = string
-#   description = "The name of a new or existing resource group to provision cos instance in."
-# }
+variable "cos_resource_group_name" {
+  type        = string
+  description = "The name of a new or existing resource group to provision cos instance in."
+}
 
 variable "region" {
   description = "The region where observability resources are created."
@@ -420,6 +420,18 @@ variable "skip_cos_kms_auth_policy" {
   type        = bool
   description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
   default     = false
+}
+
+variable "skip_icl_cos_auth_policy" {
+  type        = bool
+  description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
+  default     = true
+}
+
+variable "skip_at_cos_auth_policy" {
+  type        = bool
+  description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
+  default     = true
 }
 
 variable "management_endpoint_type_for_bucket" {
