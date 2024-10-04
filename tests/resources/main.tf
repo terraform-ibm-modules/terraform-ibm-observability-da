@@ -116,7 +116,7 @@ module "observability_instances" {
 
 locals {
   logs_agent_namespace = "ibm-observe"
-  logs_agent_name      = "logger-agent"
+  logs_agent_name      = "logs-agent"
 }
 
 module "trusted_profile" {
