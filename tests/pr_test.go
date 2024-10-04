@@ -170,9 +170,8 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 	} else {
 
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
-			TerraformVersion: "terraform_v1.9.0", // explicitly setting version here until https://github.ibm.com/GoldenEye/issues/issues/11051 is addressed
-			Testing:          t,
-			Prefix:           "obs-agents",
+			Testing: t,
+			Prefix:  "obs-agents",
 			TarIncludePatterns: []string{
 				solutionAgentsDADir + "/*.*",
 				agentsKubeconfigDir + "/*.*",
