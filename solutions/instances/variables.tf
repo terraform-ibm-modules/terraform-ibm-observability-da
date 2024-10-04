@@ -34,6 +34,17 @@ variable "resource_group_name" {
   description = "The name of a new or existing resource group to provision resources in."
 }
 
+# variable "use_existing_cos_resource_group" {
+#   type        = bool
+#   description = "Whether to use an existing resource group."
+#   default     = false
+# }
+
+# variable "cos_resource_group_name" {
+#   type        = string
+#   description = "The name of a new or existing resource group to provision cos instance in."
+# }
+
 variable "region" {
   description = "The region where observability resources are created."
   type        = string
