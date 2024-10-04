@@ -362,7 +362,7 @@ variable "logs_agent_enable_scc" {
 }
 
 variable "cloud_logs_ingress_endpoint" {
-  description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress."
+  description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress. It is required if `logs_agent_enabled` is set to true."
   type        = string
   default     = null
 }
