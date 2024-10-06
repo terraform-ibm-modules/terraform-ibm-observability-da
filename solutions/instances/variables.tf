@@ -424,14 +424,14 @@ variable "skip_cos_kms_auth_policy" {
 
 variable "skip_icl_cos_auth_policy" {
   type        = bool
-  description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
-  default     = true
+  description = "To skip creating an IAM authorization policy that allows the IBM Cloud logs to read the Cloud Object Storage instance, set this variable to `true`."
+  default     = false
 }
 
 variable "skip_at_cos_auth_policy" {
   type        = bool
-  description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
-  default     = true
+  description = "To skip creating an IAM authorization policy that allows the Activity Traker to read from the Cloud Object Storage instance, set this variable to `true`."
+  default     = false
 }
 
 variable "management_endpoint_type_for_bucket" {
