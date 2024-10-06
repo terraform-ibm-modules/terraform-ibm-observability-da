@@ -43,6 +43,7 @@ variable "use_existing_cos_resource_group" {
 variable "cos_resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision cos instance in."
+  default     = null
 }
 
 variable "region" {

@@ -228,7 +228,7 @@ module "observability_instance" {
       enabled              = true
       bucket_crn           = local.cloud_logs_data_bucket_crn
       bucket_endpoint      = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
-      skip_cos_auth_policy = true # we are handling auth policy creation of this module at line 150
+      skip_cos_auth_policy = true # we are handling auth policy creation of this module at line 149
     },
     metrics_data = {
       enabled         = false # Support tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
@@ -254,7 +254,7 @@ module "observability_instance" {
       instance_id                       = local.cos_instance_crn
       target_region                     = local.default_cos_region
       target_name                       = local.cos_target_name
-      skip_atracker_cos_iam_auth_policy = true # we are handling auth policy creation of this module at line 288
+      skip_atracker_cos_iam_auth_policy = true # we are handling auth policy creation of this module at line 287
       service_to_service_enabled        = true
     }
   ] : []
