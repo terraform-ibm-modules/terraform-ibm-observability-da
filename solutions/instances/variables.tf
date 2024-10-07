@@ -77,22 +77,14 @@ variable "cloud_logs_access_tags" {
   }
 }
 
-variable "existing_en_instance_crn" {
-  type        = string
-  description = "The CRN of the existing event notification instance. If a value is provided here, `enable_en_cloud_logs_integration` must be set to true in order to enable the integration."
-  default     = null
-}
-
-variable "en_integration_name" {
-  type        = string
-  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
-  default     = "cloud-logs-en-integration"
-}
-
-variable "skip_en_auth_policy" {
-  type        = bool
-  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance."
-  default     = false
+variable "cloud_logs_existing_en_instances" {
+  description = "A list of existing Event Notification instances to be integrated with the Cloud Logging service. Each object in the list represents an EN instance, including its CRN, an optional name for the integration, and an optional flag to skip the authentication policy creation for the EN instance `skip_en_auth_policy`. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_existing_en_instances)"
+  type = list(object({
+    instance_crn        = string
+    integration_name    = optional(string, "cloud-logs-en-integration")
+    skip_en_auth_policy = optional(bool, false)
+  }))
+  default = []
 }
 
 variable "cloud_logs_retention_period" {
