@@ -423,7 +423,7 @@ variable "skip_cos_kms_auth_policy" {
   default     = false
 }
 
-variable "skip_icl_cos_auth_policy" {
+variable "skip_cloud_logs_cos_auth_policy" {
   type        = bool
   description = "To skip creating an IAM authorization policy that allows the IBM Cloud logs to read the Cloud Object Storage instance, set this variable to `true`."
   default     = false

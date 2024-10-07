@@ -152,7 +152,7 @@ data "ibm_iam_account_settings" "iam_account_settings" {
 
 resource "ibm_iam_authorization_policy" "cos_policy" {
   provider               = ibm.cos
-  count                  = var.skip_icl_cos_auth_policy ? 0 : 1
+  count                  = var.ibmcloud_cos_api_key != null && !var.skip_cloud_logs_cos_auth_policy ? 1 : 0
   source_service_account = data.ibm_iam_account_settings.iam_account_settings.account_id
   source_service_name    = "logs"
   roles                  = ["Writer"]
@@ -232,7 +232,7 @@ module "observability_instance" {
       enabled              = true
       bucket_crn           = local.cloud_logs_data_bucket_crn
       bucket_endpoint      = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
-      skip_cos_auth_policy = true # we are handling auth policy creation of this module at line 149
+      skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     },
     metrics_data = {
       enabled         = false # Support tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
@@ -258,7 +258,7 @@ module "observability_instance" {
       instance_id                       = local.cos_instance_crn
       target_region                     = local.default_cos_region
       target_name                       = local.cos_target_name
-      skip_atracker_cos_iam_auth_policy = true # we are handling auth policy creation of this module at line 287
+      skip_atracker_cos_iam_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_at_cos_auth_policy
       service_to_service_enabled        = true
     }
   ] : []
@@ -289,7 +289,7 @@ resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
   create_duration = "30s"
 }
 resource "ibm_iam_authorization_policy" "atracker_cos" {
-  count                       = var.skip_at_cos_auth_policy ? 0 : 1
+  count                       = var.ibmcloud_cos_api_key != null && !var.skip_at_cos_auth_policy ? 1 : 0
   provider                    = ibm.cos
   source_service_account      = data.ibm_iam_account_settings.iam_account_settings.account_id
   source_service_name         = "atracker"
