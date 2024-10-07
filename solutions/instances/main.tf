@@ -8,6 +8,8 @@ locals {
   validate_log_analysis_provision = var.enable_at_event_routing_to_log_analysis && var.log_analysis_provision == false ? tobool("log_analysis_provision can't be false if enable_at_event_routing_to_log_analysis is true") : true
   # tflint-ignore: terraform_unused_declarations
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_cos_resource_group = var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true
 
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
@@ -25,6 +27,7 @@ locals {
   cos_kms_key_crn             = ((var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
+  cos_resource_group_id      = var.ibmcloud_cos_api_key != null ? module.cos_resource_group[0].resource_group_id : module.resource_group.resource_group_id
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
   cos_target_name            = var.prefix != null ? "${var.prefix}-cos-target" : "cos-target"
   log_analysis_target_name   = var.prefix != null ? "${var.prefix}-log-analysis-target" : "log-analysis-target"
@@ -121,6 +124,7 @@ module "resource_group" {
 }
 
 module "cos_resource_group" {
+  count = var.ibmcloud_cos_api_key != null ? 1 : 0
   providers = {
     ibm = ibm.cos
   }
@@ -368,7 +372,7 @@ module "cos_instance" {
   count                    = var.existing_cos_instance_crn == null && length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "8.11.11"
-  resource_group_id        = var.ibmcloud_cos_api_key != null ? module.cos_resource_group.resource_group_id : module.resource_group.resource_group_id
+  resource_group_id        = local.cos_resource_group_id
   create_cos_instance      = true
   cos_instance_name        = var.prefix != null ? "${var.prefix}-${var.cos_instance_name}" : var.cos_instance_name
   cos_tags                 = var.cos_instance_tags

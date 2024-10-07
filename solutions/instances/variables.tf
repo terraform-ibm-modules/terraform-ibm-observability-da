@@ -42,8 +42,8 @@ variable "use_existing_cos_resource_group" {
 
 variable "cos_resource_group_name" {
   type        = string
-  description = "The name of a new or existing resource group to provision cos instance in."
-  default     = "cos-test"
+  description = "The name of a new or existing resource group to provision cos instance in. Specify this value if the COS instance is in an account that's different from the one associated Observability resources."
+  default     = null
 }
 
 variable "region" {
