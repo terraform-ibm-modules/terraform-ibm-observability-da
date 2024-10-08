@@ -193,7 +193,7 @@ module "observability_instance" {
       bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
     },
     metrics_data = {
-      enabled         = true # Support tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
+      enabled         = true # Support of routing config is tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
       bucket_crn      = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
       bucket_endpoint = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
     }
