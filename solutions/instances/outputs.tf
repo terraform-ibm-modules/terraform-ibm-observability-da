@@ -99,6 +99,11 @@ output "cloud_log_data_bucket_name" {
   description = "The name of the Cloud logs data COS bucket"
 }
 
+output "cloud_log_metrics_bucket_name" {
+  value       = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_name : local.existing_cloud_log_metrics_bucket_name
+  description = "The name of the Cloud logs metrics COS bucket"
+}
+
 ## Activity Tracker
 output "at_targets" {
   value       = module.observability_instance.activity_tracker_targets

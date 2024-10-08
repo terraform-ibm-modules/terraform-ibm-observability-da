@@ -51,10 +51,17 @@ locals {
     tag   = var.cloud_log_data_bucket_access_tag
   } : null
 
+  cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? {
+    class = var.cloud_log_metrics_bucket_class
+    name  = local.cloud_log_metrics_bucket
+    tag   = var.cloud_log_metrics_bucket_access_tag
+  } : null
+
   buckets_config = concat(
     local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
     local.at_bucket_config != null ? [local.at_bucket_config] : [],
-    local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : []
+    local.cloud_log_data_bucket_config != null ? [local.cloud_log_data_bucket_config] : [],
+    local.cloud_log_metrics_bucket_config != null ? [local.cloud_log_metrics_bucket_config] : []
   )
 
 
@@ -98,10 +105,17 @@ locals {
 
   apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
 
+  # Cloud Logs data bucket
   cloud_log_data_bucket = var.prefix != null ? "${var.prefix}-${var.cloud_log_data_bucket_name}" : var.cloud_log_data_bucket_name
 
   parsed_log_data_bucket_name         = var.existing_cloud_logs_data_bucket_crn != null ? split(":", var.existing_cloud_logs_data_bucket_crn) : []
   existing_cloud_log_data_bucket_name = length(local.parsed_log_data_bucket_name) > 0 ? local.parsed_log_data_bucket_name[1] : null
+
+  # Cloud Logs metrics bucket
+  cloud_log_metrics_bucket = var.prefix != null ? "${var.prefix}-${var.cloud_log_metrics_bucket_name}" : var.cloud_log_metrics_bucket_name
+
+  parsed_log_metrics_bucket_name         = var.existing_cloud_logs_metrics_bucket_crn != null ? split(":", var.existing_cloud_logs_metrics_bucket_crn) : []
+  existing_cloud_log_metrics_bucket_name = length(local.parsed_log_metrics_bucket_name) > 0 ? local.parsed_log_metrics_bucket_name[1] : null
 
   # Event Notifications
   parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
@@ -179,9 +193,9 @@ module "observability_instance" {
       bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
     },
     metrics_data = {
-      enabled         = false # Support tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
-      bucket_crn      = null
-      bucket_endpoint = null
+      enabled         = true # Support tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
+      bucket_crn      = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
     }
   } : null
   cloud_logs_existing_en_instances = var.existing_en_instance_crn != null ? [{
