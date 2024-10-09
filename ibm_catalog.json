@@ -419,6 +419,37 @@
               "key": "cloud_log_data_bucket_access_tag"
             },
             {
+              "key": "cloud_log_metrics_bucket_name"
+            },
+            {
+              "key": "cloud_log_metrics_bucket_class",
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "cloud_log_metrics_bucket_access_tag"
+            },
+            {
               "key": "management_endpoint_type_for_bucket",
               "options": [
                 {
@@ -455,6 +486,12 @@
             },
             {
               "key": "existing_cloud_logs_data_bucket_endpoint"
+            },
+            {
+              "key": "existing_cloud_logs_metrics_bucket_crn"
+            },
+            {
+              "key": "existing_cloud_logs_metrics_bucket_endpoint"
             },
             {
               "key": "skip_cos_kms_auth_policy"
@@ -562,20 +599,209 @@
               "optional": true
             }
           ],
+          "configuration": [
+            {
+              "key": "ibmcloud_api_key"
+            },
+            {
+              "key": "prefix"
+            },
+            {
+              "key": "cluster_id"
+            },
+            {
+              "key": "cluster_resource_group_id"
+            },
+            {
+              "key": "cluster_config_endpoint_type",
+              "options":[
+                {
+                  "displayname" : "default",
+                  "value" : "default"
+                },
+                {
+                  "displayname" : "private",
+                  "value" : "private"
+                },
+                {
+                  "displayname" : "vpe",
+                  "value" : "vpe"
+                },
+                {
+                  "displayname": "link",
+                  "value": "link"
+                }
+              ]
+            },
+            {
+              "key": "is_vpc_cluster"
+            },
+            {
+              "key": "wait_till"
+            },
+            {
+              "key": "wait_till_timeout"
+            },
+            {
+              "key": "log_analysis_enabled"
+            },
+            {
+              "key": "log_analysis_agent_tags"
+            },
+            {
+              "key": "log_analysis_add_cluster_name"
+            },
+            {
+              "key": "log_analysis_ingestion_key"
+            },
+            {
+              "key": "log_analysis_secret_name"
+            },
+            {
+              "key": "log_analysis_instance_region"
+            },
+            {
+              "key": "log_analysis_endpoint_type",
+              "options":[
+                {
+                  "displayname" : "private",
+                  "value" : "private"
+                },
+                {
+                  "displayname" : "public",
+                  "value" : "public"
+                }
+              ]
+            },
+            {
+              "key": "log_analysis_agent_custom_line_inclusion"
+            },
+            {
+              "key": "log_analysis_agent_custom_line_exclusion"
+            },
+            {
+              "key": "log_analysis_agent_name"
+            },
+            {
+              "key": "log_analysis_agent_namespace"
+            },
+            {
+              "key": "log_analysis_agent_tolerations"
+            },
+            {
+              "key": "cloud_monitoring_enabled"
+            },
+            {
+              "key": "cloud_monitoring_access_key",
+              "required": true
+            },
+            {
+              "key": "cloud_monitoring_secret_name"
+            },
+            {
+              "key": "cloud_monitoring_instance_region"
+            },
+            {
+              "key": "cloud_monitoring_endpoint_type",
+              "options":[
+                {
+                  "displayname" : "private",
+                  "value" : "private"
+                },
+                {
+                  "displayname" : "public",
+                  "value" : "public"
+                }
+              ]
+            },
+            {
+              "key": "cloud_monitoring_metrics_filter"
+            },
+            {
+              "key": "cloud_monitoring_agent_tags"
+            },
+            {
+              "key": "cloud_monitoring_add_cluster_name"
+            },
+            {
+              "key": "cloud_monitoring_agent_name"
+            },
+            {
+              "key": "cloud_monitoring_agent_namespace"
+            },
+            {
+              "key": "cloud_monitoring_agent_tolerations"
+            },
+            {
+              "key": "logs_agent_enabled"
+            },
+            {
+              "key": "logs_agent_name"
+            },
+            {
+              "key": "logs_agent_namespace"
+            },
+            {
+              "key": "logs_agent_trusted_profile",
+              "required": true
+            },
+            {
+              "key": "logs_agent_iam_api_key",
+              "required": true
+            },
+            {
+              "key": "logs_agent_tolerations"
+            },
+            {
+              "key": "logs_agent_additional_log_source_paths"
+            },
+            {
+              "key": "logs_agent_exclude_log_source_paths"
+            },
+            {
+              "key": "logs_agent_selected_log_source_paths"
+            },
+            {
+              "key": "logs_agent_log_source_namespaces"
+            },
+            {
+              "key": "logs_agent_iam_mode"
+            },
+            {
+              "key": "logs_agent_iam_environment"
+            },
+            {
+              "key": "logs_agent_additional_metadata"
+            },
+            {
+              "key": "logs_agent_enable_scc"
+            },
+            {
+              "key": "cloud_logs_ingress_endpoint",
+              "required": true
+            },
+            {
+              "key": "cloud_logs_ingress_port"
+            }
+          ],
           "architecture": {
-            "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring agents on an existing Red Hat OpenShift cluster on a secure landing zone.",
+            "descriptions": "This architecture supports the deployment of IBM Log Analysis(DEPRECATED), IBM Cloud Monitoring and IBM Cloud Logs agent on an existing Red Hat OpenShift cluster.",
             "features": [
               {
-                "title": "Works with the secure landing zone.",
-                "description": "Works with the Red Hat OpenShift cluster on a secure landing zone."
+                "title": "Works with any openshit ir k8s cluster",
+                "description": "Works with the Red Hat OpenShift cluster."
               },
               {
-                "title": "Deploys the IBM Log Analysis agent on an existing cluster on a secure landing zone.",
-                "description": "Deploys the IBM Log Analysis agent on an existing Red Hat OpenShift cluster on a secure landing zone."
+                "title": "Deploys the IBM Log Analysis agent on an existing cluster.",
+                "description": "Deploys the IBM Log Analysis agent on an existing Red Hat OpenShift cluster."
               },
               {
-                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster on a secure landing zone.",
-                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster on a secure landing zone."
+                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
+                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster."
+              },
+              {
+                "title": "Deploys the IBM Logs agent on an existing cluster.",
+                "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster."
               }
             ],
             "diagrams": [
