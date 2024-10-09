@@ -87,6 +87,24 @@ variable "cloud_logs_existing_en_instances" {
   default = []
 }
 
+variable "existing_en_instance_crn" {
+  type        = string
+  description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
+  default     = null
+}
+
+variable "en_integration_name" {
+  type        = string
+  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. This variable is intended for integrating a single Event Notifications instance. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
+  default     = "cloud-logs-en-integration"
+}
+
+variable "skip_en_auth_policy" {
+  type        = bool
+  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. This variable is intended for integrating a single Event Notifications instance. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
+  default     = false
+}
+
 variable "cloud_logs_retention_period" {
   type        = number
   description = "The number of days IBM Cloud Logs will retain the logs data in priority insights. Possible Values: 7, 14, 30, 60, 90"

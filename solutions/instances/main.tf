@@ -103,14 +103,24 @@ locals {
   parsed_log_data_bucket_name         = var.existing_cloud_logs_data_bucket_crn != null ? split(":", var.existing_cloud_logs_data_bucket_crn) : []
   existing_cloud_log_data_bucket_name = length(local.parsed_log_data_bucket_name) > 0 ? local.parsed_log_data_bucket_name[1] : null
 
-  # Event Notifications
-  cloud_logs_existing_en_instances = [for en in var.cloud_logs_existing_en_instances : {
+  # Multi Event Notifications
+  multiple_en_instances = [for en in var.cloud_logs_existing_en_instances : {
     en_instance_id      = split(":", en.instance_crn)[7]
     en_region           = split(":", en.instance_crn)[5]
     en_integration_name = var.prefix != null ? "${var.prefix}-${en.integration_name}" : en.integration_name
     skip_en_auth_policy = en.skip_en_auth_policy
   } if length(split(":", en.instance_crn)) > 0]
 
+  # Single Event Notification
+  parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
+  single_en_instance = var.existing_en_instance_crn != null ? [{
+    en_instance_id      = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
+    en_region           = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[5] : null
+    en_integration_name = var.prefix != null ? "${var.prefix}-${var.en_integration_name}" : var.en_integration_name
+    skip_en_auth_policy = var.skip_en_auth_policy
+  }] : []
+
+  cloud_logs_existing_en_instances = concat(local.single_en_instance, local.multiple_en_instances)
 }
 
 #######################################################################################################################
