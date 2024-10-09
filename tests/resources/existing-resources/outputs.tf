@@ -47,6 +47,16 @@ output "data_bucket_endpoint" {
   value       = module.cloud_log_buckets.buckets["${var.prefix}-data-bucket"].s3_endpoint_public
 }
 
+output "metrics_bucket_crn" {
+  description = "Cloud Logs metrics bucket CRN"
+  value       = module.cloud_log_buckets.buckets["${var.prefix}-metrics-bucket"].bucket_crn
+}
+
+output "metrics_bucket_endpoint" {
+  description = "Cloud Logs metrics bucket endpoint"
+  value       = module.cloud_log_buckets.buckets["${var.prefix}-metrics-bucket"].s3_endpoint_public
+}
+
 output "en_crn" {
   description = "Event Notification CRN"
   value       = module.event_notification.crn
