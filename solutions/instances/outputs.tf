@@ -11,6 +11,7 @@ output "resource_group_name" {
 output "resource_group_id" {
   value       = module.resource_group.resource_group_id
   description = "The ID of the Resource Group the instances are provisioned in."
+}
 
 ## Cloud logs
 output "cloud_logs_crn" {
