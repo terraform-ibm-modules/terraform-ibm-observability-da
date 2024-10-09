@@ -2,6 +2,7 @@
 # Outputs
 ##############################################################################
 
+
 output "resource_group_name" {
   value       = module.resource_group.resource_group_name
   description = "The name of the Resource Group the instances are provisioned in."
@@ -10,6 +11,21 @@ output "resource_group_name" {
 output "resource_group_id" {
   value       = module.resource_group.resource_group_id
   description = "The ID of the Resource Group the instances are provisioned in."
+
+## Cloud logs
+output "cloud_logs_crn" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : null
+  description = "The id of the provisioned Cloud Logs instance."
+}
+
+output "cloud_logs_guid" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_guid : null
+  description = "The guid of the provisioned Cloud Logs instance."
+}
+
+output "cloud_logs_name" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_name : null
+  description = "The name of the provisioned Cloud Logs instance."
 }
 
 ## Log analysis
@@ -79,13 +95,18 @@ output "cos_instance_crn" {
 
 ## COS Buckets
 output "log_archive_cos_bucket_name" {
-  value       = var.existing_log_archive_cos_bucket_name == null ? var.log_analysis_enable_archive ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null : var.existing_log_archive_cos_bucket_name
+  value       = var.existing_log_archive_cos_bucket_name == null ? var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null : var.existing_log_archive_cos_bucket_name
   description = "The name of log archive COS bucket"
 }
 
 output "at_cos_target_bucket_name" {
   value       = var.existing_at_cos_target_bucket_name == null ? var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null : var.existing_at_cos_target_bucket_name
   description = "The name of the AT target COS bucket"
+}
+
+output "cloud_log_data_bucket_name" {
+  value       = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_name : local.existing_cloud_log_data_bucket_name
+  description = "The name of the Cloud logs data COS bucket"
 }
 
 ## Activity Tracker
