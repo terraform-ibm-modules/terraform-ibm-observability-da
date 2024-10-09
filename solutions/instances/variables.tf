@@ -97,12 +97,12 @@ variable "skip_en_auth_policy" {
 
 variable "cloud_logs_retention_period" {
   type        = number
-  description = "The number of days IBM Cloud Logs will retain the logs data in priority insights. Possible Values: 7, 14, 30, 60, 90"
+  description = "The number of days IBM Cloud Logs will retain the logs data in priority insights. Possible Values: 7, 14, 30, 60, 90, 180"
   default     = 7
 
   validation {
     condition     = contains([7, 14, 30, 60, 90, 180], var.cloud_logs_retention_period)
-    error_message = "The retention period must be one of the following values: 7, 14, 30, 60, or 90 days."
+    error_message = "The retention period must be one of the following values: 7, 14, 30, 60, 90 or 180 days."
   }
 }
 
