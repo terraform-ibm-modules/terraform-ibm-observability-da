@@ -264,8 +264,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"cos_region":                               region,
 				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":              true,
-				"log_analysis_provision":                   true,
-				"existing_log_archive_cos_bucket_name":     terraform.Output(t, existingTerraformOptions, "bucket_name"),
 				"existing_at_cos_target_bucket_name":       terraform.Output(t, existingTerraformOptions, "bucket_name_at"),
 				"existing_log_archive_cos_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "bucket_endpoint"),
 				"existing_at_cos_target_bucket_endpoint":   terraform.Output(t, existingTerraformOptions, "bucket_endpoint_at"),
@@ -274,9 +272,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_cloud_logs_data_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "data_bucket_endpoint"),
 				"existing_en_instance_crn":                 terraform.Output(t, existingTerraformOptions, "en_crn"),
 				"management_endpoint_type_for_bucket":      "public",
-				"log_analysis_service_endpoints":           "public",
 				"enable_platform_metrics":                  "false",
-				"enable_at_event_routing_to_log_analysis":  "true",
 			},
 		})
 
@@ -301,8 +297,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"kms_endpoint_type":                   "public",
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",
-				"log_analysis_provision":              "true",
-				"log_analysis_service_endpoints":      "public",
 				"enable_platform_metrics":             "false",
 			},
 		})

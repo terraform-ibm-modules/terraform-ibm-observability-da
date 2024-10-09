@@ -18,28 +18,6 @@ output "cloud_logs_name" {
   description = "The name of the provisioned Cloud Logs instance."
 }
 
-## Log analysis
-output "log_analysis_name" {
-  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_name : null
-  description = "The name of the provisioned Log Analysis instance."
-}
-
-output "log_analysis_crn" {
-  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_crn : null
-  description = "The id of the provisioned Log Analysis instance."
-}
-
-output "log_analysis_guid" {
-  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_guid : null
-  description = "vaThe guid of the provisioned Log Analysis instance."
-}
-
-output "log_analysis_ingestion_key" {
-  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_ingestion_key : null
-  description = "Log Analysis ingest key for agents to use"
-  sensitive   = true
-}
-
 ## Cloud Monitoring
 output "cloud_monitoring_name" {
   value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : null
@@ -85,7 +63,7 @@ output "cos_instance_crn" {
 
 ## COS Buckets
 output "log_archive_cos_bucket_name" {
-  value       = var.existing_log_archive_cos_bucket_name == null ? var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null : var.existing_log_archive_cos_bucket_name
+  value       = var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
   description = "The name of log archive COS bucket"
 }
 
