@@ -419,6 +419,37 @@
               "key": "cloud_log_data_bucket_access_tag"
             },
             {
+              "key": "cloud_log_metrics_bucket_name"
+            },
+            {
+              "key": "cloud_log_metrics_bucket_class",
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "cloud_log_metrics_bucket_access_tag"
+            },
+            {
               "key": "management_endpoint_type_for_bucket",
               "options": [
                 {
@@ -455,6 +486,12 @@
             },
             {
               "key": "existing_cloud_logs_data_bucket_endpoint"
+            },
+            {
+              "key": "existing_cloud_logs_metrics_bucket_crn"
+            },
+            {
+              "key": "existing_cloud_logs_metrics_bucket_endpoint"
             },
             {
               "key": "skip_cos_kms_auth_policy"
