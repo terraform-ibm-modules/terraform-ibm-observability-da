@@ -78,7 +78,7 @@ variable "cloud_logs_access_tags" {
 }
 # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
 variable "cloud_logs_existing_en_instances" {
-  description = "A list of existing Event Notification instances to be integrated with the Cloud Logging service. Each object in the list represents an EN instance, including its CRN, an optional name for the integration, and an optional flag to skip the authentication policy creation for the EN instance `skip_en_auth_policy` [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_existing_en_instances). This variable is intended for integrating a multiple Event Notifications instance to Cloud Logs. If you need to integrate only one instance, you may also use the `existing_en_instance_crn`, `en_integration_name` and `skip_en_auth_policy` variables instead."
+  description = "A list of existing Event Notification instances to be integrated with the Cloud Logging service. Each object in the list represents an EN instance, including its CRN, an optional name for the integration, and an optional flag to skip the authentication policy creation for the EN instance [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_existing_en_instances). This variable is intended for integrating a multiple Event Notifications instance to Cloud Logs. If you need to integrate only one instance, you may also use the `existing_en_instance_crn`, `en_integration_name` and `skip_en_auth_policy` variables instead."
   type = list(object({
     instance_crn        = string
     integration_name    = optional(string, "cloud-logs-en-integration")
