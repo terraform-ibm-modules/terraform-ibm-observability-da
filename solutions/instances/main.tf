@@ -106,7 +106,6 @@ locals {
 
   at_routes = concat(local.at_cos_route, local.at_log_analysis_route, local.at_cloud_logs_route)
 
-  apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
 
   # Cloud Logs data bucket
   cloud_log_data_bucket = var.prefix != null ? "${var.prefix}-${var.cloud_log_data_bucket_name}" : var.cloud_log_data_bucket_name
@@ -162,7 +161,9 @@ locals {
   cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
   cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
   cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
+  cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
 }
+
 data "ibm_iam_account_settings" "iam_account_settings" {
 }
 
@@ -251,9 +252,10 @@ module "observability_instance" {
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     },
     metrics_data = {
-      enabled         = true # Support of routing config is tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
-      bucket_crn      = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
-      bucket_endpoint = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
+      enabled              = true # Support of routing config is tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
+      bucket_crn           = local.cloud_log_metrics_bucket_crn
+      bucket_endpoint      = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
+      skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     }
   } : null
   cloud_logs_existing_en_instances = var.existing_en_instance_crn != null ? [{
