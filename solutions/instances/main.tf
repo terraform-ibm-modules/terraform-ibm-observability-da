@@ -120,6 +120,7 @@ locals {
     skip_en_auth_policy = var.skip_en_auth_policy
   }] : []
 
+  # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
   cloud_logs_existing_en_instances = concat(local.single_en_instance, local.multiple_en_instances)
 }
 

@@ -76,9 +76,9 @@ variable "cloud_logs_access_tags" {
     error_message = "Tags must match the regular expression \"[\\w\\-_\\.]+:[\\w\\-_\\.]+\". For more information, see https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#limits."
   }
 }
-
+# https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
 variable "cloud_logs_existing_en_instances" {
-  description = "A list of existing Event Notification instances to be integrated with the Cloud Logging service. Each object in the list represents an EN instance, including its CRN, an optional name for the integration, and an optional flag to skip the authentication policy creation for the EN instance `skip_en_auth_policy`. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_existing_en_instances)"
+  description = "A list of existing Event Notification instances to be integrated with the Cloud Logging service. Each object in the list represents an EN instance, including its CRN, an optional name for the integration, and an optional flag to skip the authentication policy creation for the EN instance `skip_en_auth_policy` [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_existing_en_instances). This variable is intended for integrating a multiple Event Notifications instance to Cloud Logs. If you need to integrate only one instance, you may also use the `existing_en_instance_crn`, `en_integration_name` and `skip_en_auth_policy` variables instead."
   type = list(object({
     instance_crn        = string
     integration_name    = optional(string, "cloud-logs-en-integration")
@@ -89,19 +89,19 @@ variable "cloud_logs_existing_en_instances" {
 
 variable "existing_en_instance_crn" {
   type        = string
-  description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
+  description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = null
 }
 
 variable "en_integration_name" {
   type        = string
-  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. This variable is intended for integrating a single Event Notifications instance. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
+  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = "cloud-logs-en-integration"
 }
 
 variable "skip_en_auth_policy" {
   type        = bool
-  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. This variable is intended for integrating a single Event Notifications instance. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
+  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = false
 }
 

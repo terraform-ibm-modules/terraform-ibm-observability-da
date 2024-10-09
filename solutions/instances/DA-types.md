@@ -1,6 +1,6 @@
 # Configuring Event Notification (EN) Instances for Cloud Logging
 
-Several optional input variables in the IBM Cloud [Observability instances deployable architecture](https://cloud.ibm.com/catalog#deployable_architecture) use complex object types. You specify these inputs when you configure deployable architecture.
+An optional input variables in the IBM Cloud [Observability instances deployable architecture](https://cloud.ibm.com/catalog#deployable_architecture) use complex object types. You specify these inputs when you configure deployable architecture.
 
 - [Cloud Logs Event Notification Instances](#cloud_logs_existing_en_instances) (`cloud_logs_existing_en_instances`)
 
@@ -11,7 +11,7 @@ The `cloud_logs_existing_en_instances` input variable allows you to provide a li
 - Variable name: `cloud_logs_existing_en_instances`.
 - Type: A list of objects. Each object represents an EN instance with the following attributes:
   - `instance_crn` (required): The Cloud Resource Name (CRN) of the Event Notification instance.
-  - `integration_name` (optional): The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. Defaults to `"cloud-logs-en-integration"`.
+  - `integration_name` (optional): The name of the Event Notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. Defaults to `"cloud-logs-en-integration"`.
   - `skip_en_auth_policy` (optional): A boolean flag to determine whether to skip the creation of an authentication policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. Defaults to `false`.
 - Default value: An empty list (`[]`).
 
