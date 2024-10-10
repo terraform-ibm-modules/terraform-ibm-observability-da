@@ -278,6 +278,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"management_endpoint_type_for_bucket":         "public",
 				"log_analysis_service_endpoints":              "public",
 				"enable_platform_metrics":                     "false",
+				"enable_platform_logs":                        "false",
 				"enable_at_event_routing_to_log_analysis":     "true",
 			},
 		})
