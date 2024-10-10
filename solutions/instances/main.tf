@@ -9,7 +9,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_cos_resource_group = var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true
+  validate_cos_resource_group = var.existing_cos_instance_crn == null ? var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true : true
 
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
@@ -103,8 +103,8 @@ locals {
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets[local.cloud_logs_target_name].id]
   }] : []
-
-  at_routes = concat(local.at_cos_route, local.at_log_analysis_route, local.at_cloud_logs_route)
+  apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
+  at_routes         = concat(local.at_cos_route, local.at_log_analysis_route, local.at_cloud_logs_route)
 
 
   # Cloud Logs data bucket
@@ -184,7 +184,7 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
   resource_attributes {
     name     = "accountId"
     operator = "stringEquals"
-    value    = data.ibm_iam_account_settings.iam_cos_account_settings.account_id
+    value    = data.ibm_iam_account_settings.iam_cos_account_settings[0].account_id
   }
 
   resource_attributes {
@@ -364,6 +364,7 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 # Data source to account settings for retrieving cross account id
 data "ibm_iam_account_settings" "iam_cos_account_settings" {
+  count    = local.apply_auth_policy
   provider = ibm.cos
 }
 
@@ -374,7 +375,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   count = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
   # Conditionals with providers aren't possible, using ibm.kms as provider incase cross account is enabled
   provider                    = ibm.kms
-  source_service_account      = data.ibm_iam_account_settings.iam_cos_account_settings.account_id
+  source_service_account      = data.ibm_iam_account_settings.iam_cos_account_settings[0].account_id
   source_service_name         = "cloud-object-storage"
   source_resource_instance_id = local.cos_instance_guid
   target_service_name         = local.kms_service

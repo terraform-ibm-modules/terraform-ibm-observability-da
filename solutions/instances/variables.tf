@@ -455,13 +455,13 @@ variable "skip_cos_kms_auth_policy" {
 
 variable "skip_cloud_logs_cos_auth_policy" {
   type        = bool
-  description = "To skip creating an IAM authorization policy that allows the IBM Cloud logs to read the Cloud Object Storage instance, set this variable to `true`."
+  description = "To skip creating an IAM authorization policy that allows the IBM Cloud logs to write to the Cloud Object Storage bucket, set this variable to `true`."
   default     = false
 }
 
 variable "skip_at_cos_auth_policy" {
   type        = bool
-  description = "To skip creating an IAM authorization policy that allows the Activity Traker to read from the Cloud Object Storage instance, set this variable to `true`."
+  description = "To skip creating an IAM authorization policy that allows the Activity Traker to write to the Cloud Object Storage instance, set this variable to `true`."
   default     = false
 }
 
