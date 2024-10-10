@@ -10,14 +10,14 @@ variable "ibmcloud_api_key" {
 
 variable "ibmcloud_kms_api_key" {
   type        = string
-  description = "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Object Storage instance. Leave empty if the same account owns both instances."
+  description = "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Observability resources. Leave empty if the same account owns all the instances."
   sensitive   = true
   default     = null
 }
 
 variable "ibmcloud_cos_api_key" {
   type        = string
-  description = "The IBM Cloud API key that can create a Cloud Object Storage (COS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the COS instance is in an account that's different from the one associated Observability resources. Leave empty if the same account owns both instances."
+  description = "The IBM Cloud API key that can create a Cloud Object Storage (COS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the COS instance is in an account that's different from the one associated Observability resources. Leave empty if the same account owns all the instances."
   sensitive   = true
   default     = null
 }
@@ -34,16 +34,10 @@ variable "resource_group_name" {
   description = "The name of a new or existing resource group to provision resources in."
 }
 
-variable "use_existing_cos_resource_group" {
-  type        = bool
-  description = "Whether to use an existing cos resource group."
-  default     = false
-}
-
 variable "cos_resource_group_name" {
   type        = string
-  description = "The name of a new or existing resource group to provision cos instance in. Specify this value if the COS instance is in an account that's different from the one associated Observability resources."
-  default     = null
+  description = "The name of a new or existing resource group to provision COS instance in. If not specified, the 'resource_group_name' variable is used. Specify this if the COS instance is in an account that's different from the one associated Observability resources."
+  default = null
 }
 
 variable "region" {
