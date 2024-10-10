@@ -271,7 +271,7 @@ variable "log_archive_api_key" {
 variable "manage_log_archive_cos_bucket" {
   type        = bool
   default     = false
-  description = "Log Analysis has been deprecated, however you can continue to manage the COS bucket that was used for Log Analysis log archiving, even if `log_analysis_provision` or `log_analysis_enable_archive` has been set to `false`, if you do no wish to loose that data by setting this input to true."
+  description = "Log Analysis has been deprecated, however you can continue to manage the COS bucket that was used for Log Analysis log archiving by setting this input to true, even if `log_analysis_provision` or `log_analysis_enable_archive` have been set to false."
 }
 
 ##############################################################################
