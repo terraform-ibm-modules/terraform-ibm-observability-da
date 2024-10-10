@@ -2,6 +2,17 @@
 # Outputs
 ##############################################################################
 
+
+output "resource_group_name" {
+  value       = module.resource_group.resource_group_name
+  description = "The name of the Resource Group the instances are provisioned in."
+}
+
+output "resource_group_id" {
+  value       = module.resource_group.resource_group_id
+  description = "The ID of the Resource Group the instances are provisioned in."
+}
+
 ## Cloud logs
 output "cloud_logs_crn" {
   value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : null
