@@ -9,7 +9,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_cos_resource_group = var.existing_cos_instance_crn == null ? var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true : true
+  validate_cos_resource_group = var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true
 
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
@@ -19,9 +19,8 @@ locals {
   log_archive_cos_bucket_name = var.prefix != null ? "${var.prefix}-${var.log_archive_cos_bucket_name}" : var.log_archive_cos_bucket_name
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
-  cos_instance_crn = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
-  # existing_kms_guid           = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
-  existing_kms_guid           = var.existing_cos_kms_key_crn == null ? var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.") : element(split(":", var.existing_cos_kms_key_crn), length(split(":", var.existing_cos_kms_key_crn)) - 3)
+  cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
+  existing_kms_guid           = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
@@ -84,11 +83,7 @@ locals {
     can(regex(".*kms.*", var.existing_kms_instance_crn)) ? "kms" : (
       can(regex(".*hs-crypto.*", var.existing_kms_instance_crn)) ? "hs-crypto" : null
     )
-    ) : (
-    can(regex(".*kms.*", var.existing_cos_kms_key_crn)) ? "kms" : (
-      can(regex(".*hs-crypto.*", var.existing_cos_kms_key_crn)) ? "hs-crypto" : null
-    )
-  )
+  ) : null
 
   kms_region = (length(coalesce(local.buckets_config, [])) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
