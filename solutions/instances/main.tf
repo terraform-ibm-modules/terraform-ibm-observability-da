@@ -122,7 +122,8 @@ locals {
   existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
   en_region                       = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[5] : null
   en_integration_name             = var.prefix != null ? "${var.prefix}-${var.en_integration_name}" : var.en_integration_name
-
+  en_topic                        = var.prefix != null ? "${var.prefix} - SCC Topic" : "SCC Topic"
+  en_subscription_email           = var.prefix != null ? "${var.prefix} - Email for Security and Compliance Center Subscription" : "Email for Security and Compliance Center Subscription"
 }
 
 #######################################################################################################################
@@ -363,4 +364,51 @@ module "cos_bucket" {
       }
     }
   ]
+}
+
+#######################################################################################################################
+# SCC Event Notifications Configuration
+#######################################################################################################################
+
+data "ibm_en_destinations" "en_destinations" {
+  count         = var.existing_en_instance_crn != null ? 1 : 0
+  instance_guid = local.existing_en_guid
+}
+
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5533.
+resource "time_sleep" "wait_for_scc" {
+  depends_on = [module.observability_instance]
+
+  create_duration = "60s"
+}
+
+resource "ibm_en_topic" "en_topic" {
+  count         = var.existing_en_instance_crn != null && var.cloud_logs_provision == true ? 1 : 0
+  depends_on    = [time_sleep.wait_for_scc]
+  instance_guid = local.existing_en_guid
+  name          = local.en_topic
+  description   = "Topic for Observability events routing"
+  sources {
+    id = module.observability_instance.cloud_logs_crn
+    rules {
+      enabled           = true
+      event_type_filter = "$.*"
+    }
+  }
+}
+
+resource "ibm_en_subscription_email" "email_subscription" {
+  count          = var.existing_en_instance_crn != null && var.cloud_logs_provision == null && length(var.scc_en_email_list) > 0 ? 1 : 0
+  instance_guid  = local.existing_en_guid
+  name           = local.en_subscription_email
+  description    = "Subscription for Security and Compliance Center Events"
+  destination_id = [for s in toset(data.ibm_en_destinations.en_destinations[count.index].destinations) : s.id if s.type == "smtp_ibm"][0]
+  topic_id       = ibm_en_topic.en_topic[count.index].topic_id
+  attributes {
+    add_notification_payload = true
+    reply_to_mail            = var.scc_en_reply_to_email
+    reply_to_name            = "SCC Event Notifications Bot"
+    from_name                = var.scc_en_from_email
+    invited                  = var.scc_en_email_list
+  }
 }

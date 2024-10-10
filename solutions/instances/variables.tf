@@ -77,6 +77,10 @@ variable "cloud_logs_access_tags" {
   }
 }
 
+########################################################################################################################
+# EN Configuration variables
+########################################################################################################################
+
 variable "existing_en_instance_crn" {
   type        = string
   description = "The CRN of the existing event notification instance. If a value is provided here, `enable_en_cloud_logs_integration` must be set to true in order to enable the integration."
@@ -93,6 +97,24 @@ variable "skip_en_auth_policy" {
   type        = bool
   description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance."
   default     = false
+}
+
+variable "scc_en_from_email" {
+  type        = string
+  description = "The `from` email address used in any Security and Compliance Center events from Event Notifications."
+  default     = "compliancealert@ibm.com"
+}
+
+variable "scc_en_reply_to_email" {
+  type        = string
+  description = "The `reply_to` email address used in any Security and Compliance Center events from Event Notifications."
+  default     = "no-reply@ibm.com"
+}
+
+variable "scc_en_email_list" {
+  type        = list(string)
+  description = "The list of email addresses to notify when Security and Compliance Center triggers an event."
+  default     = []
 }
 
 variable "cloud_logs_retention_period" {
