@@ -37,7 +37,7 @@ variable "resource_group_name" {
 variable "cos_resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision COS instance in. If not specified, the 'resource_group_name' variable is used. Specify this if the COS instance is in an account that's different from the one associated Observability resources."
-  default = null
+  default     = null
 }
 
 variable "region" {
