@@ -162,6 +162,7 @@ locals {
   cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
   cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
   cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
+  cloud_logs_buckets             = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
 }
 
 data "ibm_iam_account_settings" "iam_account_settings" {
@@ -169,11 +170,11 @@ data "ibm_iam_account_settings" "iam_account_settings" {
 
 resource "ibm_iam_authorization_policy" "cos_policy" {
   provider               = ibm.cos
-  count                  = var.ibmcloud_cos_api_key != null && !var.skip_cloud_logs_cos_auth_policy ? 1 : 0
+  count                  = var.ibmcloud_cos_api_key != null && !var.skip_cloud_logs_cos_auth_policy ? length(local.cloud_logs_buckets) : 0
   source_service_account = data.ibm_iam_account_settings.iam_account_settings.account_id
   source_service_name    = "logs"
   roles                  = ["Writer"]
-  description            = "Allow Cloud logs instances `Writer` access to the COS bucket with ID ${regex("bucket:(.*)", local.cloud_logs_data_bucket_crn)[0]}, in the COS instance with ID ${regex(".*:(.*):bucket:.*", local.cloud_logs_data_bucket_crn)[0]}."
+  description            = "Allow Cloud logs instances `Writer` access to the COS bucket with ID ${regex("bucket:(.*)", local.cloud_logs_buckets[count.index])[0]}, in the COS instance with ID ${regex(".*:(.*):bucket:.*", local.cloud_logs_buckets[count.index])[0]}."
 
   resource_attributes {
     name     = "serviceName"
@@ -190,7 +191,7 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
   resource_attributes {
     name     = "serviceInstance"
     operator = "stringEquals"
-    value    = regex(".*:(.*):bucket:.*", local.cloud_logs_data_bucket_crn)[0]
+    value    = regex(".*:(.*):bucket:.*", local.cloud_logs_buckets[count.index])[0]
   }
 
   resource_attributes {
@@ -202,7 +203,7 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
   resource_attributes {
     name     = "resource"
     operator = "stringEquals"
-    value    = regex("bucket:(.*)", local.cloud_logs_data_bucket_crn)[0]
+    value    = regex("bucket:(.*)", local.cloud_logs_buckets[count.index])[0]
   }
 }
 
