@@ -60,6 +60,7 @@ variable "prefix" {
 ##############################################################################
 # IBM Cloud Logs
 ##############################################################################
+
 variable "cloud_logs_provision" {
   description = "Set it to true to provision an IBM Cloud Logs instance"
   type        = bool
@@ -265,6 +266,12 @@ variable "log_archive_api_key" {
   description = "DEPRECATED: The API key to use to configure archiving from Log Analysis to Object Storage. If not specified, the API key value in ibmcloud_api_key is used."
   sensitive   = true
   default     = null
+}
+
+variable "manage_log_archive_cos_bucket" {
+  type        = bool
+  default     = false
+  description = "Log Analysis has been deprecated, however you can continue to manage the COS bucket that was used for Log Analysis log archiving even if `log_analysis_provision` has been set to `false` if you do no wish to loose that data by setting this input to true."
 }
 
 ##############################################################################
