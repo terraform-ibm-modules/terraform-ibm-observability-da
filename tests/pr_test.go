@@ -283,6 +283,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"log_analysis_service_endpoints":          "public",
 				"enable_platform_metrics":                 "false",
 				"enable_at_event_routing_to_log_analysis": "true",
+				"enable_platform_logs":                    "false",
 			},
 		})
 
