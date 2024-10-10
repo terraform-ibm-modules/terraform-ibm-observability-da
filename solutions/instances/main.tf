@@ -8,6 +8,8 @@ locals {
   validate_log_analysis_provision = var.enable_at_event_routing_to_log_analysis && var.log_analysis_provision == false ? tobool("log_analysis_provision can't be false if enable_at_event_routing_to_log_analysis is true") : true
   # tflint-ignore: terraform_unused_declarations
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_cos_resource_group = var.existing_cos_instance_crn == null ? var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true : true
 
   archive_api_key    = var.log_archive_api_key == null ? var.ibmcloud_api_key : var.log_archive_api_key
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
@@ -22,9 +24,10 @@ locals {
   cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
-  cos_kms_key_crn             = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn
+  cos_kms_key_crn             = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
+  cos_resource_group_id      = var.cos_resource_group_name != null ? module.cos_resource_group[0].resource_group_id : module.resource_group.resource_group_id
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
   cos_target_name            = var.prefix != null ? "${var.prefix}-cos-target" : "cos-target"
   log_analysis_target_name   = var.prefix != null ? "${var.prefix}-log-analysis-target" : "log-analysis-target"
@@ -100,10 +103,9 @@ locals {
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets[local.cloud_logs_target_name].id]
   }] : []
-
-  at_routes = concat(local.at_cos_route, local.at_log_analysis_route, local.at_cloud_logs_route)
-
   apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
+  at_routes         = concat(local.at_cos_route, local.at_log_analysis_route, local.at_cloud_logs_route)
+
 
   # Cloud Logs data bucket
   cloud_log_data_bucket = var.prefix != null ? "${var.prefix}-${var.cloud_log_data_bucket_name}" : var.cloud_log_data_bucket_name
@@ -136,6 +138,16 @@ module "resource_group" {
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
 
+module "cos_resource_group" {
+  count = var.cos_resource_group_name != null ? 1 : 0
+  providers = {
+    ibm = ibm.cos
+  }
+  source              = "terraform-ibm-modules/resource-group/ibm"
+  version             = "1.1.6"
+  resource_group_name = var.prefix != null ? "${var.prefix}-${var.cos_resource_group_name}" : var.cos_resource_group_name
+}
+
 #######################################################################################################################
 # Observability Instance
 #######################################################################################################################
@@ -147,11 +159,57 @@ locals {
   log_analysis_instance_name     = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
   cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
   cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
+  cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
+  cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
+  cloud_logs_buckets             = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
+}
+
+data "ibm_iam_account_settings" "iam_account_settings" {
+}
+
+resource "ibm_iam_authorization_policy" "cos_policy" {
+  provider               = ibm.cos
+  count                  = var.ibmcloud_cos_api_key != null && !var.skip_cloud_logs_cos_auth_policy ? length(local.cloud_logs_buckets) : 0
+  source_service_account = data.ibm_iam_account_settings.iam_account_settings.account_id
+  source_service_name    = "logs"
+  roles                  = ["Writer"]
+  description            = "Allow Cloud logs instances `Writer` access to the COS bucket with ID ${regex("bucket:(.*)", local.cloud_logs_buckets[count.index])[0]}, in the COS instance with ID ${regex(".*:(.*):bucket:.*", local.cloud_logs_buckets[count.index])[0]}."
+
+  resource_attributes {
+    name     = "serviceName"
+    operator = "stringEquals"
+    value    = "cloud-object-storage"
+  }
+
+  resource_attributes {
+    name     = "accountId"
+    operator = "stringEquals"
+    value    = data.ibm_iam_account_settings.iam_cos_account_settings[0].account_id
+  }
+
+  resource_attributes {
+    name     = "serviceInstance"
+    operator = "stringEquals"
+    value    = regex(".*:(.*):bucket:.*", local.cloud_logs_buckets[count.index])[0]
+  }
+
+  resource_attributes {
+    name     = "resourceType"
+    operator = "stringEquals"
+    value    = "bucket"
+  }
+
+  resource_attributes {
+    name     = "resource"
+    operator = "stringEquals"
+    value    = regex("bucket:(.*)", local.cloud_logs_buckets[count.index])[0]
+  }
 }
 
 module "observability_instance" {
-  source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.19.1"
+  depends_on = [time_sleep.wait_for_atracker_cos_authorization_policy]
+  source     = "terraform-ibm-modules/observability-instances/ibm"
+  version    = "2.19.1"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -188,14 +246,16 @@ module "observability_instance" {
   cloud_logs_retention_period  = var.cloud_logs_retention_period
   cloud_logs_data_storage = var.cloud_logs_provision ? {
     logs_data = {
-      enabled         = true
-      bucket_crn      = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
-      bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
+      enabled              = true
+      bucket_crn           = local.cloud_logs_data_bucket_crn
+      bucket_endpoint      = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
+      skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     },
     metrics_data = {
-      enabled         = true # Support of routing config is tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
-      bucket_crn      = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
-      bucket_endpoint = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
+      enabled              = true # Support of routing config is tracked in https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/170
+      bucket_crn           = local.cloud_log_metrics_bucket_crn
+      bucket_endpoint      = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
+      skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     }
   } : null
   cloud_logs_existing_en_instances = var.existing_en_instance_crn != null ? [{
@@ -216,11 +276,10 @@ module "observability_instance" {
       instance_id                       = local.cos_instance_crn
       target_region                     = local.default_cos_region
       target_name                       = local.cos_target_name
-      skip_atracker_cos_iam_auth_policy = false
+      skip_atracker_cos_iam_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_at_cos_auth_policy
       service_to_service_enabled        = true
     }
   ] : []
-
   at_log_analysis_targets = var.enable_at_event_routing_to_log_analysis ? [
     {
       instance_id   = module.observability_instance.log_analysis_crn
@@ -240,6 +299,22 @@ module "observability_instance" {
 
   # Routes
   activity_tracker_routes = local.at_routes
+}
+
+resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
+  count           = var.ibmcloud_cos_api_key == null ? 0 : 1
+  depends_on      = [ibm_iam_authorization_policy.atracker_cos]
+  create_duration = "30s"
+}
+resource "ibm_iam_authorization_policy" "atracker_cos" {
+  count                       = var.ibmcloud_cos_api_key != null && !var.skip_at_cos_auth_policy ? 1 : 0
+  provider                    = ibm.cos
+  source_service_account      = data.ibm_iam_account_settings.iam_account_settings.account_id
+  source_service_name         = "atracker"
+  target_service_name         = "cloud-object-storage"
+  target_resource_instance_id = regex(".*:(.*)::", local.cos_instance_crn)[0]
+  roles                       = ["Object Writer"]
+  description                 = "Permit AT service Object Writer access to COS instance ${local.cos_instance_crn}"
 }
 
 #######################################################################################################################
@@ -288,8 +363,9 @@ resource "time_sleep" "wait_for_authorization_policy" {
 }
 
 # Data source to account settings for retrieving cross account id
-data "ibm_iam_account_settings" "iam_account_settings" {
-  count = local.apply_auth_policy
+data "ibm_iam_account_settings" "iam_cos_account_settings" {
+  count    = local.apply_auth_policy
+  provider = ibm.cos
 }
 
 # The auth policy is being created here instead of in COS module because of this limitation: https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues/8
@@ -299,7 +375,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   count = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
   # Conditionals with providers aren't possible, using ibm.kms as provider incase cross account is enabled
   provider                    = ibm.kms
-  source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
+  source_service_account      = data.ibm_iam_account_settings.iam_cos_account_settings[0].account_id
   source_service_name         = "cloud-object-storage"
   source_resource_instance_id = local.cos_instance_guid
   target_service_name         = local.kms_service
@@ -315,7 +391,7 @@ module "cos_instance" {
   count                    = var.existing_cos_instance_crn == null && length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
   version                  = "8.11.11"
-  resource_group_id        = module.resource_group.resource_group_id
+  resource_group_id        = local.cos_resource_group_id
   create_cos_instance      = true
   cos_instance_name        = var.prefix != null ? "${var.prefix}-${var.cos_instance_name}" : var.cos_instance_name
   cos_tags                 = var.cos_instance_tags
