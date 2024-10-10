@@ -211,6 +211,9 @@
               "key": "logs_routing_tenant_regions"
             },
             {
+              "key": "cloud_logs_existing_en_instances"
+            },
+            {
               "key": "existing_en_instance_crn"
             },
             {
