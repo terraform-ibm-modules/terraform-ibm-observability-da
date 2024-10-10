@@ -277,6 +277,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn"),
 				"management_endpoint_type_for_bucket":         "public",
 				"log_analysis_service_endpoints":              "public",
+				"enable_platform_logs":                        "false",
 				"enable_platform_metrics":                     "false",
 				"enable_at_event_routing_to_log_analysis":     "true",
 			},
