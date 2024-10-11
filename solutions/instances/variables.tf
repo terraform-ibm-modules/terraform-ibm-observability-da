@@ -60,6 +60,7 @@ variable "prefix" {
 ##############################################################################
 # IBM Cloud Logs
 ##############################################################################
+
 variable "cloud_logs_provision" {
   description = "Set it to true to provision an IBM Cloud Logs instance"
   type        = bool
@@ -90,22 +91,32 @@ variable "cloud_logs_access_tags" {
     error_message = "Tags must match the regular expression \"[\\w\\-_\\.]+:[\\w\\-_\\.]+\". For more information, see https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#limits."
   }
 }
+# https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
+variable "cloud_logs_existing_en_instances" {
+  description = "A list of existing Event Notification instances to be integrated with the Cloud Logging service. Each object in the list represents an Event Notification instance, including its CRN, an optional name for the integration, and an optional flag to skip the authentication policy creation for the  Event Notification instance [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_existing_en_instances). This variable is intended for integrating a multiple Event Notifications instance to Cloud Logs. If you need to integrate only one instance, you may also use the `existing_en_instance_crn`, `en_integration_name` and `skip_en_auth_policy` variables instead."
+  type = list(object({
+    instance_crn        = string
+    integration_name    = optional(string, "cloud-logs-en-integration")
+    skip_en_auth_policy = optional(bool, false)
+  }))
+  default = []
+}
 
 variable "existing_en_instance_crn" {
   type        = string
-  description = "The CRN of the existing event notification instance. If a value is provided here, `enable_en_cloud_logs_integration` must be set to true in order to enable the integration."
+  description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = null
 }
 
 variable "en_integration_name" {
   type        = string
-  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = "cloud-logs-en-integration"
 }
 
 variable "skip_en_auth_policy" {
   type        = bool
-  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance."
+  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = false
 }
 
@@ -265,6 +276,12 @@ variable "log_archive_api_key" {
   description = "DEPRECATED: The API key to use to configure archiving from Log Analysis to Object Storage. If not specified, the API key value in ibmcloud_api_key is used."
   sensitive   = true
   default     = null
+}
+
+variable "manage_log_archive_cos_bucket" {
+  type        = bool
+  default     = false
+  description = "Log Analysis has been deprecated, however you can continue to manage the COS bucket that was used for Log Analysis log archiving by setting this input to true, even if `log_analysis_provision` or `log_analysis_enable_archive` have been set to false."
 }
 
 ##############################################################################

@@ -20,10 +20,10 @@ locals {
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
-  existing_kms_guid           = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
+  existing_kms_guid           = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.manage_log_archive_cos_bucket && !var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
-  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
-  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : var.log_analysis_provision ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
+  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
+  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
   cos_kms_key_crn             = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
@@ -36,7 +36,7 @@ locals {
   at_log_analysis_route_name = var.prefix != null ? "${var.prefix}-at-log-analysis-route" : "at-log-analysis-route"
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
 
-  archive_bucket_config = var.existing_log_archive_cos_bucket_name == null && var.log_analysis_provision ? {
+  archive_bucket_config = var.existing_log_archive_cos_bucket_name == null && ((var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket) ? {
     class = var.log_archive_cos_bucket_class
     name  = local.log_archive_cos_bucket_name
     tag   = var.archive_bucket_access_tags
@@ -119,12 +119,12 @@ locals {
   parsed_log_metrics_bucket_name         = var.existing_cloud_logs_metrics_bucket_crn != null ? split(":", var.existing_cloud_logs_metrics_bucket_crn) : []
   existing_cloud_log_metrics_bucket_name = length(local.parsed_log_metrics_bucket_name) > 0 ? local.parsed_log_metrics_bucket_name[1] : null
 
-  # Event Notifications
-  parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
-  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
-  en_region                       = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[5] : null
-  en_integration_name             = var.prefix != null ? "${var.prefix}-${var.en_integration_name}" : var.en_integration_name
-
+  # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
+  cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
+    instance_crn        = var.existing_en_instance_crn
+    integration_name    = var.en_integration_name
+    skip_en_auth_policy = var.skip_en_auth_policy
+  }] : [])
 }
 
 #######################################################################################################################
@@ -206,6 +206,13 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
   }
 }
 
+module "en_crn_parser" {
+  count   = length(local.cloud_logs_existing_en_instances)
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.0.0"
+  crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
+}
+
 module "observability_instance" {
   depends_on = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source     = "terraform-ibm-modules/observability-instances/ibm"
@@ -258,12 +265,12 @@ module "observability_instance" {
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     }
   } : null
-  cloud_logs_existing_en_instances = var.existing_en_instance_crn != null ? [{
-    en_instance_id      = local.existing_en_guid
-    en_region           = local.en_region
-    en_instance_name    = local.en_integration_name
-    skip_en_auth_policy = var.skip_en_auth_policy
-  }] : []
+  cloud_logs_existing_en_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
+    en_instance_id      = module.en_crn_parser[index]["service_instance"]
+    en_region           = module.en_crn_parser[index]["region"]
+    en_integration_name = var.prefix != null ? "${var.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}" : local.cloud_logs_existing_en_instances[index]["integration_name"]
+    skip_en_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_en_auth_policy"]
+  }]
   skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
   logs_routing_tenant_regions   = var.logs_routing_tenant_regions
 
