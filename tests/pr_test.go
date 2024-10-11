@@ -313,6 +313,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"log_analysis_provision":              "true",
 				"log_analysis_service_endpoints":      "public",
 				"enable_platform_metrics":             "false",
+				"enable_platform_logs":                "false",
 			},
 		})
 
