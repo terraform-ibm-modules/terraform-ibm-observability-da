@@ -84,3 +84,8 @@ module "event_notification_2" {
   service_endpoints = "public"
   region            = var.region
 }
+
+resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
+  depends_on      = [module.event_notification_1, module.event_notification_2, module.cloud_log_buckets, module.additional_cos_bucket]
+  create_duration = "30s"
+}
