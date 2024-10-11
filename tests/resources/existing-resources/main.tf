@@ -63,11 +63,22 @@ module "cloud_log_buckets" {
 # Event Notification
 ##############################################################################
 
-module "event_notification" {
+module "event_notification_1" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
   version           = "1.6.5"
   resource_group_id = module.resource_group.resource_group_id
-  name              = "${var.prefix}-en"
+  name              = "${var.prefix}-en-1"
+  tags              = var.resource_tags
+  plan              = "standard"
+  service_endpoints = "public"
+  region            = var.region
+}
+
+module "event_notification_2" {
+  source            = "terraform-ibm-modules/event-notifications/ibm"
+  version           = "1.6.5"
+  resource_group_id = module.resource_group.resource_group_id
+  name              = "${var.prefix}-en-2"
   tags              = var.resource_tags
   plan              = "standard"
   service_endpoints = "public"
