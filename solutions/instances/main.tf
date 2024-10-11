@@ -119,12 +119,32 @@ locals {
   parsed_log_metrics_bucket_name         = var.existing_cloud_logs_metrics_bucket_crn != null ? split(":", var.existing_cloud_logs_metrics_bucket_crn) : []
   existing_cloud_log_metrics_bucket_name = length(local.parsed_log_metrics_bucket_name) > 0 ? local.parsed_log_metrics_bucket_name[1] : null
 
-  # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
-  cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
-    instance_crn        = var.existing_en_instance_crn
-    integration_name    = var.en_integration_name
+  # # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
+  # cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
+  #   instance_crn        = var.existing_en_instance_crn
+  #   integration_name    = var.en_integration_name
+  #   skip_en_auth_policy = var.skip_en_auth_policy
+  # }] : [])
+
+  # Multi Event Notifications
+  multiple_en_instances = [for en in var.cloud_logs_existing_en_instances : {
+    en_instance_id      = split(":", en.instance_crn)[7]
+    en_region           = split(":", en.instance_crn)[5]
+    en_integration_name = var.prefix != null ? "${var.prefix}-${en.integration_name}" : en.integration_name
+    skip_en_auth_policy = en.skip_en_auth_policy
+  } if length(split(":", en.instance_crn)) > 0]
+
+  # Single Event Notification
+  parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
+  single_en_instance = var.existing_en_instance_crn != null ? [{
+    en_instance_id      = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
+    en_region           = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[5] : null
+    en_integration_name = var.prefix != null ? "${var.prefix}-${var.en_integration_name}" : var.en_integration_name
     skip_en_auth_policy = var.skip_en_auth_policy
-  }] : [])
+  }] : []
+
+  # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
+  cloud_logs_existing_en_instances = concat(local.single_en_instance, local.multiple_en_instances)
 }
 
 #######################################################################################################################
@@ -265,14 +285,9 @@ module "observability_instance" {
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     }
   } : null
-  cloud_logs_existing_en_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
-    en_instance_id      = module.en_crn_parser[index]["service_instance"]
-    en_region           = module.en_crn_parser[index]["region"]
-    en_integration_name = var.prefix != null ? "${var.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}" : local.cloud_logs_existing_en_instances[index]["integration_name"]
-    skip_en_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_en_auth_policy"]
-  }]
-  skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
-  logs_routing_tenant_regions   = var.logs_routing_tenant_regions
+  cloud_logs_existing_en_instances = local.cloud_logs_existing_en_instances
+  skip_logs_routing_auth_policy    = var.skip_logs_routing_auth_policy
+  logs_routing_tenant_regions      = var.logs_routing_tenant_regions
 
   # Activity Tracker
   activity_tracker_provision = false
