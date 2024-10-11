@@ -226,13 +226,6 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
   }
 }
 
-module "en_crn_parser" {
-  count   = length(local.cloud_logs_existing_en_instances)
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.0.0"
-  crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
-}
-
 module "observability_instance" {
   depends_on = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source     = "terraform-ibm-modules/observability-instances/ibm"
