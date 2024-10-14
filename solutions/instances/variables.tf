@@ -124,19 +124,19 @@ variable "skip_en_auth_policy" {
   default     = false
 }
 
-variable "scc_en_from_email" {
+variable "cloud_logs_en_from_email" {
   type        = string
   description = "The `from` email address used in any Security and Compliance Center events from Event Notifications."
   default     = "compliancealert@ibm.com"
 }
 
-variable "scc_en_reply_to_email" {
+variable "cloud_logs_en_reply_to_email" {
   type        = string
   description = "The `reply_to` email address used in any Security and Compliance Center events from Event Notifications."
   default     = "no-reply@ibm.com"
 }
 
-variable "scc_en_email_list" {
+variable "cloud_logs_en_email_list" {
   type        = list(string)
   description = "The list of email addresses to notify when Security and Compliance Center triggers an event."
   default     = []
