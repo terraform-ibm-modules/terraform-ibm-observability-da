@@ -189,7 +189,7 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
   resource_attributes {
     name     = "accountId"
     operator = "stringEquals"
-    value    = data.ibm_iam_account_settings.iam_cos_account_settings[0].account_id
+    value    = data.ibm_iam_account_settings.iam_cos_account_settings.account_id
   }
 
   resource_attributes {
@@ -376,7 +376,6 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 # Data source to account settings for retrieving cross account id
 data "ibm_iam_account_settings" "iam_cos_account_settings" {
-  count    = local.apply_auth_policy
   provider = ibm.cos
 }
 
@@ -384,10 +383,10 @@ data "ibm_iam_account_settings" "iam_cos_account_settings" {
 
 # Create IAM Authorization Policy to allow COS to access KMS for the encryption key
 resource "ibm_iam_authorization_policy" "policy" {
-  count = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
+  count = local.apply_auth_policy
   # Conditionals with providers aren't possible, using ibm.kms as provider incase cross account is enabled
   provider                    = ibm.kms
-  source_service_account      = data.ibm_iam_account_settings.iam_cos_account_settings[0].account_id
+  source_service_account      = data.ibm_iam_account_settings.iam_cos_account_settings.account_id
   source_service_name         = "cloud-object-storage"
   source_resource_instance_id = local.cos_instance_guid
   target_service_name         = local.kms_service
