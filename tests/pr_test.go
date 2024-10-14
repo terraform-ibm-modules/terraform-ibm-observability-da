@@ -274,12 +274,17 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_cloud_logs_data_bucket_endpoint":    terraform.Output(t, existingTerraformOptions, "data_bucket_endpoint"),
 				"existing_cloud_logs_metrics_bucket_crn":      terraform.Output(t, existingTerraformOptions, "metrics_bucket_crn"),
 				"existing_cloud_logs_metrics_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "metrics_bucket_endpoint"),
-				"existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn"),
-				"management_endpoint_type_for_bucket":         "public",
-				"log_analysis_service_endpoints":              "public",
-				"enable_platform_logs":                        "false",
-				"enable_platform_metrics":                     "false",
-				"enable_at_event_routing_to_log_analysis":     "true",
+				"existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn_1"),
+				"cloud_logs_existing_en_instances": []map[string]interface{}{
+					{
+						"instance_crn": terraform.Output(t, existingTerraformOptions, "en_crn_2"),
+					},
+				},
+				"management_endpoint_type_for_bucket":     "public",
+				"log_analysis_service_endpoints":          "public",
+				"enable_platform_metrics":                 "false",
+				"enable_at_event_routing_to_log_analysis": "true",
+				"enable_platform_logs":                    "false",
 			},
 		})
 

@@ -211,6 +211,9 @@
               "key": "logs_routing_tenant_regions"
             },
             {
+              "key": "cloud_logs_existing_en_instances"
+            },
+            {
               "key": "existing_en_instance_crn"
             },
             {
@@ -495,6 +498,12 @@
             },
             {
               "key": "skip_cos_kms_auth_policy"
+            },
+            {
+              "key": "skip_cloud_logs_cos_auth_policy"
+            },
+            {
+              "key": "skip_at_cos_auth_policy"
             },
             {
               "key": "existing_cos_kms_key_crn",

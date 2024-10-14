@@ -10,10 +10,18 @@ variable "ibmcloud_api_key" {
 
 variable "ibmcloud_kms_api_key" {
   type        = string
-  description = "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Object Storage instance. Leave empty if the same account owns both instances."
+  description = "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Observability resources. Leave empty if the same account owns all the instances."
   sensitive   = true
   default     = null
 }
+
+variable "ibmcloud_cos_api_key" {
+  type        = string
+  description = "The IBM Cloud API key that can create a Cloud Object Storage (COS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the COS instance is in an account that's different from the one associated Observability resources. Leave empty if the same account owns all the instances."
+  sensitive   = true
+  default     = null
+}
+
 
 variable "use_existing_resource_group" {
   type        = bool
@@ -24,6 +32,12 @@ variable "use_existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision resources in."
+}
+
+variable "cos_resource_group_name" {
+  type        = string
+  description = "The name of a new or existing resource group to provision COS instance in. If not specified, the 'resource_group_name' variable is used. Specify this if the COS instance is in an account that's different from the one associated Observability resources."
+  default     = null
 }
 
 variable "region" {
@@ -46,6 +60,7 @@ variable "prefix" {
 ##############################################################################
 # IBM Cloud Logs
 ##############################################################################
+
 variable "cloud_logs_provision" {
   description = "Set it to true to provision an IBM Cloud Logs instance"
   type        = bool
@@ -76,6 +91,16 @@ variable "cloud_logs_access_tags" {
     error_message = "Tags must match the regular expression \"[\\w\\-_\\.]+:[\\w\\-_\\.]+\". For more information, see https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#limits."
   }
 }
+# https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
+variable "cloud_logs_existing_en_instances" {
+  description = "A list of existing Event Notification instances to be integrated with the Cloud Logging service. Each object in the list represents an Event Notification instance, including its CRN, an optional name for the integration, and an optional flag to skip the authentication policy creation for the  Event Notification instance [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_existing_en_instances). This variable is intended for integrating a multiple Event Notifications instance to Cloud Logs. If you need to integrate only one instance, you may also use the `existing_en_instance_crn`, `en_integration_name` and `skip_en_auth_policy` variables instead."
+  type = list(object({
+    instance_crn        = string
+    integration_name    = optional(string, "cloud-logs-en-integration")
+    skip_en_auth_policy = optional(bool, false)
+  }))
+  default = []
+}
 
 ########################################################################################################################
 # EN Configuration variables
@@ -83,19 +108,19 @@ variable "cloud_logs_access_tags" {
 
 variable "existing_en_instance_crn" {
   type        = string
-  description = "The CRN of the existing event notification instance. If a value is provided here, `enable_en_cloud_logs_integration` must be set to true in order to enable the integration."
+  description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = null
 }
 
 variable "en_integration_name" {
   type        = string
-  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
+  description = "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = "cloud-logs-en-integration"
 }
 
 variable "skip_en_auth_policy" {
   type        = bool
-  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance."
+  description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = false
 }
 
@@ -273,6 +298,12 @@ variable "log_archive_api_key" {
   description = "DEPRECATED: The API key to use to configure archiving from Log Analysis to Object Storage. If not specified, the API key value in ibmcloud_api_key is used."
   sensitive   = true
   default     = null
+}
+
+variable "manage_log_archive_cos_bucket" {
+  type        = bool
+  default     = false
+  description = "Log Analysis has been deprecated, however you can continue to manage the COS bucket that was used for Log Analysis log archiving by setting this input to true, even if `log_analysis_provision` or `log_analysis_enable_archive` have been set to false."
 }
 
 ##############################################################################
@@ -458,6 +489,18 @@ variable "existing_at_cos_target_bucket_endpoint" {
 variable "skip_cos_kms_auth_policy" {
   type        = bool
   description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
+  default     = false
+}
+
+variable "skip_cloud_logs_cos_auth_policy" {
+  type        = bool
+  description = "To skip creating an IAM authorization policy that allows the IBM Cloud logs to write to the Cloud Object Storage bucket, set this variable to `true`."
+  default     = false
+}
+
+variable "skip_at_cos_auth_policy" {
+  type        = bool
+  description = "To skip creating an IAM authorization policy that allows the Activity Traker to write to the Cloud Object Storage instance, set this variable to `true`."
   default     = false
 }
 
