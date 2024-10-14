@@ -122,8 +122,6 @@ locals {
   # Event Notifications
   parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
   existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
-  en_region                       = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[5] : null
-  en_integration_name             = var.prefix != null ? "${var.prefix}-${var.en_integration_name}" : var.en_integration_name
   en_topic                        = var.prefix != null ? "${var.prefix} - SCC Topic" : "SCC Topic"
   en_subscription_email           = var.prefix != null ? "${var.prefix} - Email for Security and Compliance Center Subscription" : "Email for Security and Compliance Center Subscription"
   # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
