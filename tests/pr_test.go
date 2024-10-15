@@ -90,7 +90,6 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "cloud_log_data_bucket_access_tag", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
-		{Name: "enable_at_event_routing_to_log_analysis", Value: true, DataType: "bool"},
 	}
 
 	err := options.RunSchematicTest()
