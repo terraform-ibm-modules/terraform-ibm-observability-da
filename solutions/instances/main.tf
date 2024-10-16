@@ -25,7 +25,7 @@ locals {
   # fetch KMS GUID from existing_kms_instance_crn if KMS resources are required and existing_cos_kms_key_crn is not provided
   existing_kms_guid = (var.existing_cos_kms_key_crn != null ? null :
     ((length(coalesce(local.buckets_config, [])) == 0) ||
-    (!var.manage_log_archive_cos_bucket || !var.log_analysis_provision || !var.enable_at_event_routing_to_cos_bucket || !var.cloud_logs_provision)) ? null :
+    (!var.manage_log_archive_cos_bucket && !var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null :
     var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) :
   tobool("The CRN of the existing KMS instance is not provided."))
 
@@ -397,7 +397,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   target_service_name         = local.kms_service
   target_resource_instance_id = local.existing_kms_guid
   roles                       = ["Reader"]
-  description                 = "Allow the COS instance with GUID ${local.cos_instance_guid} reader access to the kms_service instance GUID ${local.existing_kms_guid}"
+  description                 = local.existing_kms_guid != null ? "Allow the COS instance with GUID ${local.cos_instance_guid} reader access to the kms_service instance GUID ${local.existing_kms_guid}" : null
 }
 
 module "cos_instance" {
