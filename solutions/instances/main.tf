@@ -164,12 +164,12 @@ locals {
   log_analysis_instance_name     = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
   cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
   cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
-  cloud_logs_provision           = var.cloud_logs_provision && var.existing_cloud_logs_instance_crn == null ? true : false
-  cloud_logs_crn                 = local.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : var.existing_cloud_logs_instance_crn
-  cloud_logs_guid                = local.cloud_logs_crn == null ? null : element(split(":", local.cloud_logs_crn), length(split(":", local.cloud_logs_crn)) - 3)
   cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null || !local.cloud_logs_provision ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
   cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null || !local.cloud_logs_provision ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
   cloud_logs_buckets             = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
+  cloud_logs_provision           = var.cloud_logs_provision && var.existing_cloud_logs_instance_crn == null ? true : false
+  cloud_logs_crn                 = local.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : var.existing_cloud_logs_instance_crn
+  cloud_logs_guid                = local.cloud_logs_crn == null ? null : element(split(":", local.cloud_logs_crn), length(split(":", local.cloud_logs_crn)) - 3)
 }
 
 data "ibm_iam_account_settings" "iam_account_settings" {

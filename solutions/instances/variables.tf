@@ -32,7 +32,6 @@ variable "use_existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision resources in."
-  default     = "obs-rg"
 }
 
 variable "cos_resource_group_name" {
@@ -55,7 +54,7 @@ variable "region" {
 variable "prefix" {
   type        = string
   description = "The prefix to add to all resources that this solution creates."
-  default     = "jor-test"
+  default     = null
 }
 
 ##############################################################################
@@ -65,13 +64,13 @@ variable "prefix" {
 variable "cloud_logs_provision" {
   description = "Set it to true to provision an IBM Cloud Logs instance"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "existing_cloud_logs_instance_crn" {
   type        = string
   description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
-  default     = "crn:v1:bluemix:public:logs:us-south:a/abac0df06b644a9cabc6e44f55b3880e:3b3e8c86-bba1-4e81-ad6d-58097e0d135f::"
+  default     = null
 }
 
 variable "cloud_logs_instance_name" {
@@ -281,7 +280,7 @@ variable "log_analysis_plan" {
 variable "log_analysis_service_endpoints" {
   description = "DEPRECATED: The type of endpoint for the Log Analysis instance. Possible values: `public`, `private`, `public-and-private`."
   type        = string
-  default     = "public"
+  default     = "private"
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.log_analysis_service_endpoints)
     error_message = "The specified service endpoint is not valid. Specify a valid service endpoint to set for the IBM Log Analysis instance."
@@ -514,7 +513,7 @@ variable "skip_at_cos_auth_policy" {
 variable "management_endpoint_type_for_bucket" {
   description = "The type of endpoint for the IBM Terraform provider to use to manage Cloud Object Storage buckets (`public`, `private`, or `direct`). If you are using a private endpoint, make sure that you enable virtual routing and forwarding (VRF) in your account, and that the Terraform runtime can access the IBM Cloud Private network."
   type        = string
-  default     = "public"
+  default     = "private"
   validation {
     condition     = contains(["public", "private", "direct"], var.management_endpoint_type_for_bucket)
     error_message = "The specified `management_endpoint_type_for_bucket` is not valid. Specify a valid type of endpoint for the IBM Terraform provider to use to manage Cloud Object Storage buckets."
@@ -527,7 +526,7 @@ variable "management_endpoint_type_for_bucket" {
 
 variable "existing_kms_instance_crn" {
   type        = string
-  default     = "crn:v1:bluemix:public:hs-crypto:us-south:a/abac0df06b644a9cabc6e44f55b3880e:e6dce284-e80f-46e1-a3c1-830f7adff7a9::"
+  default     = null
   description = "The CRN of the key management service (KMS) that is used for the Cloud Object Storage bucket root key. If you are not using an existing KMS root key, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required."
 }
 
@@ -540,7 +539,7 @@ variable "existing_cos_kms_key_crn" {
 variable "kms_endpoint_type" {
   type        = string
   description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_cos_kms_key_crn` is not specified."
-  default     = "public"
+  default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
     error_message = "Valid values for the `kms_endpoint_type_value` are `public` or `private`. "
