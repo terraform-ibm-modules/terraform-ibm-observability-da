@@ -19,9 +19,27 @@ locals {
   log_archive_cos_bucket_name = var.prefix != null ? "${var.prefix}-${var.log_archive_cos_bucket_name}" : var.log_archive_cos_bucket_name
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
-  cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
-  existing_kms_guid           = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.manage_log_archive_cos_bucket && !var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
-  cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
+  cos_instance_crn  = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
+  cos_instance_guid = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
+
+  # fetch KMS GUID from existing_kms_instance_crn if KMS resources are required and existing_cos_kms_key_crn is not provided
+  existing_kms_guid = (var.existing_cos_kms_key_crn != null ? null :
+    ((length(coalesce(local.buckets_config, [])) == 0) ||
+    (!var.manage_log_archive_cos_bucket || !var.log_analysis_provision || !var.enable_at_event_routing_to_cos_bucket || !var.cloud_logs_provision)) ? null :
+    var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) :
+  tobool("The CRN of the existing KMS instance is not provided."))
+
+  # get KMS service type : Key Protect (kms) or Hyper Protect Crypto Services(hs-crypto)
+  kms_service = var.existing_kms_instance_crn != null ? (
+    can(regex(".*kms.*", var.existing_kms_instance_crn)) ? "kms" : (
+      can(regex(".*hs-crypto.*", var.existing_kms_instance_crn)) ? "hs-crypto" : null
+    )
+  ) : null
+
+  # fetch KMS region from existing_kms_instance_crn if KMS resources are required and existing_cos_kms_key_crn is not provided
+  kms_region = ((length(coalesce(local.buckets_config, [])) != 0) ?
+  (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null)
+
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
   cos_kms_key_crn             = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
@@ -67,7 +85,6 @@ locals {
     local.cloud_log_metrics_bucket_config != null ? [local.cloud_log_metrics_bucket_config] : []
   )
 
-
   archive_rule = (var.existing_log_archive_cos_bucket_name == null || var.existing_at_cos_target_bucket_name == null) ? {
     enable = true
     days   = 90
@@ -79,13 +96,6 @@ locals {
     days   = 366
   } : null
 
-  kms_service = var.existing_kms_instance_crn != null ? (
-    can(regex(".*kms.*", var.existing_kms_instance_crn)) ? "kms" : (
-      can(regex(".*hs-crypto.*", var.existing_kms_instance_crn)) ? "hs-crypto" : null
-    )
-  ) : null
-
-  kms_region = (length(coalesce(local.buckets_config, [])) != 0) ? (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
     route_name = local.at_cos_route_name
     locations  = ["*", "global"]
@@ -103,7 +113,7 @@ locals {
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets[local.cloud_logs_target_name].id]
   }] : []
-  apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
+  apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0) || (var.existing_cos_kms_key_crn != null)) ? 0 : 1
   at_routes         = concat(local.at_cos_route, local.at_log_analysis_route, local.at_cloud_logs_route)
 
 
