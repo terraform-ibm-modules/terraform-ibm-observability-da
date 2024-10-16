@@ -20,7 +20,7 @@ locals {
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
   cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
-  existing_kms_guid           = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.manage_log_archive_cos_bucket && !var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
+  existing_kms_guid           = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.manage_log_archive_cos_bucket && !var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !local.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
   cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
   archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
   archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
@@ -48,13 +48,13 @@ locals {
     tag   = var.at_cos_bucket_access_tags
   } : null
 
-  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? {
+  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && local.cloud_logs_provision ? {
     class = var.cloud_log_data_bucket_class
     name  = local.cloud_log_data_bucket
     tag   = var.cloud_log_data_bucket_access_tag
   } : null
 
-  cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? {
+  cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && local.cloud_logs_provision ? {
     class = var.cloud_log_metrics_bucket_class
     name  = local.cloud_log_metrics_bucket
     tag   = var.cloud_log_metrics_bucket_access_tag
@@ -119,12 +119,17 @@ locals {
   parsed_log_metrics_bucket_name         = var.existing_cloud_logs_metrics_bucket_crn != null ? split(":", var.existing_cloud_logs_metrics_bucket_crn) : []
   existing_cloud_log_metrics_bucket_name = length(local.parsed_log_metrics_bucket_name) > 0 ? local.parsed_log_metrics_bucket_name[1] : null
 
+  # Event Notifications
+  parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
+  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
   # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
   cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
     instance_crn        = var.existing_en_instance_crn
     integration_name    = var.en_integration_name
     skip_en_auth_policy = var.skip_en_auth_policy
   }] : [])
+  en_topic              = var.prefix != null ? "${var.prefix} - Cloud Logs Topic" : "Cloud Logs Topic"
+  en_subscription_email = var.prefix != null ? "${var.prefix} - Email for Cloud Logs Subscription" : "Email for Cloud Logs Subscription"
 }
 
 #######################################################################################################################
@@ -159,8 +164,11 @@ locals {
   log_analysis_instance_name     = var.prefix != null ? "${var.prefix}-${var.log_analysis_instance_name}" : var.log_analysis_instance_name
   cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
   cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
-  cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
-  cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
+  cloud_logs_provision           = var.cloud_logs_provision && var.existing_cloud_logs_instance_crn == null ? true : false
+  cloud_logs_crn                 = local.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : var.existing_cloud_logs_instance_crn
+  cloud_logs_guid                = local.cloud_logs_crn == null ? null : element(split(":", local.cloud_logs_crn), length(split(":", local.cloud_logs_crn)) - 3)
+  cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null || !local.cloud_logs_provision ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
+  cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null || !local.cloud_logs_provision ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
   cloud_logs_buckets             = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
 }
 
@@ -244,14 +252,14 @@ module "observability_instance" {
   enable_platform_metrics            = var.enable_platform_metrics
 
   # IBM Cloud Logs
-  cloud_logs_provision         = var.cloud_logs_provision
+  cloud_logs_provision         = local.cloud_logs_provision
   cloud_logs_instance_name     = local.cloud_logs_instance_name
   cloud_logs_plan              = "standard"
   cloud_logs_access_tags       = var.cloud_logs_access_tags
   cloud_logs_tags              = var.cloud_logs_tags
   cloud_logs_service_endpoints = "public-and-private"
   cloud_logs_retention_period  = var.cloud_logs_retention_period
-  cloud_logs_data_storage = var.cloud_logs_provision ? {
+  cloud_logs_data_storage = local.cloud_logs_provision ? {
     logs_data = {
       enabled              = true
       bucket_crn           = local.cloud_logs_data_bucket_crn
@@ -298,7 +306,7 @@ module "observability_instance" {
 
   at_cloud_logs_targets = var.enable_at_event_routing_to_cloud_logs ? [
     {
-      instance_id   = module.observability_instance.cloud_logs_crn
+      instance_id   = local.cloud_logs_crn
       target_region = var.region
       target_name   = local.cloud_logs_target_name
     }
@@ -445,4 +453,69 @@ module "cos_bucket" {
       }
     }
   ]
+}
+
+#######################################################################################################################
+# Cloud Logs - Event Notifications Configuration
+#######################################################################################################################
+
+data "ibm_en_destinations" "en_destinations" {
+  count         = var.existing_en_instance_crn != null ? 1 : 0
+  instance_guid = local.existing_en_guid
+}
+
+resource "ibm_iam_authorization_policy" "en_policy" {
+  count                       = var.existing_en_instance_crn != null && !var.skip_en_auth_policy && !local.cloud_logs_provision ? 1 : 0
+  source_service_name         = "logs"
+  source_resource_instance_id = local.cloud_logs_guid
+  target_service_name         = "event-notifications"
+  target_resource_instance_id = local.existing_en_guid
+  roles                       = ["Event Source Manager"]
+  description                 = "Allow Cloud Logs with instance ID ${local.cloud_logs_guid} 'Event Source Manager' role access on the Event Notification instance GUID ${local.existing_en_guid}"
+}
+
+resource "time_sleep" "wait_for_en_authorization_policy" {
+  depends_on = [ibm_iam_authorization_policy.en_policy]
+  # trigger once if any of the buckets create an auth policy
+  count           = var.existing_en_instance_crn != null && !var.skip_logs_routing_auth_policy && !local.cloud_logs_provision ? 1 : 0
+  create_duration = "30s"
+}
+
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5533.
+resource "time_sleep" "wait_for_observability" {
+  depends_on = [module.observability_instance]
+  count      = var.existing_en_instance_crn != null && local.cloud_logs_provision ? 1 : 0
+
+  create_duration = "60s"
+}
+
+resource "ibm_en_topic" "en_topic" {
+  count         = var.existing_en_instance_crn != null ? 1 : 0
+  depends_on    = [time_sleep.wait_for_observability, time_sleep.wait_for_en_authorization_policy]
+  instance_guid = local.existing_en_guid
+  name          = local.en_topic
+  description   = "Topic for Cloud Logs events routing"
+  sources {
+    id = local.cloud_logs_crn
+    rules {
+      enabled           = true
+      event_type_filter = "$.*"
+    }
+  }
+}
+
+resource "ibm_en_subscription_email" "email_subscription" {
+  count          = var.existing_en_instance_crn != null && length(var.cloud_logs_en_email_list) > 0 ? 1 : 0
+  instance_guid  = local.existing_en_guid
+  name           = local.en_subscription_email
+  description    = "Subscription for Cloud Logs Events"
+  destination_id = [for s in toset(data.ibm_en_destinations.en_destinations[count.index].destinations) : s.id if s.type == "smtp_ibm"][0]
+  topic_id       = ibm_en_topic.en_topic[count.index].topic_id
+  attributes {
+    add_notification_payload = true
+    reply_to_mail            = var.cloud_logs_en_reply_to_email
+    reply_to_name            = "Cloud Logs Event Notifications Bot"
+    from_name                = var.cloud_logs_en_from_email
+    invited                  = var.cloud_logs_en_email_list
+  }
 }
