@@ -306,6 +306,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"resource_group_name":                 terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":         true,
 				"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
+				"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
 				"kms_endpoint_type":                   "public",
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",

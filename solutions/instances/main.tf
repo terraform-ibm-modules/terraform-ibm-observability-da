@@ -113,7 +113,7 @@ locals {
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets[local.cloud_logs_target_name].id]
   }] : []
-  apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0) || (var.existing_cos_kms_key_crn != null)) ? 0 : 1
+  apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
   at_routes         = concat(local.at_cos_route, local.at_log_analysis_route, local.at_cloud_logs_route)
 
 
