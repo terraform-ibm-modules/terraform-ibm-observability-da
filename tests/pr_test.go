@@ -299,6 +299,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",
 				"enable_platform_metrics":             "false",
+				"enable_platform_logs":                "false",
 			},
 		})
 
