@@ -476,7 +476,6 @@ resource "ibm_iam_authorization_policy" "en_policy" {
 
 resource "time_sleep" "wait_for_en_authorization_policy" {
   depends_on = [ibm_iam_authorization_policy.en_policy]
-  # trigger once if any of the buckets create an auth policy
   count           = var.existing_en_instance_crn != null && !var.skip_logs_routing_auth_policy && !local.cloud_logs_provision ? 1 : 0
   create_duration = "30s"
 }
