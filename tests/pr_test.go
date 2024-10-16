@@ -255,6 +255,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			ImplicitRequired: false,
 			Region:           region,
 			TerraformVars: map[string]interface{}{
+				"prefix":                                      prefix,
 				"cos_region":                                  region,
 				"resource_group_name":                         terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":                 true,
@@ -266,11 +267,13 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_cloud_logs_metrics_bucket_crn":      terraform.Output(t, existingTerraformOptions, "metrics_bucket_crn"),
 				"existing_cloud_logs_metrics_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "metrics_bucket_endpoint"),
 				"existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn_1"),
-				"cloud_logs_existing_en_instances": []map[string]interface{}{
-					{
-						"instance_crn": terraform.Output(t, existingTerraformOptions, "en_crn_2"),
-					},
-				},
+				// temporarily disabled until https://github.ibm.com/GoldenEye/issues/issues/11159 is resolved
+				// "cloud_logs_existing_en_instances": []map[string]interface{}{
+				// 	{
+				// 		"instance_crn":     terraform.Output(t, existingTerraformOptions, "en_crn_2"),
+				// 		"integration_name": "en-2",
+				// 	},
+				// },
 				"management_endpoint_type_for_bucket": "public",
 				"enable_platform_metrics":             "false",
 				"enable_platform_logs":                "false",
@@ -291,6 +294,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
 			ImplicitRequired: false,
 			TerraformVars: map[string]interface{}{
+				"prefix":                              prefix,
 				"cos_region":                          region,
 				"resource_group_name":                 terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":         true,
