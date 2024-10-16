@@ -115,7 +115,7 @@ variable "cloud_logs_existing_en_instances" {
 variable "existing_en_instance_crn" {
   type        = string
   description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
-  default     = "crn:v1:bluemix:public:event-notifications:us-south:a/abac0df06b644a9cabc6e44f55b3880e:27cbadb3-137c-487c-8973-1e406234fb7d::"
+  default     = null
 }
 
 variable "en_integration_name" {
