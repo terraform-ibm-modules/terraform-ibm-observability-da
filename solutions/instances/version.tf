@@ -6,10 +6,6 @@ terraform {
       source  = "ibm-cloud/ibm"
       version = "1.70.0"
     }
-    logdna = {
-      source  = "logdna/logdna"
-      version = "1.16.0"
-    }
     time = {
       source  = "hashicorp/time"
       version = "0.12.1"
