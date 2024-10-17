@@ -111,17 +111,14 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 	})
 
 	options.TerraformVars = map[string]interface{}{
-		"prefix":                                  options.Prefix,
-		"resource_group_name":                     options.Prefix,
-		"cos_instance_access_tags":                permanentResources["accessTags"],
-		"existing_kms_instance_crn":               permanentResources["hpcs_south_crn"],
-		"kms_endpoint_type":                       "public",
-		"management_endpoint_type_for_bucket":     "public",
-		"log_analysis_provision":                  "true",
-		"log_analysis_service_endpoints":          "public-and-private",
-		"enable_platform_logs":                    "false",
-		"enable_platform_metrics":                 "false",
-		"enable_at_event_routing_to_log_analysis": "true",
+		"prefix":                              options.Prefix,
+		"resource_group_name":                 options.Prefix,
+		"cos_instance_access_tags":            permanentResources["accessTags"],
+		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
+		"kms_endpoint_type":                   "public",
+		"management_endpoint_type_for_bucket": "public",
+		"enable_platform_logs":                "false",
+		"enable_platform_metrics":             "false",
 	}
 
 	output, err := options.RunTestUpgrade()
