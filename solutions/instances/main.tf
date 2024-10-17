@@ -41,13 +41,13 @@ locals {
     tag   = var.at_cos_bucket_access_tags
   } : null
 
-  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && local.cloud_logs_provision ? {
+  cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && local.cloud_logs_provision || !local.cloud_logs_provision && var.existing_cloud_logs_instance_crn != null  ? {
     class = var.cloud_log_data_bucket_class
     name  = local.cloud_log_data_bucket
     tag   = var.cloud_log_data_bucket_access_tag
   } : null
 
-  cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && local.cloud_logs_provision ? {
+  cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && local.cloud_logs_provision || !local.cloud_logs_provision && var.existing_cloud_logs_instance_crn != null ? {
     class = var.cloud_log_metrics_bucket_class
     name  = local.cloud_log_metrics_bucket
     tag   = var.cloud_log_metrics_bucket_access_tag
