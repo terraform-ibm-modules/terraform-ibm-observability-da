@@ -66,6 +66,12 @@ variable "cloud_logs_provision" {
   default     = true
 }
 
+variable "existing_cloud_logs_instance_crn" {
+  type        = string
+  description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
+  default     = null
+}
+
 variable "cloud_logs_instance_name" {
   type        = string
   description = "The name of the IBM Cloud Logs instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format."
@@ -101,6 +107,10 @@ variable "cloud_logs_existing_en_instances" {
   default = []
 }
 
+########################################################################################################################
+# EN Configuration variables
+########################################################################################################################
+
 variable "existing_en_instance_crn" {
   type        = string
   description = "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
@@ -117,6 +127,24 @@ variable "skip_en_auth_policy" {
   type        = bool
   description = "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead."
   default     = false
+}
+
+variable "cloud_logs_en_from_email" {
+  type        = string
+  description = "The `from` email address used in any Security and Compliance Center events from Event Notifications."
+  default     = "compliancealert@ibm.com"
+}
+
+variable "cloud_logs_en_reply_to_email" {
+  type        = string
+  description = "The `reply_to` email address used in any Security and Compliance Center events from Event Notifications."
+  default     = "no-reply@ibm.com"
+}
+
+variable "cloud_logs_en_email_list" {
+  type        = list(string)
+  description = "The list of email addresses to notify when Security and Compliance Center triggers an event."
+  default     = []
 }
 
 variable "cloud_logs_retention_period" {
