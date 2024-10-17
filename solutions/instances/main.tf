@@ -16,12 +16,10 @@ locals {
   log_archive_cos_bucket_name = var.prefix != null ? "${var.prefix}-${var.log_archive_cos_bucket_name}" : var.log_archive_cos_bucket_name
   at_cos_target_bucket_name   = var.prefix != null ? "${var.prefix}-${var.at_cos_target_bucket_name}" : var.at_cos_target_bucket_name
 
-  cos_instance_crn            = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
-  existing_kms_guid           = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_log_archive_cos_bucket_name != null && var.existing_at_cos_target_bucket_name != null) || (!var.manage_log_archive_cos_bucket && !var.log_analysis_provision && !var.enable_at_event_routing_to_cos_bucket && !local.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
-  cos_instance_guid           = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
-  archive_cos_bucket_name     = var.existing_log_archive_cos_bucket_name != null ? var.existing_log_archive_cos_bucket_name : (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
-  archive_cos_bucket_endpoint = var.existing_log_archive_cos_bucket_endpoint != null ? var.existing_log_archive_cos_bucket_endpoint : (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].s3_endpoint_private : null
-  cos_kms_key_crn             = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
+  cos_instance_crn  = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
+  existing_kms_guid = ((var.existing_cloud_logs_metrics_bucket_crn != null && var.existing_cloud_logs_data_bucket_crn != null && var.existing_at_cos_target_bucket_name != null) || (!var.manage_log_archive_cos_bucket && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null : var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) : tobool("The CRN of the existing KMS is not provided.")
+  cos_instance_guid = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
+  cos_kms_key_crn   = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
 
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
   cos_resource_group_id      = var.cos_resource_group_name != null ? module.cos_resource_group[0].resource_group_id : module.resource_group.resource_group_id
@@ -148,14 +146,14 @@ module "cos_resource_group" {
 locals {
   parsed_existing_cloud_monitoring_crn = var.existing_cloud_monitoring_crn != null ? split(":", var.existing_cloud_monitoring_crn) : []
   existing_cloud_monitoring_guid       = length(local.parsed_existing_cloud_monitoring_crn) > 0 ? local.parsed_existing_cloud_monitoring_crn[7] : null
-  cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
-  cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
-  cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null || !local.cloud_logs_provision ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
-  cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null || !local.cloud_logs_provision ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
-  cloud_logs_buckets             = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
-  cloud_logs_provision           = var.cloud_logs_provision && var.existing_cloud_logs_instance_crn == null ? true : false
-  cloud_logs_crn                 = local.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : var.existing_cloud_logs_instance_crn
-  cloud_logs_guid                = local.cloud_logs_crn == null ? null : element(split(":", local.cloud_logs_crn), length(split(":", local.cloud_logs_crn)) - 3)
+  cloud_monitoring_instance_name       = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
+  cloud_logs_instance_name             = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
+  cloud_logs_data_bucket_crn           = var.existing_cloud_logs_data_bucket_crn != null || !local.cloud_logs_provision ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
+  cloud_log_metrics_bucket_crn         = var.existing_cloud_logs_metrics_bucket_crn != null || !local.cloud_logs_provision ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
+  cloud_logs_buckets                   = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
+  cloud_logs_provision                 = var.cloud_logs_provision && var.existing_cloud_logs_instance_crn == null ? true : false
+  cloud_logs_crn                       = local.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : var.existing_cloud_logs_instance_crn
+  cloud_logs_guid                      = local.cloud_logs_crn == null ? null : element(split(":", local.cloud_logs_crn), length(split(":", local.cloud_logs_crn)) - 3)
 }
 
 data "ibm_iam_account_settings" "iam_account_settings" {
@@ -438,7 +436,7 @@ resource "ibm_iam_authorization_policy" "en_policy" {
 }
 
 resource "time_sleep" "wait_for_en_authorization_policy" {
-  depends_on = [ibm_iam_authorization_policy.en_policy]
+  depends_on      = [ibm_iam_authorization_policy.en_policy]
   count           = var.existing_en_instance_crn != null && !var.skip_logs_routing_auth_policy && !local.cloud_logs_provision ? 1 : 0
   create_duration = "30s"
 }
