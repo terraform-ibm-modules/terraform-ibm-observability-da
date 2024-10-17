@@ -22,7 +22,6 @@ variable "ibmcloud_cos_api_key" {
   default     = null
 }
 
-
 variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
@@ -239,7 +238,7 @@ variable "skip_logs_routing_auth_policy" {
 
 variable "enable_platform_logs" {
   type        = bool
-  description = "Setting this to true will create a tenant in the same region that the Cloud Logs instance is provisioned to enable platform logs for that region. To send platform logs from other regions, you can explicitially specify a list of regions using the `logs_routing_tenant_regions` input. NOTE: You can only have 1 tenant per region in an account. If `log_analysis_provision` is set to true, this variable will also enable platform logs for the Log analysis instance."
+  description = "Setting this to true will create a tenant in the same region that the Cloud Logs instance is provisioned to enable platform logs for that region. To send platform logs from other regions, you can explicitially specify a list of regions using the `logs_routing_tenant_regions` input. NOTE: You can only have 1 tenant per region in an account."
   default     = true
 }
 
@@ -250,66 +249,10 @@ variable "logs_routing_tenant_regions" {
   nullable    = false
 }
 
-##############################################################################
-# Log Analysis Variables
-##############################################################################
-
-variable "log_analysis_provision" {
-  description = "DEPRECATED: Set it to true to provision an IBM Cloud Logging instance. IBM Cloud Log Analysis is now deprecated and new instances cannot be provisioned after November 30, 2024, and all existing instances will be destroyed on March 30, 2025. For more information, see https://cloud.ibm.com/docs/log-analysis?topic=log-analysis-getting-started"
-  type        = bool
-  default     = false
-}
-
-variable "log_analysis_instance_name" {
-  type        = string
-  description = "DEPRECATED: The name of the IBM Cloud Log Analysis instance to create. If a prefix input variable is specified, it's added to the value in the <prefix>-value format."
-  default     = "log-analysis"
-}
-
-variable "log_analysis_plan" {
-  type        = string
-  description = "DEPRECATED: The Log Analysis plan to provision. Possible values: `7-day`, `14-day`, `30-day`, and `hipaa-30-day`."
-  default     = "7-day"
-
-  validation {
-    condition     = can(regex("^lite$|^7-day$|^14-day$|^30-day$|^hipaa-30-day$", var.log_analysis_plan))
-    error_message = "Specify one of the following values for the `log_analysis_plan`: `lite`, `7-day`, `14-day`, `30-day`, or `hipaa-30-day`."
-  }
-}
-
-variable "log_analysis_service_endpoints" {
-  description = "DEPRECATED: The type of endpoint for the Log Analysis instance. Possible values: `public`, `private`, `public-and-private`."
-  type        = string
-  default     = "private"
-  validation {
-    condition     = contains(["public", "private", "public-and-private"], var.log_analysis_service_endpoints)
-    error_message = "The specified service endpoint is not valid. Specify a valid service endpoint to set for the IBM Log Analysis instance."
-  }
-}
-
-variable "log_analysis_tags" {
-  type        = list(string)
-  description = "DEPRECATED: The tags that are associated with the IBM Cloud Logging instance (`Optional`, `array of strings`)."
-  default     = []
-}
-
-variable "log_analysis_enable_archive" {
-  type        = bool
-  description = "DEPRECATED: Whether to enable archiving on Log Analysis instances. If set to true, `log_analysis_provision` must also be set to true."
-  default     = true
-}
-
-variable "log_archive_api_key" {
-  type        = string
-  description = "DEPRECATED: The API key to use to configure archiving from Log Analysis to Object Storage. If not specified, the API key value in ibmcloud_api_key is used."
-  sensitive   = true
-  default     = null
-}
-
 variable "manage_log_archive_cos_bucket" {
   type        = bool
   default     = false
-  description = "Log Analysis has been deprecated, however you can continue to manage the COS bucket that was used for Log Analysis log archiving by setting this input to true, even if `log_analysis_provision` or `log_analysis_enable_archive` have been set to false."
+  description = "Log Analysis has been deprecated, and can no longer be deployed wuth this solution, however you can continue to manage the COS bucket that may have been in older versions for Log Analysis log archiving by setting this input to true."
 }
 
 ##############################################################################
@@ -320,12 +263,6 @@ variable "enable_at_event_routing_to_cos_bucket" {
   type        = bool
   description = "Whether to enable event routing from Activity Tracker to the Object Storage bucket."
   default     = true
-}
-
-variable "enable_at_event_routing_to_log_analysis" {
-  type        = bool
-  description = "Whether to enable event routing from Activity Tracker to Log Analysis. IBM Cloud Log Analysis is now deprecated and new instances cannot be provisioned after November 30, 2024, and all existing instances will be destroyed on March 30, 2025."
-  default     = false
 }
 
 variable "enable_at_event_routing_to_cloud_logs" {
@@ -385,7 +322,7 @@ variable "enable_platform_metrics" {
 
 variable "add_bucket_name_suffix" {
   type        = bool
-  description = "Add a randomly generated suffix that is 4 characters in length, to the name of the newly provisioned Cloud Object Storage bucket. Do not use this suffix if you are passing the existing Cloud Object Storage bucket. To manage the name of the Cloud Object Storage bucket manually, use the `log_archive_cos_bucket_name` and `at_cos_target_bucket_name` variables."
+  description = "Add a randomly generated suffix that is 4 characters in length, to the name of the newly provisioned Cloud Object Storage bucket. Do not use this suffix if you are passing the existing Cloud Object Storage bucket. To manage the name of the Cloud Object Storage bucket manually, use the `cloud_log_data_bucket_name`, `cloud_log_metrics_bucket_name`, `at_cos_target_bucket_name` and `log_archive_cos_bucket_name` variables."
   default     = true
 }
 
@@ -428,7 +365,7 @@ variable "at_cos_target_bucket_name" {
 variable "archive_bucket_access_tags" {
   type        = list(string)
   default     = []
-  description = "A list of optional tags to add to the log archive Cloud Object Storage bucket."
+  description = "A list of optional tags to add to the Log Analysis log archive Cloud Object Storage bucket."
 }
 
 variable "at_cos_bucket_access_tags" {
@@ -464,25 +401,11 @@ variable "existing_cos_instance_crn" {
   description = "The CRN of an existing Cloud Object Storage instance. If a CRN is not specified, a new instance of Cloud Object Storage is created."
 }
 
-variable "existing_log_archive_cos_bucket_name" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The name of an existing bucket within the Cloud Object Storage instance in which to store log archive files. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
-}
-
 variable "existing_at_cos_target_bucket_name" {
   type        = string
   nullable    = true
   default     = null
   description = "The name of an existing bucket within the Cloud Object Storage instance in which to store IBM Cloud Activity Tracker Event Routing. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
-}
-
-variable "existing_log_archive_cos_bucket_endpoint" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The name of an existing Cloud Object Storage bucket endpoint to use for storing the log archive file. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used."
 }
 
 variable "existing_at_cos_target_bucket_endpoint" {
@@ -533,7 +456,7 @@ variable "existing_kms_instance_crn" {
 variable "existing_cos_kms_key_crn" {
   type        = string
   default     = null
-  description = "Optional. The CRN of an existing key management service (KMS) key to use to encrypt the Cloud Object Storage buckets that this solution creates. To create a key ring and key, pass a value for the `existing_kms_instance_crn` input variable. To use existing Cloud Object Storage buckets, pass a value for the `existing_log_archive_cos_bucket_name` and `existing_at_cos_target_bucket_name` input variables."
+  description = "Optional. The CRN of an existing key management service (KMS) key to use to encrypt the Cloud Object Storage buckets that this solution creates. To create a key ring and key, pass a value for the `existing_kms_instance_crn` input variable. To use existing Cloud Object Storage buckets, pass a value for the `existing_cloud_logs_data_bucket_crn`, `existing_cloud_logs_metrics_bucket_crn`, and `existing_at_cos_target_bucket_name` input variables."
 }
 
 variable "kms_endpoint_type" {
