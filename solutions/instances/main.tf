@@ -21,8 +21,8 @@ locals {
   cos_instance_crn  = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
   cos_instance_guid = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
 
-  # fetch KMS GUID from existing_kms_instance_crn if KMS resources are required and existing_cos_kms_key_crn is not provided
-  existing_kms_guid = (var.existing_cos_kms_key_crn != null ? null :
+  # fetch KMS GUID from existing_kms_instance_crn if KMS resources are required
+  existing_kms_guid = ((var.existing_cos_kms_key_crn != null && var.skip_cos_kms_auth_policy) ? null :
     ((length(coalesce(local.buckets_config, [])) == 0) ||
     (!var.manage_log_archive_cos_bucket && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null :
   var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_instance : tobool("The CRN of the existing KMS instance is not provided."))
