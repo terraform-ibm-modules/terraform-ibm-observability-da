@@ -5,6 +5,8 @@
 locals {
 
   # tflint-ignore: terraform_unused_declarations
+  validate_existing_kms_inputs = (var.existing_cos_kms_key_crn != null && !var.skip_cos_kms_auth_policy) ? (var.existing_kms_instance_crn == null ? tobool("The existing_kms_instance_crn is not provided and is required to configure the COS - KMS authorization policy") : true) : true
+  # tflint-ignore: terraform_unused_declarations
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
   # tflint-ignore: terraform_unused_declarations
   validate_cos_resource_group = var.existing_cos_instance_crn == null ? var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true : true
@@ -23,8 +25,7 @@ locals {
   existing_kms_guid = (var.existing_cos_kms_key_crn != null ? null :
     ((length(coalesce(local.buckets_config, [])) == 0) ||
     (!var.manage_log_archive_cos_bucket && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null :
-    var.existing_kms_instance_crn != null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 3) :
-  tobool("The CRN of the existing KMS instance is not provided."))
+  var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_instance : tobool("The CRN of the existing KMS instance is not provided."))
 
   # get KMS service type : Key Protect (kms) or Hyper Protect Crypto Services(hs-crypto)
   kms_service = var.existing_kms_instance_crn != null ? (
@@ -35,7 +36,7 @@ locals {
 
   # fetch KMS region from existing_kms_instance_crn if KMS resources are required and existing_cos_kms_key_crn is not provided
   kms_region = ((length(coalesce(local.buckets_config, [])) != 0) ?
-  (var.existing_cos_kms_key_crn == null ? element(split(":", var.existing_kms_instance_crn), length(split(":", var.existing_kms_instance_crn)) - 5) : null) : null)
+  (var.existing_cos_kms_key_crn == null ? module.kms_instance_crn_parser[0].region : null) : null)
 
   cos_kms_key_crn = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
 
@@ -300,6 +301,14 @@ resource "ibm_iam_authorization_policy" "atracker_cos" {
 # KMS Key
 #######################################################################################################################
 
+# If existing KMS intance CRN passed, parse details from it
+module "kms_instance_crn_parser" {
+  count   = var.existing_kms_instance_crn != null ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.1.0"
+  crn     = var.existing_kms_instance_crn
+}
+
 module "kms" {
   providers = {
     ibm = ibm.kms
@@ -359,7 +368,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   target_service_name         = local.kms_service
   target_resource_instance_id = local.existing_kms_guid
   roles                       = ["Reader"]
-  description                 = local.existing_kms_guid != null ? "Allow the COS instance with GUID ${local.cos_instance_guid} reader access to the kms_service instance GUID ${local.existing_kms_guid}" : null
+  description                 = "Allow the COS instance with GUID ${local.cos_instance_guid} reader access to the kms_service instance GUID ${local.existing_kms_guid}" # : null
 }
 
 module "cos_instance" {
