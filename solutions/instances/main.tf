@@ -368,7 +368,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   target_service_name         = local.kms_service
   target_resource_instance_id = local.existing_kms_guid
   roles                       = ["Reader"]
-  description                 = "Allow the COS instance with GUID ${local.cos_instance_guid} reader access to the kms_service instance GUID ${local.existing_kms_guid}" # : null
+  description                 = "Allow the COS instance with GUID ${local.cos_instance_guid} reader access to the kms_service instance GUID ${local.existing_kms_guid}"
 }
 
 module "cos_instance" {
