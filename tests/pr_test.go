@@ -38,6 +38,8 @@ var validRegions = []string{
 	"jp-tok",
 	"us-south",
 	"us-east",
+	"ca-tor",
+	"br-sao",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
@@ -113,7 +115,6 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                   "public",
 		"management_endpoint_type_for_bucket": "public",
-		"log_analysis_service_endpoints":      "public-and-private",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
 	}

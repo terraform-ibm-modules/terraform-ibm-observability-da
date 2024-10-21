@@ -43,11 +43,6 @@ variable "region" {
   description = "The region where observability resources are created."
   type        = string
   default     = "us-south"
-
-  validation {
-    condition     = contains(["us-south", "us-east", "jp-osa", "jp-tok", "eu-de", "eu-es", "eu-gb", "au-syd"], var.region)
-    error_message = "The specified region is not valid. Specify a valid region to create observability resources in."
-  }
 }
 
 variable "prefix" {
