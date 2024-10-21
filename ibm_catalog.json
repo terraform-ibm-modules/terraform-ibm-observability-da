@@ -44,7 +44,6 @@
           "description": "Configures the IBM Cloud Monitoring instance and logging agents."
         },
         {
-
           "title": "Configures IBM Cloud Activity Tracker Event Routing",
           "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage, Log Analysis and Cloud Logs target."
         }
@@ -112,7 +111,7 @@
             "profiles": [
               {
                 "profile_name": "IBM Cloud Framework for Financial Services",
-                "profile_version": "1.6.0"
+                "profile_version": "1.7.0"
               }
             ]
           },
@@ -533,9 +532,7 @@
             }
           ],
           "architecture": {
-
             "descriptions": "This architecture supports the deployment of IBM Log Analysis, IBM Cloud Monitoring and IBM Cloud Logs instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket, Log Analysis and Cloud Logs target.",
-
             "features": [
               {
                 "title": "Creates a Cloud Logs instance",
@@ -565,9 +562,7 @@
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
                   "type": "image/svg+xml"
                 },
-
                 "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket, Log Analysis and Cloud Logs instance."
-
               }
             ]
           }
@@ -623,18 +618,18 @@
             },
             {
               "key": "cluster_config_endpoint_type",
-              "options":[
+              "options": [
                 {
-                  "displayname" : "default",
-                  "value" : "default"
+                  "displayname": "default",
+                  "value": "default"
                 },
                 {
-                  "displayname" : "private",
-                  "value" : "private"
+                  "displayname": "private",
+                  "value": "private"
                 },
                 {
-                  "displayname" : "vpe",
-                  "value" : "vpe"
+                  "displayname": "vpe",
+                  "value": "vpe"
                 },
                 {
                   "displayname": "link",
@@ -671,14 +666,14 @@
             },
             {
               "key": "log_analysis_endpoint_type",
-              "options":[
+              "options": [
                 {
-                  "displayname" : "private",
-                  "value" : "private"
+                  "displayname": "private",
+                  "value": "private"
                 },
                 {
-                  "displayname" : "public",
-                  "value" : "public"
+                  "displayname": "public",
+                  "value": "public"
                 }
               ]
             },
@@ -712,14 +707,14 @@
             },
             {
               "key": "cloud_monitoring_endpoint_type",
-              "options":[
+              "options": [
                 {
-                  "displayname" : "private",
-                  "value" : "private"
+                  "displayname": "private",
+                  "value": "private"
                 },
                 {
-                  "displayname" : "public",
-                  "value" : "public"
+                  "displayname": "public",
+                  "value": "public"
                 }
               ]
             },
