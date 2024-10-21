@@ -38,6 +38,8 @@ var validRegions = []string{
 	"jp-tok",
 	"us-south",
 	"us-east",
+	"ca-tor",
+	"br-sao",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
