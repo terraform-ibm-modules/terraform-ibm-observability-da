@@ -19,10 +19,8 @@
         "observability",
         "observability instances",
         "cloud logs",
-        "log analysis",
         "cloud monitoring",
         "ATracker",
-        "Activity Tracker",
         "observability agents"
       ],
       "short_description": "Configures IBM Cloud Observability resources",
@@ -36,16 +34,12 @@
           "description": "Configures an IBM Cloud Logs instance."
         },
         {
-          "title": "Configures IBM Log Analysis",
-          "description": "Configures the IBM Log Analysis instance and logging agents."
-        },
-        {
           "title": "Configures IBM Cloud Monitoring",
           "description": "Configures the IBM Cloud Monitoring instance and logging agents."
         },
         {
           "title": "Configures IBM Cloud Activity Tracker Event Routing",
-          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage, Log Analysis and Cloud Logs target."
+          "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage and Cloud Logs target."
         }
       ],
       "support_details": "This product is in the community registry and support is handled in the source repo. You can open an issue at [https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues). Support is not offered through IBM Cloud Support.",
@@ -62,13 +56,6 @@
                 "crn:v1:bluemix:public:iam::::serviceRole:Writer",
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ]
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-                "crn:v1:bluemix:public:iam::::role:Editor"
-              ],
-              "service_name": "logdna"
             },
             {
               "role_crns": [
@@ -199,66 +186,6 @@
             },
             {
               "key": "skip_logs_routing_auth_policy"
-            },
-            {
-              "key": "log_analysis_provision"
-            },
-            {
-              "key": "log_analysis_instance_name"
-            },
-            {
-              "key": "log_analysis_plan",
-              "options": [
-                {
-                  "displayname": "lite",
-                  "value": "lite"
-                },
-                {
-                  "displayname": "7-day",
-                  "value": "7-day"
-                },
-                {
-                  "displayname": "14-day",
-                  "value": "14-day"
-                },
-                {
-                  "displayname": "30-day",
-                  "value": "30-day"
-                },
-                {
-                  "displayname": "hipaa-30-day",
-                  "value": "hipaa-30-day"
-                }
-              ]
-            },
-            {
-              "key": "log_analysis_service_endpoints",
-              "options": [
-                {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
-                }
-              ]
-            },
-            {
-              "key": "log_analysis_tags"
-            },
-            {
-              "key": "enable_log_archive"
-            },
-            {
-              "key": "log_archive_api_key"
-            },
-            {
-              "key": "enable_at_event_routing_to_log_analysis"
             },
             {
               "key": "enable_at_event_routing_to_cos_bucket"
@@ -508,15 +435,11 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports the deployment of IBM Log Analysis, IBM Cloud Monitoring and IBM Cloud Logs instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket, Log Analysis and Cloud Logs target.",
+            "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs target.",
             "features": [
               {
                 "title": "Creates a Cloud Logs instance",
                 "description": "Creates and configures the IBM Cloud Logs instance."
-              },
-              {
-                "title": "Creates a Log Analysis instance",
-                "description": "Creates and configures the IBM Cloud Log Analysis instance."
               },
               {
                 "description": "Creates a Monitoring instance",
@@ -527,8 +450,8 @@
                 "description": "Creates and configures the IBM Cloud Object Storage buckets with archiving and expiration enabled."
               },
               {
-                "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Log Analysis target",
-                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket, IBM Cloud Log Analysis and IBM Cloud Logs target."
+                "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Cloud Logs target",
+                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket and IBM Cloud Logs target."
               }
             ],
             "diagrams": [
@@ -538,7 +461,7 @@
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
                   "type": "image/svg+xml"
                 },
-                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket, Log Analysis and Cloud Logs instance."
+                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs instance."
               }
             ]
           }
@@ -621,52 +544,6 @@
             },
             {
               "key": "wait_till_timeout"
-            },
-            {
-              "key": "log_analysis_enabled"
-            },
-            {
-              "key": "log_analysis_agent_tags"
-            },
-            {
-              "key": "log_analysis_add_cluster_name"
-            },
-            {
-              "key": "log_analysis_ingestion_key"
-            },
-            {
-              "key": "log_analysis_secret_name"
-            },
-            {
-              "key": "log_analysis_instance_region"
-            },
-            {
-              "key": "log_analysis_endpoint_type",
-              "options": [
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
-                  "displayname": "public",
-                  "value": "public"
-                }
-              ]
-            },
-            {
-              "key": "log_analysis_agent_custom_line_inclusion"
-            },
-            {
-              "key": "log_analysis_agent_custom_line_exclusion"
-            },
-            {
-              "key": "log_analysis_agent_name"
-            },
-            {
-              "key": "log_analysis_agent_namespace"
-            },
-            {
-              "key": "log_analysis_agent_tolerations"
             },
             {
               "key": "cloud_monitoring_enabled"
@@ -765,15 +642,11 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports the deployment of IBM Log Analysis(DEPRECATED), IBM Cloud Monitoring and IBM Cloud Logs agent on an existing Red Hat OpenShift cluster.",
+            "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs agent on an existing Red Hat OpenShift cluster.",
             "features": [
               {
                 "title": "Works with any openshift ir k8s cluster",
                 "description": "Works with the Red Hat OpenShift cluster."
-              },
-              {
-                "title": "Deploys the IBM Log Analysis agent on an existing cluster.",
-                "description": "Deploys the IBM Log Analysis agent on an existing Red Hat OpenShift cluster."
               },
               {
                 "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
