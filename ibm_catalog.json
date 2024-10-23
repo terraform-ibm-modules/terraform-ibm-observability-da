@@ -768,7 +768,7 @@
             "descriptions": "This architecture supports the deployment of IBM Log Analysis(DEPRECATED), IBM Cloud Monitoring and IBM Cloud Logs agent on an existing Red Hat OpenShift cluster.",
             "features": [
               {
-                "title": "Works with any openshit ir k8s cluster",
+                "title": "Works with any openshift ir k8s cluster",
                 "description": "Works with the Red Hat OpenShift cluster."
               },
               {
