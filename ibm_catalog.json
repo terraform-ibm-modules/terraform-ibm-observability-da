@@ -645,7 +645,7 @@
             "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs agent on an existing Red Hat OpenShift cluster.",
             "features": [
               {
-                "title": "Works with any openshift ir k8s cluster",
+                "title": "Works with any openshift or k8s cluster",
                 "description": "Works with the Red Hat OpenShift cluster."
               },
               {
