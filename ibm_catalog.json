@@ -393,13 +393,7 @@
                 "Standard"
               ],
               "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
-              "optional": true,
-              "input_mapping": [
-                {
-                  "dependency_output": "kms_instance_crn",
-                  "version_input": "existing_kms_instance_crn"
-                }
-              ]
+              "optional": true
             },
             {
               "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
