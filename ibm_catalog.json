@@ -386,17 +386,17 @@
           ],
           "dependencies": [
             {
-              "name": "Testing_Core_Security_Services",
-              "id": "b159ef1b-2b81-4ddf-83ef-acfc1fff9166",
-              "version": "^1.0.5",
+              "name": "deploy-arch-ibm-kms",
+              "id": "2cad4789-fa90-4886-9c9e-857081c273ee-global",
+              "version": "^4.16.0",
               "flavors": [
-                "standard"
+                "Standard"
               ],
-              "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
+              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
               "optional": true,
               "input_mapping": [
                 {
-                  "dependency_output": "key_management_service_instance_crn",
+                  "dependency_output": "kms_instance_crn",
                   "version_input": "existing_kms_instance_crn"
                 }
               ]
