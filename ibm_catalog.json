@@ -388,7 +388,7 @@
             {
               "name": "deploy-arch-ibm-kms",
               "id": "2cad4789-fa90-4886-9c9e-857081c273ee-global",
-              "version": "^4.16.0",
+              "version": "^v4.16.0",
               "flavors": [
                 "Standard"
               ],
