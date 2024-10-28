@@ -390,7 +390,7 @@
               "id": "2cad4789-fa90-4886-9c9e-857081c273ee-global",
               "version": "^4.16.0",
               "flavors": [
-                "Standard"
+                "standard"
               ],
               "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
               "optional": true,
@@ -475,7 +475,7 @@
           "dependencies": [
             {
               "flavors": [
-                "Instances"
+                "instances"
               ],
               "id": "daf2cf91-2384-4205-b7f4-621299a4896d",
               "name": "testing-deploy-arch-ibm-observability",
