@@ -388,7 +388,7 @@
             {
               "name": "testing-deploy-arch-ibm-kms",
               "id": "85fdbd7a-8c77-4abd-b716-653a31f3aba9",
-              "version": "^4.16.0",
+              "version": "^1.0.1",
               "flavors": [
                 "standard"
               ],
