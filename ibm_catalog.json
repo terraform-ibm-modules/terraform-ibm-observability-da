@@ -2,7 +2,7 @@
   "products": [
     {
       "name": "deploy-arch-ibm-observability",
-      "label": "Observability",
+      "label": "Cloud automation for Observability",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
