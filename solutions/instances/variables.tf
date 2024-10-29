@@ -43,11 +43,6 @@ variable "region" {
   description = "The region where observability resources are created."
   type        = string
   default     = "us-south"
-
-  validation {
-    condition     = contains(["us-south", "us-east", "jp-osa", "jp-tok", "eu-de", "eu-es", "eu-gb", "au-syd"], var.region)
-    error_message = "The specified region is not valid. Specify a valid region to create observability resources in."
-  }
 }
 
 variable "prefix" {
@@ -417,7 +412,7 @@ variable "existing_at_cos_target_bucket_endpoint" {
 
 variable "skip_cos_kms_auth_policy" {
   type        = bool
-  description = "To skip creating an IAM authorization policy that allows the created Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
+  description = "To skip creating an IAM authorization policy that allows the Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
   default     = false
 }
 
@@ -450,7 +445,7 @@ variable "management_endpoint_type_for_bucket" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the key management service (KMS) that is used for the Cloud Object Storage bucket root key. If you are not using an existing KMS root key, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required."
+  description = "The CRN of the key management service (KMS) that is used to create keys for encrypting the Cloud Object Storage bucket. If you are not using an existing KMS root key, you must specify this CRN. If you are using an existing KMS root key, an existing COS instance and auth policy is not set for COS to KMS, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required."
 }
 
 variable "existing_cos_kms_key_crn" {

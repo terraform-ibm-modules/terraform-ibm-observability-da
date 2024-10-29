@@ -38,6 +38,8 @@ var validRegions = []string{
 	"jp-tok",
 	"us-south",
 	"us-east",
+	"ca-tor",
+	"br-sao",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
@@ -113,7 +115,6 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                   "public",
 		"management_endpoint_type_for_bucket": "public",
-		"log_analysis_service_endpoints":      "public-and-private",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
 	}
@@ -267,13 +268,12 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_cloud_logs_metrics_bucket_crn":      terraform.Output(t, existingTerraformOptions, "metrics_bucket_crn"),
 				"existing_cloud_logs_metrics_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "metrics_bucket_endpoint"),
 				"existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn_1"),
-				// temporarily disabled until https://github.ibm.com/GoldenEye/issues/issues/11159 is resolved
-				// "cloud_logs_existing_en_instances": []map[string]interface{}{
-				// 	{
-				// 		"instance_crn":     terraform.Output(t, existingTerraformOptions, "en_crn_2"),
-				// 		"integration_name": "en-2",
-				// 	},
-				// },
+				"cloud_logs_existing_en_instances": []map[string]interface{}{
+					{
+						"instance_crn":     terraform.Output(t, existingTerraformOptions, "en_crn_2"),
+						"integration_name": "en-2",
+					},
+				},
 				"management_endpoint_type_for_bucket": "public",
 				"enable_platform_metrics":             "false",
 				"enable_platform_logs":                "false",
@@ -299,6 +299,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"resource_group_name":                 terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":         true,
 				"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
+				"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
 				"kms_endpoint_type":                   "public",
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",
