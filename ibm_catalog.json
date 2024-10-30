@@ -411,7 +411,8 @@
                 {
                   "dependency_output": "workload_resource_group_name",
                   "version_input": "existing_resource_group_name"
-                }, {
+                },
+                {
                   "dependency_input": "prefix",
                   "version_input": "prefix"
                 }
@@ -472,18 +473,224 @@
               ]
             }
           ],
+          "configuration": [
+            {
+              "key": "cloud_monitoring_access_key",
+              "type": "password",
+              "description": "The access key that is used by the IBM Cloud Monitoring agent to communicate with the instance.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_add_cluster_name",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to attach a tag to log messages. Set to `true` to configure the IBM Cloud Monitoring agent to attach a tag that contains the cluster name to all log messages.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_agent_name",
+              "type": "string",
+              "default_value": "sysdig-agent",
+              "description": "The name of the IBM Cloud Monitoring agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Cloud Monitoring agent is prefixed to the value in the `<prefix>-<name>` format.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_agent_namespace",
+              "type": "string",
+              "default_value": "ibm-observe",
+              "description": "The namespace to deploy the IBM Cloud Monitoring agent in. Default value: `ibm-observe`.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_agent_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of the tags to associate with the metrics that the IBM Cloud Monitoring agent collects. To add the cluster name as a tag, use the `cloud_monitoring_add_cluster_name` variable.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_agent_tolerations",
+              "type": "array",
+              "default_value": "[{\n    operator = \"Exists\"\n    },\n    {\n      operator : \"Exists\"\n      effect : \"NoSchedule\"\n      key : \"node-role.kubernetes.io/master\"\n  }]",
+              "description": "The list of tolerations to apply to the IBM Cloud Monitoring agent. The default operator value `Exists` matches any taint on any node except the master node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_enabled",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to deploy the IBM Cloud Monitoring agent.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_endpoint_type",
+              "type": "string",
+              "default_value": "private",
+              "description": "Specify the IBM Cloud Monitoring instance endpoint type (`public` or `private`) to use to construct the ingestion endpoint.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_instance_region",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The name of the region where the IBM Cloud Monitoring instance is created. This name is used to construct the ingestion endpoint.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_metrics_filter",
+              "type": "array",
+              "default_value": "[]",
+              "description": "To filter on custom metrics, specify the IBM Cloud Monitoring metrics to include or exclude. [Learn more](https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics)",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_secret_name",
+              "type": "string",
+              "default_value": "sysdig-agent",
+              "description": "The name of the secret that will store the access key. If a prefix input variable is passed, the secret name is prefixed to the value in the `<prefix>-<name>` format.",
+              "required": false
+            },
+            {
+              "key": "cluster_config_endpoint_type",
+              "type": "string",
+              "default_value": "private",
+              "description": "Specify the type of endpoint to use to access the cluster configuration. Possible values: `default`, `private`, `vpe`, `link`. The `default` value uses the default endpoint of the cluster.",
+              "required": false
+            },
+            {
+              "key": "cluster_id",
+              "type": "string",
+              "default_value": "__NOT_SET__",
+              "description": "The ID of the cluster to deploy the agents in.",
+              "required": true
+            },
+            {
+              "key": "cluster_resource_group_id",
+              "type": "string",
+              "default_value": "__NOT_SET__",
+              "description": "The resource group ID of the cluster.",
+              "required": true
+            },
+            {
+              "key": "ibmcloud_api_key",
+              "type": "password",
+              "description": "The IBM Cloud API key.",
+              "required": true
+            },
+            {
+              "key": "log_analysis_add_cluster_name",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to attach the cluster name to log messages. Set to `true` to configure the IBM Log Analysis agent to tag all log messages with the name.",
+              "required": false
+            },
+            {
+              "key": "log_analysis_agent_custom_line_exclusion",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line exclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)",
+              "required": false
+            },
+            {
+              "key": "log_analysis_agent_custom_line_inclusion",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line inclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)",
+              "required": false
+            },
+            {
+              "key": "log_analysis_agent_name",
+              "type": "string",
+              "default_value": "logdna-agent",
+              "description": "The name of the IBM Log Analysis agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Log Analysis agent is prefixed to the value in the `<prefix>-<name>` format.",
+              "required": false
+            },
+            {
+              "key": "log_analysis_agent_namespace",
+              "type": "string",
+              "default_value": "ibm-observe",
+              "description": "The namespace to deploy the IBM Log Analysis agent in. The default value of the namespace is `ibm-observe`.",
+              "required": false
+            },
+            {
+              "key": "log_analysis_agent_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of tags to associate with all log records collected by the agent so that you can quickly identify the agent’s data in the logging UI. To add the cluster name as a tag, use the `log_analysis_add_cluster_name` variable.",
+              "required": false
+            },
+            {
+              "key": "log_analysis_agent_tolerations",
+              "type": "array",
+              "default_value": "[{\n    operator = \"Exists\"\n  }]",
+              "description": "The list of tolerations to apply to the IBM Log Analysis agent. Because the default value is the `Exists` operator, this variable will match any taint on any node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)",
+              "required": false
+            },
+            {
+              "key": "log_analysis_enabled",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to deploy the IBM Cloud logging agent.",
+              "required": false
+            },
+            {
+              "key": "log_analysis_endpoint_type",
+              "type": "string",
+              "default_value": "private",
+              "description": "Specify the IBM Log Analysis instance endpoint type to use to construct the ingestion endpoint. Possible values: `public` or `private`.",
+              "required": false
+            },
+            {
+              "key": "log_analysis_ingestion_key",
+              "type": "password",
+              "description": "The ingestion key that is used by the IBM Cloud logging agent to communicate with the instance.",
+              "required": false
+            },
+            {
+              "key": "log_analysis_instance_region",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The name of the region where the IBM Log Analysis instance is created. The value is used in the ingestion endpoint in the format `api.<var-value>.logging.cloud.ibm.com`.",
+              "required": false
+            },
+            {
+              "key": "log_analysis_secret_name",
+              "type": "string",
+              "default_value": "logdna-agent",
+              "description": "The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-<name>` format.",
+              "required": false
+            },
+            {
+              "key": "prefix",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The prefix for resources created by this solution.",
+              "required": false
+            }
+          ],
           "dependencies": [
             {
+              "name": "testing-deploy-arch-ibm-observability",
               "flavors": [
                 "instances"
               ],
               "id": "daf2cf91-2384-4205-b7f4-621299a4896d",
-              "name": "testing-deploy-arch-ibm-observability",
               "version": "^1.0.7",
               "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
               "optional": true,
               "input_mapping": [
-
+                {
+                  "dependency_input": "log_analysis_provision",
+                  "version_input": "log_analysis_enabled"
+                },
+                {
+                  "dependency_output": "log_analysis_ingestion_key",
+                  "version_input": "log_analysis_ingestion_key"
+                },
+                {
+                  "dependency_input": "cloud_monitoring_provision",
+                  "version_input": "cloud_monitoring_enabled"
+                }
               ]
             }
           ],

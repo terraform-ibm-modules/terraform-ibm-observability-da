@@ -45,7 +45,6 @@ variable "log_analysis_enabled" {
   default     = true
 }
 
-
 variable "log_analysis_agent_tags" {
   type        = list(string)
   description = "The list of tags to associate with all log records collected by the agent so that you can quickly identify the agent’s data in the logging UI. To add the cluster name as a tag, use the `log_analysis_add_cluster_name` variable."
