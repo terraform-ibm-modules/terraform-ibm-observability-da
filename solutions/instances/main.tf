@@ -369,10 +369,8 @@ resource "ibm_iam_authorization_policy" "policy" {
   source_service_account      = data.ibm_iam_account_settings.iam_cos_account_settings.account_id
   source_service_name         = "cloud-object-storage"
   source_resource_instance_id = local.cos_instance_guid
-  # target_service_name         = local.kms_service
-  # target_resource_instance_id = local.existing_kms_guid
-  roles       = ["Reader"]
-  description = "Allow the COS instance with GUID ${local.cos_instance_guid} reader access to the kms_service instance GUID ${local.existing_kms_guid}"
+  roles                       = ["Reader"]
+  description                 = "Allow the COS instance ${local.cos_instance_guid} to read the ${local.kms_service} key ${local.cos_kms_key_id} from the instance ${local.existing_kms_guid}"
   resource_attributes {
     name     = "serviceName"
     operator = "stringEquals"
