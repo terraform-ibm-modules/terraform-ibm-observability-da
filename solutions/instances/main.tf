@@ -289,6 +289,7 @@ module "observability_instance" {
       destination_crn = module.observability_instance.cloud_monitoring_crn
       target_name     = local.metric_router_target_name
       target_region   = var.region
+      skip_mrouter_sysdig_iam_auth_policy = false
     }
   ] : []
 
