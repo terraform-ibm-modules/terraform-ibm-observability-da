@@ -47,6 +47,8 @@ locals {
   cloud_logs_target_name     = var.prefix != null ? "${var.prefix}-cloud-logs-target" : "cloud-logs-target"
   at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
+  metric_router_target_name = var.prefix != null ? "${var.prefix}-cloud_monitoring_target" : "cloud_monitoring_target"
+  metric_router_route_name = var.prefix != null ? "${var.prefix}-metric-routing-route" : "metric-routing-route"
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -212,7 +214,7 @@ module "en_crn_parser" {
 module "observability_instance" {
   depends_on        = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source            = "terraform-ibm-modules/observability-instances/ibm"
-  version           = "3.0.2"
+  version           = "3.3.0"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
 
@@ -279,6 +281,34 @@ module "observability_instance" {
 
   # Routes
   activity_tracker_routes = local.at_routes
+
+  # IBM Metrics Routing
+
+  metrics_router_targets = var.enable_metric_routing_to_cloud_monitoring ? [
+    {
+      destination_crn = module.observability_instance.cloud_monitoring_crn
+      target_name     = local.metric_router_target_name
+      target_region   = var.region
+    }
+  ] : []
+
+  metrics_router_routes = var.enable_metric_routing_to_cloud_monitoring ? [
+    {
+      name = local.metric_router_route_name
+      rules = [
+        {
+          targets = [{
+            id = module.observability_instances.metrics_router_targets[local.metric_router_target_name].id
+          }]
+          inclusion_filters = [{
+            operand  = "location"
+            operator = "is"
+            values   = ["us-south"]
+          }]
+        }
+      ]
+    }
+  ] : []
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {

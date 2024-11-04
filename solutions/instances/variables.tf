@@ -239,6 +239,16 @@ variable "enable_at_event_routing_to_cloud_logs" {
 }
 
 ##############################################################################
+# Metric Routing Variables
+##############################################################################
+
+variable "enable_metric_routing_to_cloud_monitoring" {
+  type        = bool
+  description = "Whether to enable metric routing from IBM Cloud Metric Routing to Cloud Monitoring."
+  default     = true
+}
+
+##############################################################################
 # Cloud Monitoring Variables
 ##############################################################################
 
