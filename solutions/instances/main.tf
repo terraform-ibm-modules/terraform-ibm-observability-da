@@ -47,8 +47,8 @@ locals {
   cloud_logs_target_name     = var.prefix != null ? "${var.prefix}-cloud-logs-target" : "cloud-logs-target"
   at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
-  metric_router_target_name = var.prefix != null ? "${var.prefix}-cloud_monitoring_target" : "cloud_monitoring_target"
-  metric_router_route_name = var.prefix != null ? "${var.prefix}-metric-routing-route" : "metric-routing-route"
+  metric_router_target_name  = var.prefix != null ? "${var.prefix}-cloud_monitoring_target" : "cloud_monitoring_target"
+  metric_router_route_name   = var.prefix != null ? "${var.prefix}-metric-routing-route" : "metric-routing-route"
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -297,8 +297,9 @@ module "observability_instance" {
       name = local.metric_router_route_name
       rules = [
         {
+          action = "send"
           targets = [{
-            id = module.observability_instances.metrics_router_targets[local.metric_router_target_name].id
+            id = module.observability_instance.metrics_router_targets[local.metric_router_target_name].id
           }]
           inclusion_filters = [{
             operand  = "location"
