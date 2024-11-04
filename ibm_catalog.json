@@ -39,13 +39,6 @@
                 "crn:v1:bluemix:public:iam::::serviceRole:Manager",
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
-              "service_name": "logdna"
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-                "crn:v1:bluemix:public:iam::::role:Editor"
-              ],
               "service_name": "hs-crypto"
             },
             {
@@ -68,6 +61,13 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "cloud-object-storage"
+            },
+            {
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ],
+              "service_name": "logs"
             }
           ],
           "compliance": {
@@ -75,7 +75,7 @@
             "profiles": [
               {
                 "profile_name": "IBM Cloud Framework for Financial Services",
-                "profile_version": "1.6.0"
+                "profile_version": "1.7.0"
               }
             ]
           },
@@ -97,108 +97,82 @@
               "required": true
             },
             {
+              "custom_config": {
+                "type": "region",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "showKinds": [
+                    "region"
+                  ]
+                }
+              },
               "key": "region",
-              "required": true,
+              "required": true
+            },
+            {
+              "key": "cloud_logs_provision"
+            },
+            {
+              "key": "cloud_logs_instance_name"
+            },
+            {
+              "key": "cloud_logs_tags"
+            },
+            {
+              "key": "cloud_logs_access_tags"
+            },
+            {
+              "key": "cloud_logs_retention_period",
               "options": [
                 {
-                  "displayname": "Dallas (us-south)",
-                  "value": "us-south"
+                  "displayname": "7-days",
+                  "value": "7"
                 },
                 {
-                  "displayname": "Frankfurt (eu-de)",
-                  "value": "eu-de"
+                  "displayname": "14-days",
+                  "value": "14"
                 },
                 {
-                  "displayname": "London (eu-gb)",
-                  "value": "eu-gb"
+                  "displayname": "30-days",
+                  "value": "30"
                 },
                 {
-                  "displayname": "Madrid (eu-es)",
-                  "value": "eu-es"
+                  "displayname": "60-days",
+                  "value": "60"
                 },
                 {
-                  "displayname": "Osaka (jp-osa)",
-                  "value": "jp-osa"
-                },
-                {
-                  "displayname": "Sydney (au-syd)",
-                  "value": "au-syd"
-                },
-                {
-                  "displayname": "Tokyo (jp-tok)",
-                  "value": "jp-tok"
-                },
-                {
-                  "displayname": "Washington (us-east)",
-                  "value": "us-east"
+                  "displayname": "90-days",
+                  "value": "90"
                 }
               ]
-            },
-            {
-              "key": "log_analysis_provision"
-            },
-            {
-              "key": "log_analysis_instance_name"
-            },
-            {
-              "key": "log_analysis_plan",
-              "options": [
-                {
-                  "displayname": "lite",
-                  "value": "lite"
-                },
-                {
-                  "displayname": "7-day",
-                  "value": "7-day"
-                },
-                {
-                  "displayname": "14-day",
-                  "value": "14-day"
-                },
-                {
-                  "displayname": "30-day",
-                  "value": "30-day"
-                },
-                {
-                  "displayname": "hipaa-30-day",
-                  "value": "hipaa-30-day"
-                }
-              ]
-            },
-            {
-              "key": "log_analysis_service_endpoints",
-              "options": [
-                {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
-                }
-              ]
-            },
-            {
-              "key": "log_analysis_tags"
-            },
-            {
-              "key": "enable_log_archive"
-            },
-            {
-              "key": "log_archive_api_key"
             },
             {
               "key": "enable_platform_logs"
             },
             {
-              "key": "enable_at_event_routing_to_log_analysis"
+              "key": "logs_routing_tenant_regions"
+            },
+            {
+              "key": "cloud_logs_existing_en_instances"
+            },
+            {
+              "key": "existing_en_instance_crn"
+            },
+            {
+              "key": "en_integration_name"
+            },
+            {
+              "key": "skip_en_auth_policy"
+            },
+            {
+              "key": "skip_logs_routing_auth_policy"
             },
             {
               "key": "enable_at_event_routing_to_cos_bucket"
+            },
+            {
+              "key": "enable_at_event_routing_to_cloud_logs"
             },
             {
               "key": "cloud_monitoring_provision"
@@ -223,27 +197,7 @@
               ]
             },
             {
-              "key": "cloud_monitoring_service_endpoints",
-              "options": [
-                {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
-                }
-              ]
-            },
-            {
               "key": "cloud_monitoring_tags"
-            },
-            {
-              "key": "enable_platform_metrics"
             },
             {
               "key": "cos_instance_name"
@@ -320,6 +274,68 @@
               ]
             },
             {
+              "key": "cloud_log_data_bucket_name"
+            },
+            {
+              "key": "cloud_log_data_bucket_class",
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "cloud_log_data_bucket_access_tag"
+            },
+            {
+              "key": "cloud_log_metrics_bucket_name"
+            },
+            {
+              "key": "cloud_log_metrics_bucket_class",
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "cloud_log_metrics_bucket_access_tag"
+            },
+            {
               "key": "management_endpoint_type_for_bucket",
               "options": [
                 {
@@ -352,7 +368,25 @@
               "key": "existing_at_cos_target_bucket_endpoint"
             },
             {
+              "key": "existing_cloud_logs_data_bucket_crn"
+            },
+            {
+              "key": "existing_cloud_logs_data_bucket_endpoint"
+            },
+            {
+              "key": "existing_cloud_logs_metrics_bucket_crn"
+            },
+            {
+              "key": "existing_cloud_logs_metrics_bucket_endpoint"
+            },
+            {
               "key": "skip_cos_kms_auth_policy"
+            },
+            {
+              "key": "skip_cloud_logs_cos_auth_policy"
+            },
+            {
+              "key": "skip_at_cos_auth_policy"
             },
             {
               "key": "existing_cos_kms_key_crn",
@@ -424,13 +458,11 @@
           ],
           "dependency_version_2": true,
           "architecture": {
-
-            "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Log Analysis target.",
-
+            "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs target.",
             "features": [
               {
-                "title": "Creates a Log Analysis instance",
-                "description": "Creates and configures the IBM Cloud Log Analysis instance."
+                "title": "Creates a Cloud Logs instance",
+                "description": "Creates and configures the IBM Cloud Logs instance."
               },
               {
                 "description": "Creates a Monitoring instance",
@@ -441,8 +473,8 @@
                 "description": "Creates and configures the IBM Cloud Object Storage buckets with archiving and expiration enabled."
               },
               {
-                "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Log Analysis target",
-                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket and IBM Cloud Log Analysis target."
+                "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Cloud Logs target",
+                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket and IBM Cloud Logs target."
               }
             ],
             "diagrams": [
@@ -452,9 +484,7 @@
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
                   "type": "image/svg+xml"
                 },
-
-                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Log Analysis instance."
-
+                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs instance."
               }
             ]
           }
@@ -696,19 +726,19 @@
           ],
           "dependency_version_2": true,
           "architecture": {
-            "descriptions": "This architecture supports the deployment of IBM Log Analysis and IBM Cloud Monitoring agents on an existing Red Hat OpenShift cluster on a secure landing zone.",
+            "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs agent on an existing Red Hat OpenShift cluster.",
             "features": [
               {
-                "title": "Works with the secure landing zone.",
-                "description": "Works with the Red Hat OpenShift cluster on a secure landing zone."
+                "title": "Works with any openshift or k8s cluster",
+                "description": "Works with the Red Hat OpenShift cluster."
               },
               {
-                "title": "Deploys the IBM Log Analysis agent on an existing cluster on a secure landing zone.",
-                "description": "Deploys the IBM Log Analysis agent on an existing Red Hat OpenShift cluster on a secure landing zone."
+                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
+                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster."
               },
               {
-                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster on a secure landing zone.",
-                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster on a secure landing zone."
+                "title": "Deploys the IBM Logs agent on an existing cluster.",
+                "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster."
               }
             ],
             "diagrams": [
