@@ -160,14 +160,12 @@
               "display_name": "Region",
               "required": true,
               "custom_config": {
-                "type": "region",
-                "grouping": "deployment",
-                "original_grouping": "deployment",
-                "config_constraints": {
-                  "showKinds": [
-                    "region"
-                  ]
-                }
+                  "type": "vpc_region",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "generationType": "2"
+                  }
               }
             },
             {
@@ -519,7 +517,15 @@
               "type": "string",
               "default_value": "default",
               "description": "The name of a new or existing resource group to provision resources in.",
-              "required": true
+              "required": true,
+              "custom_config": {
+                  "type": "resource_group",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "identifier": "rg_name"
+                  }
+              }
             },
             {
               "key": "use_existing_resource_group",
@@ -533,24 +539,14 @@
               "type": "string",
               "description": "The region where observability resources are created.",
               "required": true,
-              "options": [
-                {
-                  "displayname": "eu-de",
-                  "value": "eu-de"
-                },
-                {
-                  "displayname": "us-south",
-                  "value": "us-south"
-                },
-                {
-                  "displayname": "eu-gb",
-                  "value": "eu-gb"
-                },
-                {
-                  "displayname": "jp-tok",
-                  "value": "jp-tok"
-                }
-              ]
+              "custom_config": {
+                  "type": "vpc_region",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "generationType": "2"
+                  }
+              }
             },
             {
               "key": "cloud_logs_provision",
@@ -1058,14 +1054,30 @@
               "type": "string",
               "default_value": "__NULL__",
               "description": "The Cloud Object Storage region. If no value is provided, the value that is specified in the `region` input variable is used.",
-              "required": false
+              "required": false,
+              "custom_config": {
+                  "type": "vpc_region",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "generationType": "2"
+                  }
+              }
             },
             {
               "key": "cos_resource_group_name",
               "type": "string",
               "default_value": "__NULL__",
               "description": "The name of a new or existing resource group to provision COS instance in. If not specified, the 'resource_group_name' variable is used. Specify this if the COS instance is in an account that's different from the one associated Observability resources.",
-              "required": false
+              "required": false,
+              "custom_config": {
+                  "type": "resource_group",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "identifier": "rg_name"
+                  }
+              }
             },
             {
               "key": "enable_platform_metrics",
