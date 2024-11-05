@@ -525,7 +525,7 @@
               "key": "cloud_monitoring_access_key",
               "type": "password",
               "description": "The access key that is used by the IBM Cloud Monitoring agent to communicate with the instance.",
-              "required": false
+              "required": true
             },
             {
               "key": "cloud_monitoring_add_cluster_name",
@@ -579,9 +579,18 @@
             {
               "key": "cloud_monitoring_instance_region",
               "type": "string",
-              "default_value": "__NULL__",
               "description": "The name of the region where the IBM Cloud Monitoring instance is created. This name is used to construct the ingestion endpoint.",
-              "required": false
+              "required": true,
+              "custom_config": {
+                "type": "region",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "showKinds": [
+                    "region"
+                  ]
+                }
+              }
             },
             {
               "key": "cloud_monitoring_metrics_filter",
@@ -607,16 +616,27 @@
             {
               "key": "cluster_id",
               "type": "string",
-              "default_value": "__NOT_SET__",
               "description": "The ID of the cluster to deploy the agents in.",
-              "required": true
+              "required": true,
+              "custom_config": {
+                  "type": "cluster_var",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment"
+              }
             },
             {
               "key": "cluster_resource_group_id",
               "type": "string",
-              "default_value": "__NOT_SET__",
               "description": "The resource group ID of the cluster.",
-              "required": true
+              "required": true,
+              "custom_config": {
+								"type": "resource_group",
+								"grouping": "deployment",
+								"original_grouping": "deployment",
+								"config_constraints": {
+									"identifier": "rg_id"
+								}
+							}
             },
             {
               "key": "ibmcloud_api_key",
@@ -691,14 +711,23 @@
               "key": "log_analysis_ingestion_key",
               "type": "password",
               "description": "The ingestion key that is used by the IBM Cloud logging agent to communicate with the instance.",
-              "required": false
+              "required": true
             },
             {
               "key": "log_analysis_instance_region",
               "type": "string",
-              "default_value": "__NULL__",
               "description": "The name of the region where the IBM Log Analysis instance is created. The value is used in the ingestion endpoint in the format `api.<var-value>.logging.cloud.ibm.com`.",
-              "required": false
+              "required": true,
+              "custom_config": {
+                "type": "region",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "showKinds": [
+                    "region"
+                  ]
+                }
+              }
             },
             {
               "key": "log_analysis_secret_name",
