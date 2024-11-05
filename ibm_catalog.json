@@ -1,8 +1,9 @@
 {
   "products": [
     {
-      "name": "testing-deploy-arch-ibm-observability",
       "label": "Testing-Observability",
+      "name": "testing-deploy-arch-ibm-observability",
+      "version": "1.0.17",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
@@ -14,10 +15,9 @@
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
       "flavors": [
         {
-          "label": "Instances",
-          "name": "instances",
-          "install_type": "extension",
-          "working_directory": "solutions/instances",
+          "label": "Agents",
+          "name": "agents",
+          "working_directory": "solutions/agents",
           "licenses": [
             {
               "id": "LICENSE",
@@ -26,491 +26,7 @@
               "description": "LICENSE"
             }
           ],
-          "iam_permissions": [
-            {
-              "service_name": "atracker",
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Writer",
-                "crn:v1:bluemix:public:iam::::role:Editor"
-              ]
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-                "crn:v1:bluemix:public:iam::::role:Editor"
-              ],
-              "service_name": "hs-crypto"
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-                "crn:v1:bluemix:public:iam::::role:Editor"
-              ],
-              "service_name": "kms"
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-                "crn:v1:bluemix:public:iam::::role:Editor"
-              ],
-              "service_name": "sysdig-monitor"
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-                "crn:v1:bluemix:public:iam::::role:Editor"
-              ],
-              "service_name": "cloud-object-storage"
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-                "crn:v1:bluemix:public:iam::::role:Editor"
-              ],
-              "service_name": "logs"
-            }
-          ],
-          "compliance": {
-            "authority": "scc-v3",
-            "profiles": [
-              {
-                "profile_name": "IBM Cloud Framework for Financial Services",
-                "profile_version": "1.7.0"
-              }
-            ]
-          },
-          "configuration": [
-            {
-              "key": "ibmcloud_api_key"
-            },
-            {
-              "key": "prefix",
-              "type": "string",
-              "default_value": "",
-              "description": "The prefix to add to all resources created by this solution. Used to make sure that names are unique when you deploy the solution more than one time.",
-              "required": true
-            },
-            {
-              "key": "resource_group_name",
-              "type": "string",
-              "default_value": "default",
-              "required": true
-            },
-            {
-              "key": "use_existing_resource_group",
-              "type": "boolean",
-              "default_value": false,
-              "required": true
-            },
-            {
-              "custom_config": {
-                "type": "region",
-                "grouping": "deployment",
-                "original_grouping": "deployment",
-                "config_constraints": {
-                  "showKinds": [
-                    "region"
-                  ]
-                }
-              },
-              "key": "region",
-              "required": true
-            },
-            {
-              "key": "cloud_logs_provision"
-            },
-            {
-              "key": "cloud_logs_instance_name"
-            },
-            {
-              "key": "cloud_logs_tags"
-            },
-            {
-              "key": "cloud_logs_access_tags"
-            },
-            {
-              "key": "cloud_logs_retention_period",
-              "options": [
-                {
-                  "displayname": "7-days",
-                  "value": "7"
-                },
-                {
-                  "displayname": "14-days",
-                  "value": "14"
-                },
-                {
-                  "displayname": "30-days",
-                  "value": "30"
-                },
-                {
-                  "displayname": "60-days",
-                  "value": "60"
-                },
-                {
-                  "displayname": "90-days",
-                  "value": "90"
-                }
-              ]
-            },
-            {
-              "key": "enable_platform_logs",
-              "type": "boolean",
-              "default_value": true,
-              "required": true
-            },
-            {
-              "key": "logs_routing_tenant_regions"
-            },
-            {
-              "key": "cloud_logs_existing_en_instances"
-            },
-            {
-              "key": "existing_en_instance_crn"
-            },
-            {
-              "key": "en_integration_name"
-            },
-            {
-              "key": "skip_en_auth_policy"
-            },
-            {
-              "key": "skip_logs_routing_auth_policy"
-            },
-            {
-              "key": "enable_at_event_routing_to_cos_bucket"
-            },
-            {
-              "key": "enable_at_event_routing_to_cloud_logs"
-            },
-            {
-              "key": "cloud_monitoring_provision"
-            },
-            {
-              "key": "existing_cloud_monitoring_crn"
-            },
-            {
-              "key": "cloud_monitoring_instance_name"
-            },
-            {
-              "key": "cloud_monitoring_plan",
-              "options": [
-                {
-                  "displayname": "lite",
-                  "value": "lite"
-                },
-                {
-                  "displayname": "graduated-tier",
-                  "value": "graduated-tier"
-                }
-              ]
-            },
-            {
-              "key": "cloud_monitoring_tags"
-            },
-            {
-              "key": "cos_instance_name"
-            },
-            {
-              "key": "cos_instance_tags"
-            },
-            {
-              "key": "cos_instance_access_tags"
-            },
-            {
-              "key": "add_bucket_name_suffix"
-            },
-            {
-              "key": "log_archive_cos_bucket_name"
-            },
-            {
-              "key": "archive_bucket_access_tags"
-            },
-            {
-              "key": "log_archive_cos_bucket_class",
-              "options": [
-                {
-                  "displayname": "standard",
-                  "value": "standard"
-                },
-                {
-                  "displayname": "vault",
-                  "value": "vault"
-                },
-                {
-                  "displayname": "cold",
-                  "value": "cold"
-                },
-                {
-                  "displayname": "smart",
-                  "value": "smart"
-                },
-                {
-                  "displayname": "onerate_active",
-                  "value": "onerate_active"
-                }
-              ]
-            },
-            {
-              "key": "at_cos_target_bucket_name"
-            },
-            {
-              "key": "at_cos_bucket_access_tags"
-            },
-            {
-              "key": "at_cos_target_bucket_class",
-              "options": [
-                {
-                  "displayname": "standard",
-                  "value": "standard"
-                },
-                {
-                  "displayname": "vault",
-                  "value": "vault"
-                },
-                {
-                  "displayname": "cold",
-                  "value": "cold"
-                },
-                {
-                  "displayname": "smart",
-                  "value": "smart"
-                },
-                {
-                  "displayname": "onerate_active",
-                  "value": "onerate_active"
-                }
-              ]
-            },
-            {
-              "key": "cloud_log_data_bucket_name"
-            },
-            {
-              "key": "cloud_log_data_bucket_class",
-              "options": [
-                {
-                  "displayname": "standard",
-                  "value": "standard"
-                },
-                {
-                  "displayname": "vault",
-                  "value": "vault"
-                },
-                {
-                  "displayname": "cold",
-                  "value": "cold"
-                },
-                {
-                  "displayname": "smart",
-                  "value": "smart"
-                },
-                {
-                  "displayname": "onerate_active",
-                  "value": "onerate_active"
-                }
-              ]
-            },
-            {
-              "key": "cloud_log_data_bucket_access_tag"
-            },
-            {
-              "key": "cloud_log_metrics_bucket_name"
-            },
-            {
-              "key": "cloud_log_metrics_bucket_class",
-              "options": [
-                {
-                  "displayname": "standard",
-                  "value": "standard"
-                },
-                {
-                  "displayname": "vault",
-                  "value": "vault"
-                },
-                {
-                  "displayname": "cold",
-                  "value": "cold"
-                },
-                {
-                  "displayname": "smart",
-                  "value": "smart"
-                },
-                {
-                  "displayname": "onerate_active",
-                  "value": "onerate_active"
-                }
-              ]
-            },
-            {
-              "key": "cloud_log_metrics_bucket_access_tag"
-            },
-            {
-              "key": "management_endpoint_type_for_bucket",
-              "options": [
-                {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
-                  "displayname": "direct",
-                  "value": "direct"
-                }
-              ]
-            },
-            {
-              "key": "existing_cos_instance_crn"
-            },
-            {
-              "key": "existing_log_archive_cos_bucket_name"
-            },
-            {
-              "key": "existing_log_archive_cos_bucket_endpoint"
-            },
-            {
-              "key": "existing_at_cos_target_bucket_name"
-            },
-            {
-              "key": "existing_at_cos_target_bucket_endpoint"
-            },
-            {
-              "key": "existing_cloud_logs_data_bucket_crn"
-            },
-            {
-              "key": "existing_cloud_logs_data_bucket_endpoint"
-            },
-            {
-              "key": "existing_cloud_logs_metrics_bucket_crn"
-            },
-            {
-              "key": "existing_cloud_logs_metrics_bucket_endpoint"
-            },
-            {
-              "key": "skip_cos_kms_auth_policy"
-            },
-            {
-              "key": "skip_cloud_logs_cos_auth_policy"
-            },
-            {
-              "key": "skip_at_cos_auth_policy"
-            },
-            {
-              "key": "existing_cos_kms_key_crn",
-              "required": true
-            },
-            {
-              "key": "existing_kms_instance_crn",
-              "type": "string",
-              "default_value": "",
-              "required": false
-            },
-            {
-              "key": "cos_key_name"
-            },
-            {
-              "key": "cos_key_ring_name"
-            },
-            {
-              "key": "kms_endpoint_type",
-              "options": [
-                {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "private",
-                  "value": "private"
-                }
-              ]
-            }
-          ],
-          "dependencies": [
-            {
-              "name": "testing-deploy-arch-ibm-kms",
-              "id": "85fdbd7a-8c77-4abd-b716-653a31f3aba9",
-              "version": "^1.0.1",
-              "flavors": [
-                "standard"
-              ],
-              "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
-              "optional": true,
-              "input_mapping": [
-                {
-                  "dependency_output": "kms_instance_crn",
-                  "version_input": "existing_kms_instance_crn"
-                }
-              ]
-            },
-            {
-              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
-              "flavors": [
-                "standard"
-              ],
-              "id": "63641cec-6093-4b4f-b7b0-98d2f4185cd6-global",
-              "input_mapping": [
-                {
-                  "dependency_output": "workload_resource_group_name",
-                  "version_input": "existing_resource_group_name"
-                },
-                {
-                  "dependency_input": "prefix",
-                  "version_input": "prefix"
-                }
-              ],
-              "name": "deploy-arch-ibm-account-infra-base",
-              "optional": true,
-              "version": "^1.11.6"
-            }
-          ],
-          "dependency_version_2": true,
-          "architecture": {
-            "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs target.",
-            "features": [
-              {
-                "title": "Creates a Cloud Logs instance",
-                "description": "Creates and configures the IBM Cloud Logs instance."
-              },
-              {
-                "description": "Creates a Monitoring instance",
-                "title": "Creates and configures the IBM Cloud Monitoring instance."
-              },
-              {
-                "title": "Creates KMS-encrypted Object Storage buckets for log files and Activity Tracker events",
-                "description": "Creates and configures the IBM Cloud Object Storage buckets with archiving and expiration enabled."
-              },
-              {
-                "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Cloud Logs target",
-                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket and IBM Cloud Logs target."
-              }
-            ],
-            "diagrams": [
-              {
-                "diagram": {
-                  "caption": "Observability instances on IBM Cloud",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
-                  "type": "image/svg+xml"
-                },
-                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs instance."
-              }
-            ]
-          }
-        },
-        {
-          "label": "Agents",
-          "name": "agents",
-          "install_type": "extension",
-          "working_directory": "solutions/agents",
-           "licenses": [
-            {
-              "id": "LICENSE",
-              "name": "LICENSE",
-              "type": "text/plain",
-              "description": "LICENSE"
-            }
-          ],
+          "compliance": {},
           "iam_permissions": [
             {
               "service_name": "containers-kubernetes",
@@ -520,6 +36,67 @@
               ]
             }
           ],
+          "architecture": {
+            "features": [
+              {
+                "title": "Works with any openshift or k8s cluster",
+                "description": "Works with the Red Hat OpenShift cluster."
+              },
+              {
+                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
+                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster."
+              },
+              {
+                "title": "Deploys the IBM Logs agent on an existing cluster.",
+                "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster."
+              }
+            ],
+            "diagrams": [
+              {
+                "diagram": {
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
+                  "caption": "Observability agents on a Red Hat OpenShift cluster",
+                  "type": "image/svg+xml"
+                },
+                "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "name": "testing-deploy-arch-ibm-observability",
+              "id": "daf2cf91-2384-4205-b7f4-621299a4896d",
+              "version": ">=1.0.7",
+              "flavors": [
+                "instances"
+              ],
+              "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
+              "optional": true,
+              "input_mapping": [
+                {
+                  "dependency_input": "log_analysis_provision",
+                  "version_input": "log_analysis_enabled"
+                },
+                {
+                  "dependency_output": "log_analysis_ingestion_key",
+                  "version_input": "log_analysis_ingestion_key"
+                },
+                {
+                  "dependency_input": "cloud_monitoring_provision",
+                  "version_input": "cloud_monitoring_enabled"
+                },
+                {
+                  "dependency_output": "cloud_monitoring_access_key",
+                  "version_input": "cloud_monitoring_access_key"
+                },
+                {
+                  "dependency_input": "region",
+                  "version_input": "cloud_monitoring_instance_region"
+                }
+              ]
+            }
+          ],
+          "dependency_version_2": true,
           "configuration": [
             {
               "key": "cloud_monitoring_access_key",
@@ -579,7 +156,9 @@
             {
               "key": "cloud_monitoring_instance_region",
               "type": "string",
+              "default_value": "__NULL__",
               "description": "The name of the region where the IBM Cloud Monitoring instance is created. This name is used to construct the ingestion endpoint.",
+              "display_name": "Region",
               "required": true,
               "custom_config": {
                 "type": "region",
@@ -616,27 +195,29 @@
             {
               "key": "cluster_id",
               "type": "string",
+              "default_value": "__NOT_SET__",
               "description": "The ID of the cluster to deploy the agents in.",
               "required": true,
               "custom_config": {
-                  "type": "cluster_var",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment"
+                "type": "cluster_var",
+                "grouping": "deployment",
+                "original_grouping": "deployment"
               }
             },
             {
               "key": "cluster_resource_group_id",
               "type": "string",
+              "default_value": "__NOT_SET__",
               "description": "The resource group ID of the cluster.",
               "required": true,
               "custom_config": {
-								"type": "resource_group",
-								"grouping": "deployment",
-								"original_grouping": "deployment",
-								"config_constraints": {
-									"identifier": "rg_id"
-								}
-							}
+                "type": "resource_group",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "identifier": "rg_id"
+                }
+              }
             },
             {
               "key": "ibmcloud_api_key",
@@ -645,78 +226,314 @@
               "required": true
             },
             {
-              "key": "log_analysis_add_cluster_name",
+              "key": "prefix",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The prefix for resources created by this solution.",
+              "required": false
+            },
+            {
+              "key": "cloud_logs_ingress_endpoint",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress. It is required if `logs_agent_enabled` is set to true.",
+              "required": false
+            },
+            {
+              "key": "cloud_logs_ingress_port",
+              "type": "number",
+              "default_value": 3443,
+              "description": "The target port for the IBM Cloud Logs ingestion endpoint. The port must be 443 if you connect by using a VPE gateway, or port 3443 when you connect by using CSEs.",
+              "required": false
+            },
+            {
+              "key": "is_vpc_cluster",
               "type": "boolean",
               "default_value": true,
-              "description": "Whether to attach the cluster name to log messages. Set to `true` to configure the IBM Log Analysis agent to tag all log messages with the name.",
+              "description": "Specify true if the target cluster for the DA is a VPC cluster, false if it is classic cluster.",
               "required": false
             },
             {
-              "key": "log_analysis_agent_custom_line_exclusion",
-              "type": "string",
-              "default_value": "__NULL__",
-              "description": "The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line exclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)",
-              "required": false
-            },
-            {
-              "key": "log_analysis_agent_custom_line_inclusion",
-              "type": "string",
-              "default_value": "__NULL__",
-              "description": "The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line inclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)",
-              "required": false
-            },
-            {
-              "key": "log_analysis_agent_name",
-              "type": "string",
-              "default_value": "logdna-agent",
-              "description": "The name of the IBM Log Analysis agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Log Analysis agent is prefixed to the value in the `<prefix>-<name>` format.",
-              "required": false
-            },
-            {
-              "key": "log_analysis_agent_namespace",
-              "type": "string",
-              "default_value": "ibm-observe",
-              "description": "The namespace to deploy the IBM Log Analysis agent in. The default value of the namespace is `ibm-observe`.",
-              "required": false
-            },
-            {
-              "key": "log_analysis_agent_tags",
+              "key": "logs_agent_additional_log_source_paths",
               "type": "array",
               "default_value": "[]",
-              "description": "The list of tags to associate with all log records collected by the agent so that you can quickly identify the agent’s data in the logging UI. To add the cluster name as a tag, use the `log_analysis_add_cluster_name` variable.",
+              "description": "The list of additional log sources. By default, the Logs agent collects logs from a single source at `/var/log/containers/logger-agent-ds-*.log`.",
               "required": false
             },
             {
-              "key": "log_analysis_agent_tolerations",
+              "key": "logs_agent_additional_metadata",
               "type": "array",
-              "default_value": "[{\n    operator = \"Exists\"\n  }]",
-              "description": "The list of tolerations to apply to the IBM Log Analysis agent. Because the default value is the `Exists` operator, this variable will match any taint on any node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)",
+              "default_value": "[]",
+              "description": "The list of additional metadata fields to add to the routed logs.",
               "required": false
             },
             {
-              "key": "log_analysis_enabled",
+              "key": "logs_agent_enable_scc",
               "type": "boolean",
               "default_value": true,
-              "description": "Whether to deploy the IBM Cloud logging agent.",
-              "required": true
-            },
-            {
-              "key": "log_analysis_endpoint_type",
-              "type": "string",
-              "default_value": "private",
-              "description": "Specify the IBM Log Analysis instance endpoint type to use to construct the ingestion endpoint. Possible values: `public` or `private`.",
+              "description": "Whether to enable creation of Security Context Constraints in Openshift. When installing on an OpenShift cluster, this setting is mandatory to configure permissions for pods within your cluster.",
               "required": false
             },
             {
-              "key": "log_analysis_ingestion_key",
-              "type": "password",
-              "description": "The ingestion key that is used by the IBM Cloud logging agent to communicate with the instance.",
+              "key": "logs_agent_enabled",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to deploy the Logs agent.",
               "required": true
             },
             {
-              "key": "log_analysis_instance_region",
+              "key": "logs_agent_exclude_log_source_paths",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of log sources to exclude. Specify the paths that the Logs agent ignores.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_iam_api_key",
+              "type": "password",
+              "description": "The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`.",
+              "required": true
+            },
+            {
+              "key": "logs_agent_iam_environment",
               "type": "string",
-              "description": "The name of the region where the IBM Log Analysis instance is created. The value is used in the ingestion endpoint in the format `api.<var-value>.logging.cloud.ibm.com`.",
+              "default_value": "PrivateProduction",
+              "description": "IAM authentication Environment: `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_iam_mode",
+              "type": "string",
+              "default_value": "TrustedProfile",
+              "description": "IAM authentication mode: `TrustedProfile` or `IAMAPIKey`.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_log_source_namespaces",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of namespaces from which logs should be forwarded by agent. When specified logs from only these namespaces will be sent by the agent.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_name",
+              "type": "string",
+              "default_value": "logs-agent",
+              "description": "The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_namespace",
+              "type": "string",
+              "default_value": "ibm-observe",
+              "description": "The namespace where the Logs agent is deployed. The default value is `ibm-observe`.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_selected_log_source_paths",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of specific log sources paths. Logs will only be collected from the specified log source paths.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_tolerations",
+              "type": "array",
+              "default_value": "[{\n    operator = \"Exists\"\n  }]",
+              "description": "List of tolerations to apply to Logs agent.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_trusted_profile",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role.",
+              "required": false
+            },
+            {
+              "key": "wait_till",
+              "type": "string",
+              "default_value": "Normal",
+              "description": "To avoid long wait times when you run your Terraform code, you can specify the stage when you want Terraform to mark the cluster resource creation as completed. Depending on what stage you choose, the cluster creation might not be fully completed and continues to run in the background. However, your Terraform code can continue to run without waiting for the cluster to be fully created. Supported args are `MasterNodeReady`, `OneWorkerNodeReady`, `IngressReady` and `Normal`",
+              "required": false
+            },
+            {
+              "key": "wait_till_timeout",
+              "type": "number",
+              "default_value": 90,
+              "description": "Timeout for wait_till in minutes.",
+              "required": false
+            }
+          ],
+          "install_type": "extension"
+        },
+        {
+          "label": "Instances",
+          "name": "instances",
+          "working_directory": "solutions/instances",
+          "licenses": [
+            {
+              "id": "LICENSE",
+              "name": "LICENSE",
+              "type": "text/plain",
+              "description": "LICENSE"
+            }
+          ],
+          "compliance": {
+            "authority": "scc-v3",
+            "profiles": [
+              {
+                "profile_name": "IBM Cloud Framework for Financial Services",
+                "profile_version": "1.7.0"
+              }
+            ]
+          },
+          "iam_permissions": [
+            {
+              "service_name": "atracker",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Writer",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ]
+            },
+            {
+              "service_name": "hs-crypto",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ]
+            },
+            {
+              "service_name": "kms",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ]
+            },
+            {
+              "service_name": "sysdig-monitor",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ]
+            },
+            {
+              "service_name": "cloud-object-storage",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ]
+            },
+            {
+              "service_name": "logs",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Editor"
+              ]
+            }
+          ],
+          "architecture": {
+            "features": [
+              {
+                "title": "Creates a Cloud Logs instance",
+                "description": "Creates and configures the IBM Cloud Logs instance."
+              },
+              {
+                "title": "Creates and configures the IBM Cloud Monitoring instance.",
+                "description": "Creates a Monitoring instance"
+              },
+              {
+                "title": "Creates KMS-encrypted Object Storage buckets for log files and Activity Tracker events",
+                "description": "Creates and configures the IBM Cloud Object Storage buckets with archiving and expiration enabled."
+              },
+              {
+                "title": "Creates an IBM Cloud Activity Tracker event route to an Object Storage bucket and Cloud Logs target",
+                "description": "Creates and configures the IBM Cloud Activity Tracker Event Routing to an IBM Cloud Object Storage bucket and IBM Cloud Logs target."
+              }
+            ],
+            "diagrams": [
+              {
+                "diagram": {
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
+                  "caption": "Observability instances on IBM Cloud",
+                  "type": "image/svg+xml"
+                },
+                "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs instance."
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "name": "testing-deploy-arch-ibm-kms",
+              "id": "85fdbd7a-8c77-4abd-b716-653a31f3aba9",
+              "version": ">=1.0.1",
+              "flavors": [
+                "standard"
+              ],
+              "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
+              "optional": true,
+              "input_mapping": [
+                {
+                  "dependency_output": "kms_instance_crn",
+                  "version_input": "existing_kms_instance_crn"
+                }
+              ]
+            },
+            {
+              "name": "deploy-arch-ibm-account-infra-base",
+              "id": "63641cec-6093-4b4f-b7b0-98d2f4185cd6-global",
+              "version": ">=1.11.6",
+              "flavors": [
+                "standard"
+              ],
+              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
+              "optional": true,
+              "input_mapping": [
+                {
+                  "dependency_output": "workload_resource_group_name",
+                  "version_input": "existing_resource_group_name"
+                },
+                {
+                  "dependency_input": "prefix",
+                  "version_input": "prefix"
+                }
+              ]
+            }
+          ],
+          "dependency_version_2": true,
+          "configuration": [
+            {
+              "key": "ibmcloud_api_key",
+              "type": "password",
+              "description": "The API key to use for IBM Cloud.",
+              "required": true
+            },
+            {
+              "key": "prefix",
+              "type": "string",
+              "default_value": "",
+              "description": "The prefix to add to all resources created by this solution. Used to make sure that names are unique when you deploy the solution more than one time.",
+              "required": true
+            },
+            {
+              "key": "resource_group_name",
+              "type": "string",
+              "default_value": "default",
+              "description": "The name of a new or existing resource group to provision resources in.",
+              "required": true
+            },
+            {
+              "key": "use_existing_resource_group",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Whether to use an existing resource group.",
+              "required": true
+            },
+            {
+              "key": "region",
+              "type": "string",
+              "default_value": "us-south",
+              "description": "The region where observability resources are created.",
               "required": true,
               "custom_config": {
                 "type": "region",
@@ -730,78 +547,634 @@
               }
             },
             {
-              "key": "log_analysis_secret_name",
-              "type": "string",
-              "default_value": "logdna-agent",
-              "description": "The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-<name>` format.",
+              "key": "cloud_logs_provision",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Set it to true to provision an IBM Cloud Logs instance",
               "required": false
             },
             {
-              "key": "prefix",
+              "key": "cloud_logs_instance_name",
+              "type": "string",
+              "default_value": "cloud-logs",
+              "description": "The name of the IBM Cloud Logs instance to create. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format.",
+              "required": false
+            },
+            {
+              "key": "cloud_logs_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The resource tags that are associated with the IBM Cloud Logs instance (`Optional`, `array of strings`).",
+              "required": false
+            },
+            {
+              "key": "cloud_logs_access_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of access tags to apply to the Cloud Logs instance. Maximum length: 128 characters. Possible characters are A-Z, 0-9, spaces, underscores, hyphens, periods, and colons. [Learn more](https://cloud.ibm.com/docs/account?topic=account-access-tags-tutorial).",
+              "required": false
+            },
+            {
+              "key": "cloud_logs_retention_period",
+              "type": "number",
+              "default_value": 7,
+              "description": "The number of days IBM Cloud Logs will retain the logs data in priority insights. Possible Values: 7, 14, 30, 60, 90",
+              "required": false,
+              "options": [
+                {
+                  "displayname": "7-days",
+                  "value": "7"
+                },
+                {
+                  "displayname": "14-days",
+                  "value": "14"
+                },
+                {
+                  "displayname": "30-days",
+                  "value": "30"
+                },
+                {
+                  "displayname": "60-days",
+                  "value": "60"
+                },
+                {
+                  "displayname": "90-days",
+                  "value": "90"
+                }
+              ]
+            },
+            {
+              "key": "enable_platform_logs",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Setting this to true will create a tenant in the same region that the Cloud Logs instance is provisioned to enable platform logs for that region. To send platform logs from other regions, you can explicitially specify a list of regions using the `logs_routing_tenant_regions` input. NOTE: You can only have 1 tenant per region in an account.",
+              "required": false
+            },
+            {
+              "key": "logs_routing_tenant_regions",
+              "type": "array",
+              "default_value": "[]",
+              "description": "Pass a list of regions to create a tenant that is targetted to the Cloud Logs instance created by this module. To manage platform logs that are generated by IBM Cloud® services in a region of IBM Cloud, you must create a tenant in each region that you operate. Leave the list empty if you don't want to create any tenants.",
+              "required": false
+            },
+            {
+              "key": "cloud_logs_existing_en_instances",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of existing Event Notification instances to be integrated with the Cloud Logging service. Each object in the list represents an Event Notification instance, including its CRN, an optional name for the integration, and an optional flag to skip the authentication policy creation for the  Event Notification instance [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_existing_en_instances). This variable is intended for integrating a multiple Event Notifications instance to Cloud Logs. If you need to integrate only one instance, you may also use the `existing_en_instance_crn`, `en_integration_name` and `skip_en_auth_policy` variables instead.",
+              "required": false
+            },
+            {
+              "key": "existing_en_instance_crn",
               "type": "string",
               "default_value": "__NULL__",
-              "description": "The prefix for resources created by this solution.",
+              "description": "The CRN of the existing event notification instance. This variable is intended for integrating a single Event Notifications instance to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead.",
+              "required": false
+            },
+            {
+              "key": "en_integration_name",
+              "type": "string",
+              "default_value": "cloud-logs-en-integration",
+              "description": "The name of the event notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead.",
+              "required": false
+            },
+            {
+              "key": "skip_en_auth_policy",
+              "type": "boolean",
+              "default_value": false,
+              "description": "To skip creating auth policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. This variable is intended for integrating a single Event Notifications instance  to Cloud Logs. If you need to integrate multiple instances, use the `cloud_logs_existing_en_instances` variable instead.",
+              "required": false
+            },
+            {
+              "key": "skip_logs_routing_auth_policy",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Whether to create an IAM authorization policy that permits Logs Routing Sender access to the IBM Cloud Logs.",
+              "required": false
+            },
+            {
+              "key": "enable_at_event_routing_to_cos_bucket",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to enable event routing from Activity Tracker to the Object Storage bucket.",
+              "required": false
+            },
+            {
+              "key": "enable_at_event_routing_to_cloud_logs",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to enable event routing from Activity Tracker to Cloud Log.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_provision",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to create an IBM cloud monitoring instance. Set to `false` if a CRN is specified in `existing_cloud_monitoring_crn`.",
+              "required": false
+            },
+            {
+              "key": "existing_cloud_monitoring_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The CRN of an IBM Cloud Monitoring instance. If specified, set the `cloud_monitoring_provision` variable to `false`.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_instance_name",
+              "type": "string",
+              "default_value": "cloud-monitoring",
+              "description": "The name of the IBM Cloud Monitoring instance to create. If the prefix variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format.",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_plan",
+              "type": "string",
+              "default_value": "graduated-tier",
+              "description": "The IBM Cloud Monitoring plan to provision. Available values are `lite` and `graduated-tier`.",
+              "required": false,
+              "options": [
+                {
+                  "displayname": "lite",
+                  "value": "lite"
+                },
+                {
+                  "displayname": "graduated-tier",
+                  "value": "graduated-tier"
+                }
+              ]
+            },
+            {
+              "key": "cloud_monitoring_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The tags that are associated with the IBM Cloud Monitoring instance (`Optional`, `array of strings`).",
+              "required": false
+            },
+            {
+              "key": "cos_instance_name",
+              "type": "string",
+              "default_value": "observability-cos",
+              "description": "The name of the Cloud Object Storage instance to create. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format.",
+              "required": false
+            },
+            {
+              "key": "cos_instance_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of optional tags to add to a new Cloud Object Storage instance.",
+              "required": false
+            },
+            {
+              "key": "cos_instance_access_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of access tags to apply to a new Cloud Object Storage instance.",
+              "required": false
+            },
+            {
+              "key": "add_bucket_name_suffix",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Add a randomly generated suffix that is 4 characters in length, to the name of the newly provisioned Cloud Object Storage bucket. Do not use this suffix if you are passing the existing Cloud Object Storage bucket. To manage the name of the Cloud Object Storage bucket manually, use the `cloud_log_data_bucket_name`, `cloud_log_metrics_bucket_name`, `at_cos_target_bucket_name` and `log_archive_cos_bucket_name` variables.",
+              "required": false
+            },
+            {
+              "key": "log_archive_cos_bucket_name",
+              "type": "string",
+              "default_value": "log-archive-cos-bucket",
+              "description": "The name of the Cloud Object Storage bucket to create to store log archive files. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format.",
+              "required": false
+            },
+            {
+              "key": "archive_bucket_access_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of optional tags to add to the Log Analysis log archive Cloud Object Storage bucket.",
+              "required": false
+            },
+            {
+              "key": "log_archive_cos_bucket_class",
+              "type": "string",
+              "default_value": "smart",
+              "description": "The storage class of the newly provisioned Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`.",
+              "required": false,
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "at_cos_target_bucket_name",
+              "type": "string",
+              "default_value": "at-events-cos-bucket",
+              "description": "The name of the Cloud Object Storage bucket to create for the Cloud Object Storage target to store AT events. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format.",
+              "required": false
+            },
+            {
+              "key": "at_cos_bucket_access_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of optional access tags to add to the IBM Cloud Activity Tracker Event Routing Cloud Object Storage bucket.",
+              "required": false
+            },
+            {
+              "key": "at_cos_target_bucket_class",
+              "type": "string",
+              "default_value": "smart",
+              "description": "The storage class of the newly provisioned Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`.",
+              "required": false,
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "cloud_log_data_bucket_name",
+              "type": "string",
+              "default_value": "cloud-logs-data-bucket",
+              "description": "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the bucket is prefixed to the value in the `<prefix>-value` format.",
+              "required": false
+            },
+            {
+              "key": "cloud_log_data_bucket_class",
+              "type": "string",
+              "default_value": "smart",
+              "description": "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`.",
+              "required": false,
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "cloud_log_data_bucket_access_tag",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of optional tags to add to the cloud log data object storage bucket.",
+              "required": false
+            },
+            {
+              "key": "cloud_log_metrics_bucket_name",
+              "type": "string",
+              "default_value": "cloud-logs-metrics-bucket",
+              "description": "The name of the Cloud Object Storage bucket to create to store cloud logs metrics. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the bucket is prefixed to the value in the `<prefix>-value` format.",
+              "required": false
+            },
+            {
+              "key": "cloud_log_metrics_bucket_class",
+              "type": "string",
+              "default_value": "smart",
+              "description": "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`.",
+              "required": false,
+              "options": [
+                {
+                  "displayname": "standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "vault",
+                  "value": "vault"
+                },
+                {
+                  "displayname": "cold",
+                  "value": "cold"
+                },
+                {
+                  "displayname": "smart",
+                  "value": "smart"
+                },
+                {
+                  "displayname": "onerate_active",
+                  "value": "onerate_active"
+                }
+              ]
+            },
+            {
+              "key": "cloud_log_metrics_bucket_access_tag",
+              "type": "array",
+              "default_value": "[]",
+              "description": "A list of optional tags to add to the cloud log metrics object storage bucket.",
+              "required": false
+            },
+            {
+              "key": "management_endpoint_type_for_bucket",
+              "type": "string",
+              "default_value": "private",
+              "description": "The type of endpoint for the IBM Terraform provider to use to manage Cloud Object Storage buckets (`public`, `private`, or `direct`). If you are using a private endpoint, make sure that you enable virtual routing and forwarding (VRF) in your account, and that the Terraform runtime can access the IBM Cloud Private network.",
+              "required": false,
+              "options": [
+                {
+                  "displayname": "public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "private",
+                  "value": "private"
+                },
+                {
+                  "displayname": "direct",
+                  "value": "direct"
+                }
+              ]
+            },
+            {
+              "key": "existing_cos_instance_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The CRN of an existing Cloud Object Storage instance. If a CRN is not specified, a new instance of Cloud Object Storage is created.",
+              "required": false
+            },
+            {
+              "key": "existing_at_cos_target_bucket_name",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The name of an existing bucket within the Cloud Object Storage instance in which to store IBM Cloud Activity Tracker Event Routing. If an existing Cloud Object Storage bucket is not specified, a bucket is created.",
+              "required": false
+            },
+            {
+              "key": "existing_at_cos_target_bucket_endpoint",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The name of an existing Cloud Object Storage bucket endpoint to use for setting up IBM Cloud Activity Tracker Event Routing. If an existing endpoint is not specified, the endpoint of the new Cloud Object Storage bucket is used.",
+              "required": false
+            },
+            {
+              "key": "existing_cloud_logs_data_bucket_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created.",
+              "required": false
+            },
+            {
+              "key": "existing_cloud_logs_data_bucket_endpoint",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The endpoint of an existing Cloud Object Storage bucket to use for storing the IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created.",
+              "required": false
+            },
+            {
+              "key": "existing_cloud_logs_metrics_bucket_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs metrics. If an existing Cloud Object Storage bucket is not specified, a bucket is created.",
+              "required": false
+            },
+            {
+              "key": "existing_cloud_logs_metrics_bucket_endpoint",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The endpoint of an existing Cloud Object Storage bucket to use for storing the IBM Cloud Logs metrics. If an existing Cloud Object Storage bucket is not specified, a bucket is created.",
+              "required": false
+            },
+            {
+              "key": "skip_cos_kms_auth_policy",
+              "type": "boolean",
+              "default_value": false,
+              "description": "To skip creating an IAM authorization policy that allows the Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist.",
+              "required": false
+            },
+            {
+              "key": "skip_cloud_logs_cos_auth_policy",
+              "type": "boolean",
+              "default_value": false,
+              "description": "To skip creating an IAM authorization policy that allows the IBM Cloud logs to write to the Cloud Object Storage bucket, set this variable to `true`.",
+              "required": false
+            },
+            {
+              "key": "skip_at_cos_auth_policy",
+              "type": "boolean",
+              "default_value": false,
+              "description": "To skip creating an IAM authorization policy that allows the Activity Traker to write to the Cloud Object Storage instance, set this variable to `true`.",
+              "required": false
+            },
+            {
+              "key": "existing_cos_kms_key_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "Optional. The CRN of an existing key management service (KMS) key to use to encrypt the Cloud Object Storage buckets that this solution creates. To create a key ring and key, pass a value for the `existing_kms_instance_crn` input variable. To use existing Cloud Object Storage buckets, pass a value for the `existing_cloud_logs_data_bucket_crn`, `existing_cloud_logs_metrics_bucket_crn`, and `existing_at_cos_target_bucket_name` input variables.",
+              "required": true
+            },
+            {
+              "key": "existing_kms_instance_crn",
+              "type": "string",
+              "default_value": "",
+              "description": "The CRN of the key management service (KMS) that is used to create keys for encrypting the Cloud Object Storage bucket. If you are not using an existing KMS root key, you must specify this CRN. If you are using an existing KMS root key, an existing COS instance and auth policy is not set for COS to KMS, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required.",
+              "required": false
+            },
+            {
+              "key": "cos_key_name",
+              "type": "string",
+              "default_value": "observability-cos-key",
+              "description": "The name of the key to create for the Cloud Object Storage bucket. This name will be used by both the log archive bucket and the IBM Cloud Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key is prefixed to the value in the `prefix-value` format.",
+              "required": false
+            },
+            {
+              "key": "cos_key_ring_name",
+              "type": "string",
+              "default_value": "observability-cos-key-ring",
+              "description": "The name of the key ring to create for the Cloud Object Storage bucket key. This name will be used by both the log archive bucket and the IBM Cloud Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key ring is prefixed to the value in the `prefix-value` format.",
+              "required": false
+            },
+            {
+              "key": "kms_endpoint_type",
+              "type": "string",
+              "default_value": "private",
+              "description": "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_cos_kms_key_crn` is not specified.",
+              "required": false,
+              "options": [
+                {
+                  "displayname": "public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "private",
+                  "value": "private"
+                }
+              ]
+            },
+            {
+              "key": "cos_region",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The Cloud Object Storage region. If no value is provided, the value that is specified in the `region` input variable is used.",
+              "required": false
+            },
+            {
+              "key": "cos_resource_group_name",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The name of a new or existing resource group to provision COS instance in. If not specified, the 'resource_group_name' variable is used. Specify this if the COS instance is in an account that's different from the one associated Observability resources.",
+              "required": false
+            },
+            {
+              "key": "enable_platform_metrics",
+              "type": "boolean",
+              "default_value": true,
+              "description": "When set to `true`, the IBM Cloud Monitoring instance collects the platform metrics.",
+              "required": false
+            },
+            {
+              "key": "ibmcloud_cos_api_key",
+              "type": "password",
+              "description": "The IBM Cloud API key that can create a Cloud Object Storage (COS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the COS instance is in an account that's different from the one associated Observability resources. Leave empty if the same account owns all the instances.",
+              "required": false
+            },
+            {
+              "key": "ibmcloud_kms_api_key",
+              "type": "password",
+              "description": "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Observability resources. Leave empty if the same account owns all the instances.",
+              "required": false
+            },
+            {
+              "key": "manage_log_archive_cos_bucket",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Log Analysis has been deprecated, and can no longer be deployed wuth this solution, however you can continue to manage the COS bucket that may have been in older versions for Log Analysis log archiving by setting this input to true.",
               "required": false
             }
           ],
-          "dependencies": [
+          "outputs": [
             {
-              "name": "testing-deploy-arch-ibm-observability",
-              "flavors": [
-                "instances"
-              ],
-              "id": "daf2cf91-2384-4205-b7f4-621299a4896d",
-              "version": "^1.0.7",
-              "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
-              "optional": true,
-              "input_mapping": [
-                {
-                  "dependency_input": "log_analysis_provision",
-                  "version_input": "log_analysis_enabled"
-                },
-                {
-                  "dependency_output": "log_analysis_ingestion_key",
-                  "version_input": "log_analysis_ingestion_key"
-                },
-                {
-                  "dependency_input": "cloud_monitoring_provision",
-                  "version_input": "cloud_monitoring_enabled"
-                },
-                {
-                  "dependency_output": "cloud_monitoring_access_key",
-                  "version_input": "cloud_monitoring_access_key"
-                }
-              ]
+              "key": "cloud_logs_name",
+              "description": "The name of the provisioned Cloud Logs instance."
+            },
+            {
+              "key": "cos_instance_crn",
+              "description": "COS instance crn"
+            },
+            {
+              "key": "cloud_monitoring_guid",
+              "description": "The guid of the provisioned IBM cloud monitoring instance."
+            },
+            {
+              "key": "at_targets",
+              "description": "The map of created activity_tracker targets"
+            },
+            {
+              "key": "at_routes",
+              "description": "The map of created activity_tracker routes"
+            },
+            {
+              "key": "cloud_logs_guid",
+              "description": "The guid of the provisioned Cloud Logs instance."
+            },
+            {
+              "key": "cloud_log_data_bucket_name",
+              "description": "The name of the Cloud logs data COS bucket"
+            },
+            {
+              "key": "log_archive_cos_bucket_name",
+              "description": "The name of log archive COS bucket"
+            },
+            {
+              "key": "resource_group_name",
+              "description": "The name of the Resource Group the instances are provisioned in."
+            },
+            {
+              "key": "cos_instance_name",
+              "description": "COS instance name"
+            },
+            {
+              "key": "cloud_logs_crn",
+              "description": "The id of the provisioned Cloud Logs instance."
+            },
+            {
+              "key": "kms_keys",
+              "description": "IDs of new KMS Keys created"
+            },
+            {
+              "key": "cos_instance_id",
+              "description": "COS instance id"
+            },
+            {
+              "key": "cos_instance_guid",
+              "description": "COS instance guid"
+            },
+            {
+              "key": "cloud_monitoring_access_key",
+              "description": "IBM cloud monitoring access key for agents to use"
+            },
+            {
+              "key": "resource_group_id",
+              "description": "The ID of the Resource Group the instances are provisioned in."
+            },
+            {
+              "key": "kms_key_rings",
+              "description": "IDs of new KMS Key Rings created"
+            },
+            {
+              "key": "at_cos_target_bucket_name",
+              "description": "The name of the AT target COS bucket"
+            },
+            {
+              "key": "cloud_monitoring_name",
+              "description": "The name of the provisioned IBM cloud monitoring instance."
+            },
+            {
+              "key": "cloud_monitoring_crn",
+              "description": "The id of the provisioned IBM cloud monitoring instance."
+            },
+            {
+              "key": "cloud_log_metrics_bucket_name",
+              "description": "The name of the Cloud logs metrics COS bucket"
             }
           ],
-          "dependency_version_2": true,
-          "architecture": {
-            "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs agent on an existing Red Hat OpenShift cluster.",
-            "features": [
-              {
-                "title": "Works with any openshift or k8s cluster",
-                "description": "Works with the Red Hat OpenShift cluster."
-              },
-              {
-                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
-                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster."
-              },
-              {
-                "title": "Deploys the IBM Logs agent on an existing cluster.",
-                "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster."
-              }
-            ],
-            "diagrams": [
-              {
-                "diagram": {
-                  "caption": "Observability agents on a Red Hat OpenShift cluster",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
-                  "type": "image/svg+xml"
-                },
-                "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
-              }
-            ]
-          }
+          "install_type": "extension"
         }
       ]
     }
