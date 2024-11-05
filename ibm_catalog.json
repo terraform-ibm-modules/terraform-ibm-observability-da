@@ -206,15 +206,7 @@
               "type": "string",
               "default_value": "__NOT_SET__",
               "description": "The resource group ID of the cluster.",
-              "required": true,
-              "custom_config": {
-                "type": "resource_group",
-                "grouping": "deployment",
-                "original_grouping": "deployment",
-                "config_constraints": {
-                  "identifier": "rg_id"
-                }
-              }
+              "required": true
             },
             {
               "key": "ibmcloud_api_key",
@@ -515,17 +507,9 @@
             {
               "key": "resource_group_name",
               "type": "string",
-              "default_value": "default",
+              "default_value": "Default",
               "description": "The name of a new or existing resource group to provision resources in.",
-              "required": true,
-              "custom_config": {
-                  "type": "resource_group",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "identifier": "rg_name"
-                  }
-              }
+              "required": true
             },
             {
               "key": "use_existing_resource_group",
@@ -1069,15 +1053,7 @@
               "type": "string",
               "default_value": "__NULL__",
               "description": "The name of a new or existing resource group to provision COS instance in. If not specified, the 'resource_group_name' variable is used. Specify this if the COS instance is in an account that's different from the one associated Observability resources.",
-              "required": false,
-              "custom_config": {
-                  "type": "resource_group",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "identifier": "rg_name"
-                  }
-              }
+              "required": false
             },
             {
               "key": "enable_platform_metrics",
