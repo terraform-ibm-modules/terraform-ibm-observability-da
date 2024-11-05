@@ -206,7 +206,15 @@
               "type": "string",
               "default_value": "__NOT_SET__",
               "description": "The resource group ID of the cluster.",
-              "required": true
+              "required": true,
+              "custom_config": {
+                "type": "resource_group",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "identifier": "rg_id"
+                }
+              }
             },
             {
               "key": "ibmcloud_api_key",
