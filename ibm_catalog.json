@@ -3,7 +3,6 @@
     {
       "label": "Testing-Observability",
       "name": "testing-deploy-arch-ibm-observability",
-      "version": "1.0.17",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
