@@ -531,19 +531,26 @@
             {
               "key": "region",
               "type": "string",
-              "default_value": "us-south",
               "description": "The region where observability resources are created.",
               "required": true,
-              "custom_config": {
-                "type": "region",
-                "grouping": "deployment",
-                "original_grouping": "deployment",
-                "config_constraints": {
-                  "showKinds": [
-                    "region"
-                  ]
+              "options": [
+                {
+                  "displayname": "eu-de",
+                  "value": "eu-de"
+                },
+                {
+                  "displayname": "us-south",
+                  "value": "us-south"
+                },
+                {
+                  "displayname": "eu-gb",
+                  "value": "eu-gb"
+                },
+                {
+                  "displayname": "jp-tok",
+                  "value": "jp-tok"
                 }
-              }
+              ]
             },
             {
               "key": "cloud_logs_provision",
