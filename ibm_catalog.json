@@ -154,7 +154,10 @@
               ]
             },
             {
-              "key": "enable_platform_logs"
+              "key": "enable_platform_logs",
+              "type": "boolean",
+              "default_value": true,
+              "required": true
             },
             {
               "key": "logs_routing_tenant_regions"
@@ -500,6 +503,14 @@
           "name": "agents",
           "install_type": "extension",
           "working_directory": "solutions/agents",
+           "licenses": [
+            {
+              "id": "LICENSE",
+              "name": "LICENSE",
+              "type": "text/plain",
+              "description": "LICENSE"
+            }
+          ],
           "iam_permissions": [
             {
               "service_name": "containers-kubernetes",
