@@ -556,7 +556,7 @@
               "type": "boolean",
               "default_value": true,
               "description": "Whether to deploy the IBM Cloud Monitoring agent.",
-              "required": false
+              "required": true
             },
             {
               "key": "cloud_monitoring_endpoint_type",
@@ -667,7 +667,7 @@
               "type": "boolean",
               "default_value": true,
               "description": "Whether to deploy the IBM Cloud logging agent.",
-              "required": false
+              "required": true
             },
             {
               "key": "log_analysis_endpoint_type",
@@ -726,6 +726,10 @@
                 {
                   "dependency_input": "cloud_monitoring_provision",
                   "version_input": "cloud_monitoring_enabled"
+                },
+                {
+                  "dependency_output": "cloud_monitoring_access_key",
+                  "version_input": "cloud_monitoring_access_key"
                 }
               ]
             }
