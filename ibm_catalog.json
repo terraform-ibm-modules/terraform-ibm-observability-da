@@ -97,6 +97,12 @@
               "required": true
             },
             {
+              "key": "use_existing_resource_group",
+              "type": "boolean",
+              "default_value": false,
+              "required": true
+            },
+            {
               "custom_config": {
                 "type": "region",
                 "grouping": "deployment",
