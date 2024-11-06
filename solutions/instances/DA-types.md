@@ -1,4 +1,4 @@
-# Configuring complex inputs for IBM Cloud Logs
+# Configuring complex inputs for Cloud Automation for Observability
 
 Several optional input variables in the IBM Cloud [Observability instances deployable architecture](https://cloud.ibm.com/catalog#deployable_architecture) use complex object types. You specify these inputs when you configure deployable architecture.
 

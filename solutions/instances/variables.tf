@@ -246,7 +246,7 @@ variable "cloud_logs_policies" {
       id = string
     })))
   }))
-  description = "Configuration of Cloud Logs policies."
+  description = "Configuration of Cloud Logs policies. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_policies)."
   default     = []
 }
 
