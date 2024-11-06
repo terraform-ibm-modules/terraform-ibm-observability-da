@@ -222,6 +222,34 @@ variable "manage_log_archive_cos_bucket" {
   description = "Log Analysis has been deprecated, and can no longer be deployed wuth this solution, however you can continue to manage the COS bucket that may have been in older versions for Log Analysis log archiving by setting this input to true."
 }
 
+########################################################################
+# Cloud Logs Policies - TCO Optimizer
+#########################################################################
+
+variable "cloud_logs_policies" {
+  type = list(object({
+    logs_policy_name        = string
+    logs_policy_description = optional(string, null)
+    logs_policy_priority    = string
+    application_rule = optional(list(object({
+      name         = string
+      rule_type_id = optional(string, "unspecified")
+    })))
+    subsystem_rule = optional(list(object({
+      name         = string
+      rule_type_id = optional(string, "unspecified")
+    })))
+    log_rules = optional(list(object({
+      severities = list(string)
+    })))
+    archive_retention = optional(list(object({
+      id = string
+    })))
+  }))
+  description = "Configuration of Cloud Logs policies."
+  default     = []
+}
+
 ##############################################################################
 # Activity Tracker Event Routing Variables
 ##############################################################################
