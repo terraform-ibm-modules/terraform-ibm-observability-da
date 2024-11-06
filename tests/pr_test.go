@@ -299,29 +299,29 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		// Deploy Observability instance DA passing in existing COS instance (not bucket), and KMS key
 		// ------------------------------------------------------------------------------------
 
-		// options2 := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-		// 	Testing:      t,
-		// 	TerraformDir: solutionInstanceDADir,
-		// 	// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
-		// 	ImplicitRequired: false,
-		// 	TerraformVars: map[string]interface{}{
-		// 		"prefix":                              prefix,
-		// 		"cos_region":                          region,
-		// 		"resource_group_name":                 terraform.Output(t, existingTerraformOptions, "resource_group_name"),
-		// 		"use_existing_resource_group":         true,
-		// 		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
-		// 		"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
-		// 		"kms_endpoint_type":                   "public",
-		// 		"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
-		// 		"management_endpoint_type_for_bucket": "public",
-		// 		"enable_platform_metrics":             "false",
-		// 		"enable_platform_logs":                "false",
-		// 	},
-		// })
+		options2 := testhelper.TestOptionsDefault(&testhelper.TestOptions{
+			Testing:      t,
+			TerraformDir: solutionInstanceDADir,
+			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
+			ImplicitRequired: false,
+			TerraformVars: map[string]interface{}{
+				"prefix":                              prefix,
+				"cos_region":                          region,
+				"resource_group_name":                 terraform.Output(t, existingTerraformOptions, "resource_group_name"),
+				"use_existing_resource_group":         true,
+				"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
+				"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
+				"kms_endpoint_type":                   "public",
+				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
+				"management_endpoint_type_for_bucket": "public",
+				"enable_platform_metrics":             "false",
+				"enable_platform_logs":                "false",
+			},
+		})
 
-		// output2, err := options2.RunTestConsistency()
-		// assert.Nil(t, err, "This should not have errored")
-		// assert.NotNil(t, output2, "Expected some output")
+		output2, err := options2.RunTestConsistency()
+		assert.Nil(t, err, "This should not have errored")
+		assert.NotNil(t, output2, "Expected some output")
 
 	}
 
