@@ -123,7 +123,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 				"logs_policy_priority": "type_low",
 				"log_rules": []map[string]interface{}{
 					{
-						"severities": []string{"info"},
+						"severities": []string{"info", "debug"},
 					},
 				},
 			},
