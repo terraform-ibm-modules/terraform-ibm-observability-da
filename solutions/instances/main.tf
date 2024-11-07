@@ -451,7 +451,7 @@ module "cos_bucket" {
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
-      retention_rule                = local.local.retention_rule
+      retention_rule                = local.retention_rule
       metrics_monitoring = {
         usage_metrics_enabled   = true
         request_metrics_enabled = true
