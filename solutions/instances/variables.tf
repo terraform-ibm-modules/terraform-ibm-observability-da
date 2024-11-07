@@ -311,6 +311,16 @@ variable "cos_instance_tags" {
   default     = []
 }
 
+variable "retention_rule" {
+  description = "Defines the retention rule of the COS bucket."
+  type = object({
+    default   = optional(number, 90)
+    maximum   = optional(number, 350)
+    minimum   = optional(number, 90)
+    permanent = optional(bool, false)
+  })
+}
+
 variable "cos_instance_access_tags" {
   type        = list(string)
   description = "A list of access tags to apply to a new Cloud Object Storage instance."

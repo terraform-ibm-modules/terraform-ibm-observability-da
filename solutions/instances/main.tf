@@ -83,15 +83,22 @@ locals {
     local.cloud_log_metrics_bucket_config != null ? [local.cloud_log_metrics_bucket_config] : []
   )
 
-  archive_rule = var.existing_at_cos_target_bucket_name == null ? {
+  archive_rule = length(coalesce(local.buckets_config, [])) == 0 ? {
     enable = true
     days   = 90
     type   = "Glacier"
   } : null
 
-  expire_rule = var.existing_at_cos_target_bucket_name == null ? {
+  expire_rule = length(coalesce(local.buckets_config, [])) == 0 ? {
     enable = true
     days   = 366
+  } : null
+
+  retention_rule = (length(coalesce(local.buckets_config, [])) == 0) ? {
+    default   = var.retention_rule.default
+    minimum   = var.retention_rule.minimum
+    maximum   = var.retention_rule.maximum
+    permanent = var.retention_rule.permanent
   } : null
 
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
@@ -444,7 +451,7 @@ module "cos_bucket" {
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
-      retention_rule                = null
+      retention_rule                = local.local.retention_rule
       metrics_monitoring = {
         usage_metrics_enabled   = true
         request_metrics_enabled = true
