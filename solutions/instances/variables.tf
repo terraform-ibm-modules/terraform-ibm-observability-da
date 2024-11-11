@@ -315,7 +315,7 @@ variable "retention_rule" {
   description = "Defines the retention rule of the COS bucket."
   type = object({
     default   = optional(number, 90)
-    maximum   = optional(number, 350)
+    maximum   = optional(number, 365)
     minimum   = optional(number, 90)
     permanent = optional(bool, false)
   })
