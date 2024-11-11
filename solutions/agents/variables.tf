@@ -110,10 +110,16 @@ variable "cloud_monitoring_metrics_filter" {
   }))
   description = "To filter on custom metrics, specify the IBM Cloud Monitoring metrics to include or exclude. [Learn more](https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics)"
   default     = [] # [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
-  validation {
-    condition     = length(var.cloud_monitoring_metrics_filter) == 0 || can(regex("^(include|exclude)$", var.cloud_monitoring_metrics_filter[0].type))
-    error_message = "The specified `type` for the `cloud_monitoring_metrics_filter` is not valid. Specify either `include` or `exclude`. If the value for `type` is not specified, no metrics are included or excluded."
-  }
+}
+
+variable "cloud_monitoring_container_filter" {
+  type = list(object({
+    type      = string
+    parameter = string
+    name      = string
+  }))
+  description = "To filter custom containers, specify which containers to include or exclude from metrics collection for the cloud monitoring agent. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_filter_data."
+  default     = [] # [{ type = "exclude", parameter = "kubernetes.namespace.name", name = "kube-system" }]
 }
 
 variable "cloud_monitoring_agent_tags" {
