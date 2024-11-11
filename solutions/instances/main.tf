@@ -53,27 +53,31 @@ locals {
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
-    class = var.log_archive_cos_bucket_class
-    name  = local.log_archive_cos_bucket_name
-    tag   = var.archive_bucket_access_tags
+    class          = var.log_archive_cos_bucket_class
+    name           = local.log_archive_cos_bucket_name
+    tag            = var.archive_bucket_access_tags
+    retention_rule = local.retention_rule
   } : null
 
   at_bucket_config = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket ? {
-    class = var.at_cos_target_bucket_class
-    name  = local.at_cos_target_bucket_name
-    tag   = var.at_cos_bucket_access_tags
+    class          = var.at_cos_target_bucket_class
+    name           = local.at_cos_target_bucket_name
+    tag            = var.at_cos_bucket_access_tags
+    retention_rule = local.retention_rule
   } : null
 
   cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? {
-    class = var.cloud_log_data_bucket_class
-    name  = local.cloud_log_data_bucket
-    tag   = var.cloud_log_data_bucket_access_tag
+    class          = var.cloud_log_data_bucket_class
+    name           = local.cloud_log_data_bucket
+    tag            = var.cloud_log_data_bucket_access_tag
+    retention_rule = null
   } : null
 
   cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? {
-    class = var.cloud_log_metrics_bucket_class
-    name  = local.cloud_log_metrics_bucket
-    tag   = var.cloud_log_metrics_bucket_access_tag
+    class          = var.cloud_log_metrics_bucket_class
+    name           = local.cloud_log_metrics_bucket
+    tag            = var.cloud_log_metrics_bucket_access_tag
+    retention_rule = null
   } : null
 
   buckets_config = concat(
@@ -94,12 +98,12 @@ locals {
     days   = 366
   } : null
 
-  retention_rule = (length(coalesce(local.buckets_config, [])) == 0) ? {
+  retention_rule = {
     default   = var.retention_rule.default
     minimum   = var.retention_rule.minimum
     maximum   = var.retention_rule.maximum
     permanent = var.retention_rule.permanent
-  } : null
+  }
 
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
     route_name = local.at_cos_route_name
@@ -112,6 +116,7 @@ locals {
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets[local.cloud_logs_target_name].id]
   }] : []
+
   apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
   at_routes         = concat(local.at_cos_route, local.at_cloud_logs_route)
 
@@ -451,7 +456,7 @@ module "cos_bucket" {
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
-      retention_rule                = local.local.retention_rule
+      retention_rule                = value.retention_rule
       metrics_monitoring = {
         usage_metrics_enabled   = true
         request_metrics_enabled = true

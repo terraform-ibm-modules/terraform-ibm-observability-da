@@ -150,8 +150,8 @@ variable "cloud_log_data_bucket_class" {
   default     = "smart"
   description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
   validation {
-    condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.cloud_log_data_bucket_class)
-    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, `vault`, `cold`, `smart`, or `onerate_active`."
+    condition     = contains(["standard", "smart"], var.cloud_log_data_bucket_class)
+    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard` or `smart`. See more at https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-configure-data-bucket"
   }
 }
 
@@ -186,8 +186,8 @@ variable "cloud_log_metrics_bucket_class" {
   default     = "smart"
   description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
   validation {
-    condition     = contains(["standard", "vault", "cold", "smart", "onerate_active"], var.cloud_log_metrics_bucket_class)
-    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, `vault`, `cold`, `smart`, or `onerate_active`."
+    condition     = contains(["standard", "smart"], var.cloud_log_metrics_bucket_class)
+    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, or `smart`. See more at https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-configure-data-bucket"
   }
 }
 
