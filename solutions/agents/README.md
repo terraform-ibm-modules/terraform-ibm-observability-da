@@ -2,7 +2,6 @@
 
 This architecture deploys the following observability agents on a Red Hat OpenShift cluster:
 
-* Log Analysis agent(DEPRECATED)
 * Cloud Monitoring agent
 * Cloud Logs agent
 
