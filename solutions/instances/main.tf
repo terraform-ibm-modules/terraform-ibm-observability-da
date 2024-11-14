@@ -247,7 +247,7 @@ module "observability_instance" {
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     },
     metrics_data = {
-      enabled              = true
+      enabled              = false
       bucket_crn           = local.cloud_log_metrics_bucket_crn
       bucket_endpoint      = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
@@ -302,14 +302,14 @@ module "observability_instance" {
       name = local.metric_router_route_name
       rules = [
         {
-          action = "send"
+          action = var.metric_router_action
           targets = [{
             id = module.observability_instance.metrics_router_targets[local.metric_router_target_name].id
           }]
           inclusion_filters = [{
-            operand  = "location"
-            operator = "is"
-            values   = ["us-south"]
+            operand  = var.inclusion_filters_operand == null ? null : var.inclusion_filters_operand
+            operator = var.inclusion_filters_operator == null ? null : var.inclusion_filters_operator
+            values   = var.inclusion_filters_values == null ? null : var.inclusion_filters_values
           }]
         }
       ]
