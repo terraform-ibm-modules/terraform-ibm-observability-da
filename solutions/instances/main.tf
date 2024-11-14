@@ -98,11 +98,11 @@ locals {
     days   = 366
   } : null
 
-  retention_rule = {
-    default   = var.retention_rule.default
-    minimum   = var.retention_rule.minimum
-    maximum   = var.retention_rule.maximum
-    permanent = var.retention_rule.permanent
+  retention_rule = (var.existing_at_cos_target_bucket_name == null || var.existing_cloud_logs_metrics_bucket_crn == null || var.existing_cloud_logs_data_bucket_crn == null) ? var.retention_rule : {
+    default   = null
+    minimum   = null
+    maximum   = null
+    permanent = null
   }
 
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{

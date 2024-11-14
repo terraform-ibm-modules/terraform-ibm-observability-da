@@ -314,11 +314,18 @@ variable "cos_instance_tags" {
 variable "retention_rule" {
   description = "Defines the retention rule of the COS bucket."
   type = object({
-    default   = optional(number, 90)
-    maximum   = optional(number, 365)
-    minimum   = optional(number, 90)
-    permanent = optional(bool, false)
+    default   = optional(number)
+    maximum   = optional(number)
+    minimum   = optional(number)
+    permanent = optional(bool)
   })
+
+  default = {
+    default   = 90
+    maximum   = 365
+    minimum   = 90
+    permanent = false
+  }
 }
 
 variable "cos_instance_access_tags" {
