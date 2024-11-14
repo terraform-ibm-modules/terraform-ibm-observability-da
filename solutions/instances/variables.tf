@@ -125,78 +125,6 @@ variable "cloud_logs_retention_period" {
   }
 }
 
-variable "cloud_log_data_bucket_name" {
-  type        = string
-  default     = "cloud-logs-data-bucket"
-  description = "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the bucket is prefixed to the value in the `<prefix>-value` format."
-}
-
-variable "existing_cloud_logs_data_bucket_crn" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
-}
-
-variable "existing_cloud_logs_data_bucket_endpoint" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The endpoint of an existing Cloud Object Storage bucket to use for storing the IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
-}
-
-variable "cloud_log_data_bucket_class" {
-  type        = string
-  default     = "smart"
-  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
-  validation {
-    condition     = contains(["standard", "smart"], var.cloud_log_data_bucket_class)
-    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard` or `smart`. See more at https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-configure-data-bucket"
-  }
-}
-
-variable "cloud_log_data_bucket_access_tag" {
-  type        = list(string)
-  default     = []
-  description = "A list of optional tags to add to the cloud log data object storage bucket."
-}
-
-variable "cloud_log_metrics_bucket_name" {
-  type        = string
-  default     = "cloud-logs-metrics-bucket"
-  description = "The name of the Cloud Object Storage bucket to create to store cloud logs metrics. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the bucket is prefixed to the value in the `<prefix>-value` format."
-}
-
-variable "existing_cloud_logs_metrics_bucket_crn" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs metrics. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
-}
-
-variable "existing_cloud_logs_metrics_bucket_endpoint" {
-  type        = string
-  nullable    = true
-  default     = null
-  description = "The endpoint of an existing Cloud Object Storage bucket to use for storing the IBM Cloud Logs metrics. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
-}
-
-variable "cloud_log_metrics_bucket_class" {
-  type        = string
-  default     = "smart"
-  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
-  validation {
-    condition     = contains(["standard", "smart"], var.cloud_log_metrics_bucket_class)
-    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, or `smart`. See more at https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-configure-data-bucket"
-  }
-}
-
-variable "cloud_log_metrics_bucket_access_tag" {
-  type        = list(string)
-  default     = []
-  description = "A list of optional tags to add to the cloud log metrics object storage bucket."
-}
-
 variable "skip_logs_routing_auth_policy" {
   description = "Whether to create an IAM authorization policy that permits Logs Routing Sender access to the IBM Cloud Logs."
   type        = bool
@@ -359,6 +287,18 @@ variable "at_cos_target_bucket_name" {
   description = "The name of the Cloud Object Storage bucket to create for the Cloud Object Storage target to store AT events. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
 }
 
+variable "cloud_log_data_bucket_name" {
+  type        = string
+  default     = "cloud-logs-data-bucket"
+  description = "The name of the Cloud Object Storage bucket to create to store cloud log data. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the bucket is prefixed to the value in the `<prefix>-value` format."
+}
+
+variable "cloud_log_metrics_bucket_name" {
+  type        = string
+  default     = "cloud-logs-metrics-bucket"
+  description = "The name of the Cloud Object Storage bucket to create to store cloud logs metrics. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the bucket is prefixed to the value in the `<prefix>-value` format."
+}
+
 variable "archive_bucket_access_tags" {
   type        = list(string)
   default     = []
@@ -369,6 +309,18 @@ variable "at_cos_bucket_access_tags" {
   type        = list(string)
   default     = []
   description = "A list of optional access tags to add to the IBM Cloud Activity Tracker Event Routing Cloud Object Storage bucket."
+}
+
+variable "cloud_log_data_bucket_access_tag" {
+  type        = list(string)
+  default     = []
+  description = "A list of optional tags to add to the cloud log data object storage bucket."
+}
+
+variable "cloud_log_metrics_bucket_access_tag" {
+  type        = list(string)
+  default     = []
+  description = "A list of optional tags to add to the cloud log metrics object storage bucket."
 }
 
 variable "log_archive_cos_bucket_class" {
@@ -391,11 +343,45 @@ variable "at_cos_target_bucket_class" {
   }
 }
 
+variable "cloud_log_data_bucket_class" {
+  type        = string
+  default     = "smart"
+  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
+  validation {
+    condition     = contains(["standard", "smart"], var.cloud_log_data_bucket_class)
+    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard` or `smart`. See more at https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-configure-data-bucket"
+  }
+}
+
+variable "cloud_log_metrics_bucket_class" {
+  type        = string
+  default     = "smart"
+  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
+  validation {
+    condition     = contains(["standard", "smart"], var.cloud_log_metrics_bucket_class)
+    error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, or `smart`. See more at https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-configure-data-bucket"
+  }
+}
+
 variable "existing_cos_instance_crn" {
   type        = string
   nullable    = true
   default     = null
   description = "The CRN of an existing Cloud Object Storage instance. If a CRN is not specified, a new instance of Cloud Object Storage is created."
+}
+
+variable "existing_cloud_logs_data_bucket_crn" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
+}
+
+variable "existing_cloud_logs_metrics_bucket_crn" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The crn of an existing bucket within the Cloud Object Storage instance to store IBM Cloud Logs metrics. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
 }
 
 variable "existing_at_cos_target_bucket_name" {
@@ -416,6 +402,20 @@ variable "skip_cos_kms_auth_policy" {
   type        = bool
   description = "To skip creating an IAM authorization policy that allows the Cloud Object Storage instance to read the encryption key from the key management service (KMS) instance, set this variable to `true`. Before you can create an encrypted Cloud Object Storage bucket, an authorization policy must exist."
   default     = false
+}
+
+variable "existing_cloud_logs_data_bucket_endpoint" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The endpoint of an existing Cloud Object Storage bucket to use for storing the IBM Cloud Logs data. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
+}
+
+variable "existing_cloud_logs_metrics_bucket_endpoint" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The endpoint of an existing Cloud Object Storage bucket to use for storing the IBM Cloud Logs metrics. If an existing Cloud Object Storage bucket is not specified, a bucket is created."
 }
 
 variable "skip_cloud_logs_cos_auth_policy" {
