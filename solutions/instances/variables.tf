@@ -311,21 +311,34 @@ variable "cos_instance_tags" {
   default     = []
 }
 
-variable "retention_rule" {
-  description = "Defines the retention rule of the COS bucket."
-  type = object({
-    default   = optional(number)
-    maximum   = optional(number)
-    minimum   = optional(number)
-    permanent = optional(bool)
-  })
+variable "retention_enabled" {
+  description = "Whether retention is enabled for the Object Storage bucket."
+  type        = bool
+  default     = false
+}
 
-  default = {
-    default   = 90
-    maximum   = 365
-    minimum   = 90
-    permanent = false
-  }
+variable "retention_default" {
+  description = "The number of days that an object can remain unmodified in an Object Storage bucket."
+  type        = number
+  default     = 90
+}
+
+variable "retention_maximum" {
+  description = "The maximum number of days that an object can be kept unmodified in the bucket."
+  type        = number
+  default     = 350
+}
+
+variable "retention_minimum" {
+  description = "The minimum number of days that an object must be kept unmodified in the bucket."
+  type        = number
+  default     = 90
+}
+
+variable "retention_permanent" {
+  description = "Whether permanent retention status is enabled for the Object Storage bucket. [Learn more](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-immutable)."
+  type        = bool
+  default     = false
 }
 
 variable "cos_instance_access_tags" {

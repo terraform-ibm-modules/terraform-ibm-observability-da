@@ -70,14 +70,14 @@ locals {
     class          = var.cloud_log_data_bucket_class
     name           = local.cloud_log_data_bucket
     tag            = var.cloud_log_data_bucket_access_tag
-    retention_rule = null
+    retention_rule = local.empty_retention_rule # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
   } : null
 
   cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? {
     class          = var.cloud_log_metrics_bucket_class
     name           = local.cloud_log_metrics_bucket
     tag            = var.cloud_log_metrics_bucket_access_tag
-    retention_rule = null
+    retention_rule = local.empty_retention_rule # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
   } : null
 
   buckets_config = concat(
@@ -98,7 +98,15 @@ locals {
     days   = 366
   } : null
 
-  retention_rule = (var.existing_at_cos_target_bucket_name == null || var.existing_cloud_logs_metrics_bucket_crn == null || var.existing_cloud_logs_data_bucket_crn == null) ? var.retention_rule : {
+  retention_rule = var.retention_enabled && (var.existing_at_cos_target_bucket_name == null || var.existing_cloud_logs_metrics_bucket_crn == null || var.existing_cloud_logs_data_bucket_crn == null) ? {
+    default   = var.retention_default
+    maximum   = var.retention_maximum
+    minimum   = var.retention_minimum
+    permanent = var.retention_permanent
+  } : local.empty_retention_rule
+
+
+  empty_retention_rule = {
     default   = null
     minimum   = null
     maximum   = null
@@ -257,7 +265,7 @@ module "observability_instance" {
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     },
     metrics_data = {
-      enabled              = true
+      enabled              = false # Cloud logs provision fails if metrics COS bucket is attached - https://github.ibm.com/GoldenEye/issues/issues/11418#issuecomment-96873794
       bucket_crn           = local.cloud_log_metrics_bucket_crn
       bucket_endpoint      = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
