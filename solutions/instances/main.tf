@@ -53,31 +53,31 @@ locals {
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
-    class          = var.log_archive_cos_bucket_class
-    name           = local.log_archive_cos_bucket_name
-    tag            = var.archive_bucket_access_tags
-    retention_rule = local.retention_rule
+    class             = var.log_archive_cos_bucket_class
+    name              = local.log_archive_cos_bucket_name
+    tag               = var.archive_bucket_access_tags
+    retention_enabled = var.enable_archive_bucket_retention
   } : null
 
   at_bucket_config = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket ? {
-    class          = var.at_cos_target_bucket_class
-    name           = local.at_cos_target_bucket_name
-    tag            = var.at_cos_bucket_access_tags
-    retention_rule = local.retention_rule
+    class             = var.at_cos_target_bucket_class
+    name              = local.at_cos_target_bucket_name
+    tag               = var.at_cos_bucket_access_tags
+    retention_enabled = var.enable_at_cos_bucket_retention
   } : null
 
   cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? {
-    class          = var.cloud_log_data_bucket_class
-    name           = local.cloud_log_data_bucket
-    tag            = var.cloud_log_data_bucket_access_tag
-    retention_rule = local.empty_retention_rule # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
+    class             = var.cloud_log_data_bucket_class
+    name              = local.cloud_log_data_bucket
+    tag               = var.cloud_log_data_bucket_access_tag
+    retention_enabled = false # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
   } : null
 
   cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? {
-    class          = var.cloud_log_metrics_bucket_class
-    name           = local.cloud_log_metrics_bucket
-    tag            = var.cloud_log_metrics_bucket_access_tag
-    retention_rule = local.empty_retention_rule # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
+    class             = var.cloud_log_metrics_bucket_class
+    name              = local.cloud_log_metrics_bucket
+    tag               = var.cloud_log_metrics_bucket_access_tag
+    retention_enabled = false # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
   } : null
 
   buckets_config = concat(
@@ -97,21 +97,6 @@ locals {
     enable = true
     days   = 366
   } : null
-
-  retention_rule = var.retention_enabled && (var.existing_at_cos_target_bucket_name == null || var.existing_cloud_logs_metrics_bucket_crn == null || var.existing_cloud_logs_data_bucket_crn == null) ? {
-    default   = var.retention_default
-    maximum   = var.retention_maximum
-    minimum   = var.retention_minimum
-    permanent = var.retention_permanent
-  } : local.empty_retention_rule
-
-
-  empty_retention_rule = {
-    default   = null
-    minimum   = null
-    maximum   = null
-    permanent = null
-  }
 
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
     route_name = local.at_cos_route_name
@@ -464,7 +449,12 @@ module "cos_bucket" {
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
-      retention_rule                = value.retention_rule
+      retention_rule = value.retention_enabled ? {
+        default   = var.retention_default
+        maximum   = var.retention_maximum
+        minimum   = var.retention_minimum
+        permanent = var.retention_permanent
+      } : null
       metrics_monitoring = {
         usage_metrics_enabled   = true
         request_metrics_enabled = true

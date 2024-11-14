@@ -239,7 +239,7 @@ variable "cos_instance_tags" {
   default     = []
 }
 
-variable "retention_enabled" {
+variable "enable_archive_bucket_retention" {
   description = "Whether retention is enabled for the Object Storage bucket."
   type        = bool
   default     = false
@@ -279,6 +279,12 @@ variable "log_archive_cos_bucket_name" {
   type        = string
   default     = "log-archive-cos-bucket"
   description = "The name of the Cloud Object Storage bucket to create to store log archive files. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
+}
+
+variable "enable_at_cos_bucket_retention" {
+  description = "Whether retention is enabled for the AT events Object Storage bucket."
+  type        = bool
+  default     = false
 }
 
 variable "at_cos_target_bucket_name" {
