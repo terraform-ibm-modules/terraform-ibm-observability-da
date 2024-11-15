@@ -30,7 +30,7 @@ const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Currently only testing in br-sao until fix for https://github.ibm.com/GoldenEye/issues/issues/11418 rolled to all regions
 var validRegions = []string{
-	"br-sao"
+	"br-sao",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
