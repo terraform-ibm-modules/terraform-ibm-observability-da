@@ -28,18 +28,9 @@ const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
-// Current supported regions for Observability instances
+// Currently only testing in br-sao until fix for https://github.ibm.com/GoldenEye/issues/issues/11418 rolled to all regions
 var validRegions = []string{
-	"au-syd",
-	"eu-de",
-	"eu-es",
-	"eu-gb",
-	"jp-osa",
-	"jp-tok",
-	"us-south",
-	"us-east",
-	"ca-tor",
-	"br-sao",
+	"br-sao"
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
