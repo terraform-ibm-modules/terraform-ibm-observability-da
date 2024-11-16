@@ -92,10 +92,12 @@ func TestInstancesInSchematics(t *testing.T) {
 func TestRunUpgradeSolutionInstances(t *testing.T) {
 	t.Parallel()
 
+	var region = validRegions[rand.Intn(len(validRegions))]
+
 	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
 		Testing:      t,
 		TerraformDir: solutionInstanceDADir,
-		Region:       "us-south",
+		Region:       region,
 		Prefix:       "obs-ins-upg",
 	})
 
@@ -205,11 +207,12 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	// Provision COS & EN first
 	// ------------------------------------------------------------------------------------
 
+	var region = validRegions[rand.Intn(len(validRegions))]
+
 	prefix := fmt.Sprintf("obs-exist-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := "./resources/existing-resources"
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 	tags := common.GetTagsFromTravis()
-	region := "us-south"
 
 	// Verify ibmcloud_api_key variable is set
 	checkVariable := "TF_VAR_ibmcloud_api_key"
