@@ -250,7 +250,7 @@ module "observability_instance" {
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
     },
     metrics_data = {
-      enabled              = false # Cloud logs provision fails if metrics COS bucket is attached - https://github.ibm.com/GoldenEye/issues/issues/11418#issuecomment-96873794
+      enabled              = true
       bucket_crn           = local.cloud_log_metrics_bucket_crn
       bucket_endpoint      = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
       skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
