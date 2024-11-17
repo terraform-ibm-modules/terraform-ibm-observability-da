@@ -471,13 +471,23 @@ variable "metric_router_action" {
 variable "inclusion_filters_operand" {
   type        = string
   description = "The part of CRN that can be compared with values"
-  default     = null
+  default     = "location"
+
+  validation {
+    condition     = contains(["location", "service_name", "service_instance", "resource_type", "resource"], var.inclusion_filters_operand)
+    error_message = "Specify one of the following values for the `inclusion_filters_operand`: 'location', 'service_name', 'service_instance', 'resource_type' or 'resource'."
+  }
 }
 
 variable "inclusion_filters_operator" {
   type        = string
   description = "The operation to be performed between operand and the provided values. 'is' to be used with one value and 'in' can support upto 20 values in the array."
-  default     = null
+  default     = "is"
+
+  validation {
+    condition     = contains(["is", "in"], var.inclusion_filters_operator)
+    error_message = "Specify one of the following values for the 'inclusion_filters_operator': 'is' or 'in'."
+  }
 }
 
 variable "inclusion_filters_values" {

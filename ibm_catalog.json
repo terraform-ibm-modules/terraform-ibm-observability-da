@@ -432,6 +432,50 @@
                   "value": "private"
                 }
               ]
+            },
+            {
+              "key": "metric_router_action"
+            },
+            {
+              "key": "inclusion_filters_operand",
+              "options": [
+                {
+                  "displayname": "location",
+                  "value": "location"
+                },
+                {
+                  "displayname": "service_name",
+                  "value": "service_name"
+                },
+                {
+                  "displayname": "service_instance",
+                  "value": "service_instance"
+                },
+                {
+                  "displayname": "resource_type",
+                  "value": "resource_type"
+                },
+                {
+                  "displayname": "resource",
+                  "value": "resource"
+                }
+              ]
+            },
+            {
+              "key": "inclusion_filters_operator",
+              "options": [
+                {
+                  "displayname": "is",
+                  "value": "is"
+                },
+                {
+                  "displayname": "in",
+                  "value": "in"
+                }
+              ]
+            },
+            {
+              "key": "inclusion_filters_values"
             }
           ],
           "architecture": {
