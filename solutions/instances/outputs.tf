@@ -29,6 +29,12 @@ output "cloud_logs_name" {
   description = "The name of the provisioned Cloud Logs instance."
 }
 
+## Cloud logs policies
+output "logs_policies_details" {
+  value       = length(var.cloud_logs_policies) > 0 ? module.observability_instance.logs_policies_details : null
+  description = "The details of the Cloud logs policies created."
+}
+
 ## Cloud Monitoring
 output "cloud_monitoring_name" {
   value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : null
