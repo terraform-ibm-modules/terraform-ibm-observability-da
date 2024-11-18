@@ -216,7 +216,7 @@ module "en_crn_parser" {
 module "observability_instance" {
   depends_on        = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source            = "terraform-ibm-modules/observability-instances/ibm"
-  version           = "3.0.2"
+  version           = "3.3.1"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
 
@@ -237,6 +237,7 @@ module "observability_instance" {
   cloud_logs_tags              = var.cloud_logs_tags
   cloud_logs_service_endpoints = "public-and-private"
   cloud_logs_retention_period  = var.cloud_logs_retention_period
+  cloud_logs_policies          = var.cloud_logs_policies
   cloud_logs_data_storage = var.cloud_logs_provision ? {
     logs_data = {
       enabled              = true
