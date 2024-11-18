@@ -110,6 +110,17 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"management_endpoint_type_for_bucket": "public",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
+		"cloud_logs_policies": []map[string]interface{}{
+			{
+				"logs_policy_name":     "upg-test-policy",
+				"logs_policy_priority": "type_low",
+				"log_rules": []map[string]interface{}{
+					{
+						"severities": []string{"info", "debug"},
+					},
+				},
+			},
+		},
 	}
 
 	output, err := options.RunTestUpgrade()
@@ -271,6 +282,17 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"management_endpoint_type_for_bucket": "public",
 				"enable_platform_metrics":             "false",
 				"enable_platform_logs":                "false",
+				"cloud_logs_policies": []map[string]interface{}{
+					{
+						"logs_policy_name":     "test-policy",
+						"logs_policy_priority": "type_low",
+						"log_rules": []map[string]interface{}{
+							{
+								"severities": []string{"info"},
+							},
+						},
+					},
+				},
 			},
 		})
 
