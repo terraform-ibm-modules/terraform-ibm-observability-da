@@ -87,13 +87,13 @@ locals {
     local.cloud_log_metrics_bucket_config != null ? [local.cloud_log_metrics_bucket_config] : []
   )
 
-  archive_rule = length(coalesce(local.buckets_config, [])) == 0 ? {
+  archive_rule = length(coalesce(local.buckets_config, [])) != 0 ? {
     enable = true
     days   = 90
     type   = "Glacier"
   } : null
 
-  expire_rule = length(coalesce(local.buckets_config, [])) == 0 ? {
+  expire_rule = length(coalesce(local.buckets_config, [])) != 0 ? {
     enable = true
     days   = 366
   } : null
