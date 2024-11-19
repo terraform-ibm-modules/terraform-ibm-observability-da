@@ -56,7 +56,7 @@ locals {
     class             = var.log_archive_cos_bucket_class
     name              = local.log_archive_cos_bucket_name
     tag               = var.archive_bucket_access_tags
-    retention_enabled = var.enable_archive_bucket_retention
+    retention_enabled = false
   } : null
 
   at_bucket_config = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket ? {

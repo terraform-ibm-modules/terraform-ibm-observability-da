@@ -267,12 +267,6 @@ variable "cos_instance_tags" {
   default     = []
 }
 
-variable "enable_archive_bucket_retention" {
-  description = "Whether retention is enabled for the Object Storage bucket."
-  type        = bool
-  default     = false
-}
-
 variable "retention_default" {
   description = "The number of days that an object can remain unmodified in an Object Storage bucket."
   type        = number

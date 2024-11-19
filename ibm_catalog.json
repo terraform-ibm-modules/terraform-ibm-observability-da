@@ -228,9 +228,6 @@
               "key": "cos_instance_access_tags"
             },
             {
-              "key": "enable_archive_bucket_retention"
-            },
-            {
               "key": "enable_at_cos_bucket_retention"
             },
             {
