@@ -30,15 +30,15 @@ const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Current supported regions for Observability instances
 var validRegions = []string{
-	"au-syd",
-	"eu-de",
-	"eu-es",
-	"eu-gb",
-	"jp-osa",
-	"jp-tok",
-	"us-south",
-	"us-east",
-	"ca-tor",
+	// "au-syd",
+	// "eu-de",
+	// "eu-es",
+	// "eu-gb",
+	// "jp-osa",
+	// "jp-tok",
+	// "us-south",
+	// "us-east",
+	// "ca-tor",
 	"br-sao",
 }
 
@@ -229,7 +229,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	realTerraformDir := "./resources/existing-resources"
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 	tags := common.GetTagsFromTravis()
-	region := "us-south"
+	region := "br-sao"
 
 	// Verify ibmcloud_api_key variable is set
 	checkVariable := "TF_VAR_ibmcloud_api_key"
@@ -278,13 +278,14 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_cloud_logs_data_bucket_endpoint":    terraform.Output(t, existingTerraformOptions, "data_bucket_endpoint"),
 				"existing_cloud_logs_metrics_bucket_crn":      terraform.Output(t, existingTerraformOptions, "metrics_bucket_crn"),
 				"existing_cloud_logs_metrics_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "metrics_bucket_endpoint"),
-				"existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn_1"),
-				"cloud_logs_existing_en_instances": []map[string]interface{}{
-					{
-						"instance_crn":     terraform.Output(t, existingTerraformOptions, "en_crn_2"),
-						"integration_name": "en-2",
-					},
-				},
+				// Commenting this out since event notification is not supported in br-sao region
+				// "existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn_1"),
+				// "cloud_logs_existing_en_instances": []map[string]interface{}{
+				// 	{
+				// 		"instance_crn":     terraform.Output(t, existingTerraformOptions, "en_crn_2"),
+				// 		"integration_name": "en-2",
+				// 	},
+				// },
 				"management_endpoint_type_for_bucket": "public",
 				"enable_platform_metrics":             "false",
 				"enable_platform_logs":                "false",

@@ -310,7 +310,7 @@ module "observability_instance" {
           inclusion_filters = [{
             operand  = var.inclusion_filters_operand
             operator = var.inclusion_filters_operator
-            values   = var.inclusion_filters_values != null ? [var.inclusion_filters_values] : [var.region]
+            values   = var.inclusion_filters_values != null ? var.inclusion_filters_values : [var.region]
           }]
         }
       ]

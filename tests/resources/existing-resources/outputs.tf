@@ -57,12 +57,14 @@ output "metrics_bucket_endpoint" {
   value       = module.cloud_log_buckets.buckets["${var.prefix}-metrics-bucket"].s3_endpoint_public
 }
 
-output "en_crn_1" {
-  description = "Event Notification CRN"
-  value       = module.event_notification_1.crn
-}
+# Remove the comment once Cloud logs provision failure gets resolved
 
-output "en_crn_2" {
-  description = "Event Notification CRN"
-  value       = module.event_notification_2.crn
-}
+# output "en_crn_1" {
+#   description = "Event Notification CRN"
+#   value       = module.event_notification_1.crn
+# }
+
+# output "en_crn_2" {
+#   description = "Event Notification CRN"
+#   value       = module.event_notification_2.crn
+# }
