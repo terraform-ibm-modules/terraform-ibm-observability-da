@@ -93,6 +93,17 @@
                   "version_input": "cloud_monitoring_instance_region"
                 }
               ]
+            },
+            {
+              "name": "deploy-arch-ibm-slz-ocp",
+              "id": "95fccffc-ae3b-42df-b6d9-80be5914d852-global",
+              "version": ">=v6.2.1",
+              "flavors": [
+                "standard"
+              ],
+              "catalog_id": "1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc",
+              "optional": false,
+              "input_mapping": []
             }
           ],
           "dependency_version_2": true,
@@ -160,12 +171,12 @@
               "display_name": "Region",
               "required": true,
               "custom_config": {
-                  "type": "vpc_region",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "generationType": "2"
-                  }
+                "type": "vpc_region",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "generationType": "2"
+                }
               }
             },
             {
@@ -493,6 +504,10 @@
                 {
                   "dependency_input": "prefix",
                   "version_input": "prefix"
+                },
+                {
+                  "value": false,
+                  "version_input": "use_existing_resource_group"
                 }
               ]
             }
@@ -532,12 +547,12 @@
               "description": "The region where observability resources are created.",
               "required": true,
               "custom_config": {
-                  "type": "vpc_region",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "generationType": "2"
-                  }
+                "type": "vpc_region",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "generationType": "2"
+                }
               }
             },
             {
@@ -1048,12 +1063,12 @@
               "description": "The Cloud Object Storage region. If no value is provided, the value that is specified in the `region` input variable is used.",
               "required": false,
               "custom_config": {
-                  "type": "vpc_region",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "generationType": "2"
-                  }
+                "type": "vpc_region",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "generationType": "2"
+                }
               }
             },
             {
