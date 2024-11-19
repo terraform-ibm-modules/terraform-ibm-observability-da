@@ -276,6 +276,40 @@ variable "enable_metric_routing_to_cloud_monitoring" {
   default     = true
 }
 
+variable "metric_router_action" {
+  type        = string
+  default     = "send"
+  description = "The action if the inclusion_filters matches."
+}
+
+variable "inclusion_filters_operand" {
+  type        = string
+  description = "The part of CRN that can be compared with values"
+  default     = "location"
+
+  validation {
+    condition     = contains(["location", "service_name", "service_instance", "resource_type", "resource"], var.inclusion_filters_operand)
+    error_message = "Specify one of the following values for the `inclusion_filters_operand`: 'location', 'service_name', 'service_instance', 'resource_type' or 'resource'."
+  }
+}
+
+variable "inclusion_filters_operator" {
+  type        = string
+  description = "The operation to be performed between operand and the provided values. 'is' to be used with one value and 'in' can support upto 20 values in the array."
+  default     = "is"
+
+  validation {
+    condition     = contains(["is", "in"], var.inclusion_filters_operator)
+    error_message = "Specify one of the following values for the 'inclusion_filters_operator': 'is' or 'in'."
+  }
+}
+
+variable "inclusion_filters_values" {
+  type        = list(string)
+  description = "The provided string values of the operand to be compared with."
+  default     = null
+}
+
 ##############################################################################
 # Cloud Monitoring Variables
 ##############################################################################
@@ -484,42 +518,4 @@ variable "cos_key_name" {
   type        = string
   default     = "observability-cos-key"
   description = "The name of the key to create for the Cloud Object Storage bucket. This name will be used by both the log archive bucket and the IBM Cloud Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key is prefixed to the value in the `prefix-value` format."
-}
-
-########################################################################################################################
-# Metric Router Variables
-########################################################################################################################
-
-variable "metric_router_action" {
-  type        = string
-  default     = "send"
-  description = "The action if the inclusion_filters matches."
-}
-
-variable "inclusion_filters_operand" {
-  type        = string
-  description = "The part of CRN that can be compared with values"
-  default     = "location"
-
-  validation {
-    condition     = contains(["location", "service_name", "service_instance", "resource_type", "resource"], var.inclusion_filters_operand)
-    error_message = "Specify one of the following values for the `inclusion_filters_operand`: 'location', 'service_name', 'service_instance', 'resource_type' or 'resource'."
-  }
-}
-
-variable "inclusion_filters_operator" {
-  type        = string
-  description = "The operation to be performed between operand and the provided values. 'is' to be used with one value and 'in' can support upto 20 values in the array."
-  default     = "is"
-
-  validation {
-    condition     = contains(["is", "in"], var.inclusion_filters_operator)
-    error_message = "Specify one of the following values for the 'inclusion_filters_operator': 'is' or 'in'."
-  }
-}
-
-variable "inclusion_filters_values" {
-  type        = list(string)
-  description = "The provided string values of the operand to be compared with."
-  default     = null
 }
