@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "label": "Testing-Observability",
+      "label": "Testing - Cloud automation for Observability",
       "name": "testing-deploy-arch-ibm-observability",
       "product_kind": "solution",
       "tags": [
