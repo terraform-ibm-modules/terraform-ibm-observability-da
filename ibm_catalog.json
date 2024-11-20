@@ -506,7 +506,7 @@
                   "version_input": "prefix"
                 },
                 {
-                  "value": false,
+                  "value": true,
                   "version_input": "use_existing_resource_group"
                 }
               ]
