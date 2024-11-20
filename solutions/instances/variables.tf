@@ -279,7 +279,13 @@ variable "enable_metric_routing_to_cloud_monitoring" {
 variable "metric_router_action" {
   type        = string
   default     = "send"
-  description = "The action if the inclusion_filters matches."
+  description = "The action if the inclusion_filters matches. By default it is `send`."
+}
+
+variable "enable_inclusion_filters" {
+  type = bool
+  default = false
+  description = "Whether to filter metrics based on certain parameters."
 }
 
 variable "inclusion_filters_operand" {
