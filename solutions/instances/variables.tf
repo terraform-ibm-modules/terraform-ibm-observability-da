@@ -279,41 +279,17 @@ variable "enable_metric_routing_to_cloud_monitoring" {
 variable "metric_router_action" {
   type        = string
   default     = "send"
-  description = "The action if the inclusion_filters matches. By default it is `send`."
+  description = "The action if the inclusion_filters matches, default is 'send' action."
 }
 
-variable "enable_inclusion_filters" {
-  type = bool
-  default = false
-  description = "Whether to filter metrics based on certain parameters."
-}
-
-variable "inclusion_filters_operand" {
-  type        = string
-  description = "The part of CRN that can be compared with values"
-  default     = "location"
-
-  validation {
-    condition     = contains(["location", "service_name", "service_instance", "resource_type", "resource"], var.inclusion_filters_operand)
-    error_message = "Specify one of the following values for the `inclusion_filters_operand`: 'location', 'service_name', 'service_instance', 'resource_type' or 'resource'."
-  }
-}
-
-variable "inclusion_filters_operator" {
-  type        = string
-  description = "The operation to be performed between operand and the provided values. 'is' to be used with one value and 'in' can support upto 20 values in the array."
-  default     = "is"
-
-  validation {
-    condition     = contains(["is", "in"], var.inclusion_filters_operator)
-    error_message = "Specify one of the following values for the 'inclusion_filters_operator': 'is' or 'in'."
-  }
-}
-
-variable "inclusion_filters_values" {
-  type        = list(string)
-  description = "The provided string values of the operand to be compared with."
-  default     = null
+variable "inclusion_filters" {
+  type = list(object({
+    operand  = string
+    operator = string
+    values   = list(string)
+  }))
+  default     = []
+  description = "A list of conditions to be satisfied for routing metrics to pre-defined target."
 }
 
 ##############################################################################

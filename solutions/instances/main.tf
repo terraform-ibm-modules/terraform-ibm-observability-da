@@ -307,11 +307,7 @@ module "observability_instance" {
           targets = [{
             id = module.observability_instance.metrics_router_targets[local.metric_router_target_name].id
           }]
-          inclusion_filters = var.enable_inclusion_filters ? [{
-            operand  = var.inclusion_filters_operand
-            operator = var.inclusion_filters_operator
-            values   = var.inclusion_filters_values != null ? var.inclusion_filters_values : [var.region]
-          }] : []
+          inclusion_filters = var.inclusion_filters
         }
       ]
     }
