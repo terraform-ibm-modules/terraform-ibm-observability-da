@@ -117,6 +117,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"cos_instance_access_tags":            permanentResources["accessTags"],
 		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                   "public",
+		"provider_visibility":                 "public",
 		"management_endpoint_type_for_bucket": "public",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
@@ -196,6 +197,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 			{Name: "cloud_monitoring_instance_region", Value: region, DataType: "string"},
+			{Name: "provider_visibility", Value: "public", DataType: "string"},
 			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "workload_cluster_id"), DataType: "string"},
 			{Name: "logs_agent_trusted_profile", Value: terraform.Output(t, existingTerraformOptions, "trusted_profile_id"), DataType: "string"},
 			{Name: "cloud_logs_ingress_endpoint", Value: terraform.Output(t, existingTerraformOptions, "cloud_logs_ingress_private_endpoint"), DataType: "string"},
@@ -290,6 +292,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 					},
 				},
 				"management_endpoint_type_for_bucket": "public",
+				"provider_visibility":                 "public",
 				"enable_platform_metrics":             "false",
 				"enable_platform_logs":                "false",
 				"cloud_logs_policies": []map[string]interface{}{
@@ -327,6 +330,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 				"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
 				"kms_endpoint_type":                   "public",
+				"provider_visibility":                 "public",
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",
 				"enable_platform_metrics":             "false",
