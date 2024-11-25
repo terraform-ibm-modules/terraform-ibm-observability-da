@@ -34,12 +34,7 @@ var validRegions = []string{
 	"eu-gb",
 	"eu-de",
 	"eu-es",
-	"jp-osa",
-	"jp-tok",
 	"us-south",
-	"us-east",
-	"ca-tor",
-	"br-sao",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
