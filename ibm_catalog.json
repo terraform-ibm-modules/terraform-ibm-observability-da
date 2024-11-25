@@ -423,11 +423,11 @@
               "key": "skip_at_cos_auth_policy"
             },
             {
-              "key": "existing_cos_kms_key_crn",
-              "required": true
+              "key": "existing_cos_kms_key_crn"
             },
             {
-              "key": "existing_kms_instance_crn"
+              "key": "existing_kms_instance_crn",
+              "required": true
             },
             {
               "key": "cos_key_name"
