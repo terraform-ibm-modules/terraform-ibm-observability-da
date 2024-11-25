@@ -29,18 +29,17 @@ const solutionAgentsDADir = "solutions/agents"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Current supported regions for Observability instances
-// (NOTE: Disabling some regions temporarily due to known issue in those regions)
 var validRegions = []string{
 	"au-syd",
 	"eu-gb",
-	// "eu-de",
-	// "eu-es",
-	// "jp-osa",
-	// "jp-tok",
-	// "us-south",
-	// "us-east",
-	// "ca-tor",
-	// "br-sao",
+	"eu-de",
+	"eu-es",
+	"jp-osa",
+	"jp-tok",
+	"us-south",
+	"us-east",
+	"ca-tor",
+	"br-sao",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
