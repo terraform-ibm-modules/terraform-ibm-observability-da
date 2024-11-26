@@ -117,6 +117,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"cos_instance_access_tags":            permanentResources["accessTags"],
 		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                   "public",
+		"provider_visibility":                 "public",
 		"management_endpoint_type_for_bucket": "public",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
@@ -290,6 +291,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 					},
 				},
 				"management_endpoint_type_for_bucket": "public",
+				"provider_visibility":                 "public",
 				"enable_platform_metrics":             "false",
 				"enable_platform_logs":                "false",
 				"cloud_logs_policies": []map[string]interface{}{
@@ -327,6 +329,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 				"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
 				"kms_endpoint_type":                   "public",
+				"provider_visibility":                 "public",
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",
 				"enable_platform_metrics":             "false",
