@@ -28,7 +28,7 @@ const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
-// Current supported regions for Observability instances
+// Currently only including regions that Event Notification support
 var validRegions = []string{
 	"au-syd",
 	"eu-gb",
