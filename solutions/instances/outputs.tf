@@ -2,6 +2,17 @@
 # Outputs
 ##############################################################################
 
+
+output "resource_group_name" {
+  value       = module.resource_group.resource_group_name
+  description = "The name of the Resource Group the instances are provisioned in."
+}
+
+output "resource_group_id" {
+  value       = module.resource_group.resource_group_id
+  description = "The ID of the Resource Group the instances are provisioned in."
+}
+
 ## Cloud logs
 output "cloud_logs_crn" {
   value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_crn : null
@@ -18,26 +29,10 @@ output "cloud_logs_name" {
   description = "The name of the provisioned Cloud Logs instance."
 }
 
-## Log analysis
-output "log_analysis_name" {
-  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_name : null
-  description = "The name of the provisioned Log Analysis instance."
-}
-
-output "log_analysis_crn" {
-  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_crn : null
-  description = "The id of the provisioned Log Analysis instance."
-}
-
-output "log_analysis_guid" {
-  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_guid : null
-  description = "vaThe guid of the provisioned Log Analysis instance."
-}
-
-output "log_analysis_ingestion_key" {
-  value       = var.log_analysis_provision ? module.observability_instance.log_analysis_ingestion_key : null
-  description = "Log Analysis ingest key for agents to use"
-  sensitive   = true
+## Cloud logs policies
+output "logs_policies_details" {
+  value       = length(var.cloud_logs_policies) > 0 ? module.observability_instance.logs_policies_details : null
+  description = "The details of the Cloud logs policies created."
 }
 
 ## Cloud Monitoring
@@ -85,7 +80,7 @@ output "cos_instance_crn" {
 
 ## COS Buckets
 output "log_archive_cos_bucket_name" {
-  value       = var.existing_log_archive_cos_bucket_name == null ? (var.log_analysis_provision && var.log_analysis_enable_archive) || var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null : var.existing_log_archive_cos_bucket_name
+  value       = var.manage_log_archive_cos_bucket ? module.cos_bucket[0].buckets[local.log_archive_cos_bucket_name].bucket_name : null
   description = "The name of log archive COS bucket"
 }
 

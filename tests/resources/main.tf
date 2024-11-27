@@ -80,12 +80,8 @@ locals {
 }
 
 module "observability_instances" {
-  source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.19.1"
-  providers = {
-    logdna.at = logdna.at
-    logdna.ld = logdna.ld
-  }
+  source                             = "terraform-ibm-modules/observability-instances/ibm"
+  version                            = "3.0.2"
   resource_group_id                  = local.cluster_resource_group_id
   region                             = var.region
   cloud_monitoring_plan              = "graduated-tier"

@@ -29,15 +29,18 @@ const solutionAgentsDADir = "solutions/agents"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Current supported regions for Observability instances
+// (NOTE: Disabling some regions temporarily due to known issue in those regions)
 var validRegions = []string{
 	"au-syd",
-	"eu-de",
-	"eu-es",
 	"eu-gb",
-	"jp-osa",
-	"jp-tok",
-	"us-south",
-	"us-east",
+	// "eu-de",
+	// "eu-es",
+	// "jp-osa",
+	// "jp-tok",
+	// "us-south",
+	// "us-east",
+	// "ca-tor",
+	// "br-sao",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
@@ -82,18 +85,14 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
-		{Name: "log_analysis_provision", Value: true, DataType: "bool"},
-		{Name: "log_analysis_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_logs_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
 		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
-		{Name: "archive_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "cloud_log_data_bucket_access_tag", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
-		{Name: "enable_at_event_routing_to_log_analysis", Value: true, DataType: "bool"},
 	}
 
 	err := options.RunSchematicTest()
@@ -103,25 +102,36 @@ func TestInstancesInSchematics(t *testing.T) {
 func TestRunUpgradeSolutionInstances(t *testing.T) {
 	t.Parallel()
 
+	var region = validRegions[rand.Intn(len(validRegions))]
+
 	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
 		Testing:      t,
 		TerraformDir: solutionInstanceDADir,
-		Region:       "us-south",
+		Region:       region,
 		Prefix:       "obs-ins-upg",
 	})
 
 	options.TerraformVars = map[string]interface{}{
-		"prefix":                                  options.Prefix,
-		"resource_group_name":                     options.Prefix,
-		"cos_instance_access_tags":                permanentResources["accessTags"],
-		"existing_kms_instance_crn":               permanentResources["hpcs_south_crn"],
-		"kms_endpoint_type":                       "public",
-		"management_endpoint_type_for_bucket":     "public",
-		"log_analysis_provision":                  "true",
-		"log_analysis_service_endpoints":          "public-and-private",
-		"enable_platform_logs":                    "false",
-		"enable_platform_metrics":                 "false",
-		"enable_at_event_routing_to_log_analysis": "true",
+		"prefix":                              options.Prefix,
+		"resource_group_name":                 options.Prefix,
+		"cos_instance_access_tags":            permanentResources["accessTags"],
+		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
+		"kms_endpoint_type":                   "public",
+		"provider_visibility":                 "public",
+		"management_endpoint_type_for_bucket": "public",
+		"enable_platform_logs":                "false",
+		"enable_platform_metrics":             "false",
+		"cloud_logs_policies": []map[string]interface{}{
+			{
+				"logs_policy_name":     "upg-test-policy",
+				"logs_policy_priority": "type_low",
+				"log_rules": []map[string]interface{}{
+					{
+						"severities": []string{"info", "debug"},
+					},
+				},
+			},
+		},
 	}
 
 	output, err := options.RunTestUpgrade()
@@ -223,7 +233,8 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	realTerraformDir := "./resources/existing-resources"
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 	tags := common.GetTagsFromTravis()
-	region := "us-south"
+
+	var region = validRegions[rand.Intn(len(validRegions))]
 
 	// Verify ibmcloud_api_key variable is set
 	checkVariable := "TF_VAR_ibmcloud_api_key"
@@ -261,13 +272,11 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			ImplicitRequired: false,
 			Region:           region,
 			TerraformVars: map[string]interface{}{
+				"prefix":                                      prefix,
 				"cos_region":                                  region,
 				"resource_group_name":                         terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":                 true,
-				"log_analysis_provision":                      true,
-				"existing_log_archive_cos_bucket_name":        terraform.Output(t, existingTerraformOptions, "bucket_name"),
 				"existing_at_cos_target_bucket_name":          terraform.Output(t, existingTerraformOptions, "bucket_name_at"),
-				"existing_log_archive_cos_bucket_endpoint":    terraform.Output(t, existingTerraformOptions, "bucket_endpoint"),
 				"existing_at_cos_target_bucket_endpoint":      terraform.Output(t, existingTerraformOptions, "bucket_endpoint_at"),
 				"existing_cos_instance_crn":                   terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"existing_cloud_logs_data_bucket_crn":         terraform.Output(t, existingTerraformOptions, "data_bucket_crn"),
@@ -277,14 +286,25 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn_1"),
 				"cloud_logs_existing_en_instances": []map[string]interface{}{
 					{
-						"instance_crn": terraform.Output(t, existingTerraformOptions, "en_crn_2"),
+						"instance_crn":     terraform.Output(t, existingTerraformOptions, "en_crn_2"),
+						"integration_name": "en-2",
 					},
 				},
-				"management_endpoint_type_for_bucket":     "public",
-				"log_analysis_service_endpoints":          "public",
-				"enable_platform_metrics":                 "false",
-				"enable_at_event_routing_to_log_analysis": "true",
-				"enable_platform_logs":                    "false",
+				"management_endpoint_type_for_bucket": "public",
+				"provider_visibility":                 "public",
+				"enable_platform_metrics":             "false",
+				"enable_platform_logs":                "false",
+				"cloud_logs_policies": []map[string]interface{}{
+					{
+						"logs_policy_name":     "test-policy",
+						"logs_policy_priority": "type_low",
+						"log_rules": []map[string]interface{}{
+							{
+								"severities": []string{"info"},
+							},
+						},
+					},
+				},
 			},
 		})
 
@@ -302,16 +322,18 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
 			ImplicitRequired: false,
 			TerraformVars: map[string]interface{}{
+				"prefix":                              prefix,
 				"cos_region":                          region,
 				"resource_group_name":                 terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":         true,
 				"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
+				"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
 				"kms_endpoint_type":                   "public",
+				"provider_visibility":                 "public",
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",
-				"log_analysis_provision":              "true",
-				"log_analysis_service_endpoints":      "public",
 				"enable_platform_metrics":             "false",
+				"enable_platform_logs":                "false",
 			},
 		})
 

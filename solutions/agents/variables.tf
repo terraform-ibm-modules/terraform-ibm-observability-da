@@ -9,7 +9,16 @@ variable "prefix" {
   description = "The prefix for resources created by this solution."
   default     = null
 }
+variable "provider_visibility" {
+  description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
+  type        = string
+  default     = "private"
 
+  validation {
+    condition     = contains(["public", "private", "public-and-private"], var.provider_visibility)
+    error_message = "Invalid visibility option. Allowed values are 'public', 'private', or 'public-and-private'."
+  }
+}
 ##############################################################################
 # Cluster variables
 ##############################################################################
@@ -64,100 +73,6 @@ variable "wait_till_timeout" {
 }
 
 ##############################################################################
-# Log Analysis variables
-##############################################################################
-
-variable "log_analysis_enabled" {
-  type        = bool
-  description = "DEPRECATED: Whether to deploy the IBM Cloud logging agent."
-  default     = false
-}
-
-
-variable "log_analysis_agent_tags" {
-  type        = list(string)
-  description = "DEPRECATED: The list of tags to associate with all log records collected by the agent so that you can quickly identify the agent’s data in the logging UI. To add the cluster name as a tag, use the `log_analysis_add_cluster_name` variable."
-  default     = []
-  nullable    = false
-}
-
-variable "log_analysis_add_cluster_name" {
-  type        = bool
-  description = "DEPRECATED: Whether to attach the cluster name to log messages. Set to `true` to configure the IBM Log Analysis agent to tag all log messages with the name."
-  default     = true
-}
-
-variable "log_analysis_ingestion_key" {
-  type        = string
-  description = "DEPRECATED: The ingestion key that is used by the IBM Cloud logging agent to communicate with the instance."
-  sensitive   = true
-  default     = null
-}
-
-variable "log_analysis_secret_name" {
-  type        = string
-  description = "DEPRECATED: The name of the secret that stores the ingestion key. If a prefix input variable is specified, the secret name is prefixed to the value in the `<prefix>-<name>` format."
-  default     = "logdna-agent"
-  nullable    = false
-}
-
-variable "log_analysis_instance_region" {
-  type        = string
-  description = "DEPRECATED: The name of the region where the IBM Log Analysis instance is created. The value is used in the ingestion endpoint in the format `api.<var-value>.logging.cloud.ibm.com`."
-  default     = null
-}
-
-variable "log_analysis_endpoint_type" {
-  type        = string
-  description = "DEPRECATED: Specify the IBM Log Analysis instance endpoint type to use to construct the ingestion endpoint. Possible values: `public` or `private`."
-  default     = "private"
-  validation {
-    error_message = "The specified `endpoint_type` can be `private` or `public` only."
-    condition     = contains(["private", "public"], var.log_analysis_endpoint_type)
-  }
-}
-
-variable "log_analysis_agent_custom_line_inclusion" {
-  description = "DEPRECATED: The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line inclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)"
-  type        = string
-  default     = null # "namespace:default"
-}
-
-variable "log_analysis_agent_custom_line_exclusion" {
-  description = "DEPRECATED: The custom configuration of the IBM Log Analysis agent for the `LOGDNA_K8S_METADATA_LINE_INCLUSION` line exclusion setting. [Learn more](https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)"
-  type        = string
-  default     = null # "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
-}
-
-variable "log_analysis_agent_name" {
-  description = "DEPRECATED: The name of the IBM Log Analysis agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Log Analysis agent is prefixed to the value in the `<prefix>-<name>` format."
-  type        = string
-  default     = "logdna-agent"
-  nullable    = false
-}
-
-variable "log_analysis_agent_namespace" {
-  type        = string
-  description = "DEPRECATED: The namespace to deploy the IBM Log Analysis agent in. The default value of the namespace is `ibm-observe`."
-  default     = "ibm-observe"
-  nullable    = false
-}
-
-variable "log_analysis_agent_tolerations" {
-  description = "DEPRECATED: The list of tolerations to apply to the IBM Log Analysis agent. Because the default value is the `Exists` operator, this variable will match any taint on any node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
-  type = list(object({
-    key               = optional(string)
-    operator          = optional(string)
-    value             = optional(string)
-    effect            = optional(string)
-    tolerationSeconds = optional(number)
-  }))
-  default = [{
-    operator = "Exists"
-  }]
-}
-
-##############################################################################
 # Cloud Monitoring variables
 ##############################################################################
 
@@ -204,10 +119,16 @@ variable "cloud_monitoring_metrics_filter" {
   }))
   description = "To filter on custom metrics, specify the IBM Cloud Monitoring metrics to include or exclude. [Learn more](https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics)"
   default     = [] # [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
-  validation {
-    condition     = length(var.cloud_monitoring_metrics_filter) == 0 || can(regex("^(include|exclude)$", var.cloud_monitoring_metrics_filter[0].type))
-    error_message = "The specified `type` for the `cloud_monitoring_metrics_filter` is not valid. Specify either `include` or `exclude`. If the value for `type` is not specified, no metrics are included or excluded."
-  }
+}
+
+variable "cloud_monitoring_container_filter" {
+  type = list(object({
+    type      = string
+    parameter = string
+    name      = string
+  }))
+  description = "To filter custom containers, specify which containers to include or exclude from metrics collection for the cloud monitoring agent. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_filter_data."
+  default     = [] # [{ type = "exclude", parameter = "kubernetes.namespace.name", name = "kube-system" }]
 }
 
 variable "cloud_monitoring_agent_tags" {

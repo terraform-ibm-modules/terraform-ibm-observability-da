@@ -3,7 +3,6 @@
 This deployable architecture creates observability instances in IBM Cloud and supports provisioning the following resources:
 
 * A resource group, if one is not passed in.
-* An IBM Cloud Log Analysis instance (Disabled by default as service is deprecated)
 * An IBM Cloud Monitoring instance.
 * An IBM Cloud Logs instance.
 * An IBM Cloud Object Storage instance, if one does not exist.
@@ -14,6 +13,7 @@ This deployable architecture creates observability instances in IBM Cloud and su
 * A KMS-encrypted Object Storage bucket for Cloud Logs metrics, if one is not passed in.
 * An Activity Tracker event route to an Object Storage bucket and Cloud Logs target.
 * An option to integrate Cloud Logs with existing event notification instance.
+* An option to configure Cloud logs policies (TCO Optimizer).
 
 ![observability-instances-deployable-architecture](../../reference-architecture/deployable-architecture-observability-instances.svg)
 
