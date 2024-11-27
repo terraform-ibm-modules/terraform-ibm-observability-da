@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "label": "Testing - Cloud automation for Observability",
+      "label": "[Add-ons Beta] Cloud automation for Observability",
       "name": "testing-deploy-arch-ibm-observability",
       "product_kind": "solution",
       "tags": [
@@ -14,9 +14,9 @@
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
       "flavors": [
         {
-          "label": "Instances",
-          "name": "instances",
-          "working_directory": "solutions/instances",
+          "label": "Standard",
+          "name": "standard",
+          "working_directory": "solutions/standard",
           "licenses": [
             {
               "id": "LICENSE",
