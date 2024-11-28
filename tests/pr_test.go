@@ -28,18 +28,13 @@ const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
-// Current supported regions for Observability instances
+// Currently only including regions that Event Notification support
 var validRegions = []string{
 	"au-syd",
+	"eu-gb",
 	"eu-de",
 	"eu-es",
-	"eu-gb",
-	"jp-osa",
-	"jp-tok",
 	"us-south",
-	"us-east",
-	"ca-tor",
-	"br-sao",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
@@ -101,10 +96,12 @@ func TestInstancesInSchematics(t *testing.T) {
 func TestRunUpgradeSolutionInstances(t *testing.T) {
 	t.Parallel()
 
+	var region = validRegions[rand.Intn(len(validRegions))]
+
 	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
 		Testing:      t,
 		TerraformDir: solutionInstanceDADir,
-		Region:       "us-south",
+		Region:       region,
 		Prefix:       "obs-ins-upg",
 	})
 
@@ -114,9 +111,21 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"cos_instance_access_tags":            permanentResources["accessTags"],
 		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                   "public",
+		"provider_visibility":                 "public",
 		"management_endpoint_type_for_bucket": "public",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
+		"cloud_logs_policies": []map[string]interface{}{
+			{
+				"logs_policy_name":     "upg-test-policy",
+				"logs_policy_priority": "type_low",
+				"log_rules": []map[string]interface{}{
+					{
+						"severities": []string{"info", "debug"},
+					},
+				},
+			},
+		},
 	}
 
 	output, err := options.RunTestUpgrade()
@@ -218,7 +227,8 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	realTerraformDir := "./resources/existing-resources"
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 	tags := common.GetTagsFromTravis()
-	region := "us-south"
+
+	var region = validRegions[rand.Intn(len(validRegions))]
 
 	// Verify ibmcloud_api_key variable is set
 	checkVariable := "TF_VAR_ibmcloud_api_key"
@@ -275,8 +285,20 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 					},
 				},
 				"management_endpoint_type_for_bucket": "public",
+				"provider_visibility":                 "public",
 				"enable_platform_metrics":             "false",
 				"enable_platform_logs":                "false",
+				"cloud_logs_policies": []map[string]interface{}{
+					{
+						"logs_policy_name":     "test-policy",
+						"logs_policy_priority": "type_low",
+						"log_rules": []map[string]interface{}{
+							{
+								"severities": []string{"info"},
+							},
+						},
+					},
+				},
 			},
 		})
 
@@ -301,6 +323,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 				"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
 				"kms_endpoint_type":                   "public",
+				"provider_visibility":                 "public",
 				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
 				"management_endpoint_type_for_bucket": "public",
 				"enable_platform_metrics":             "false",
