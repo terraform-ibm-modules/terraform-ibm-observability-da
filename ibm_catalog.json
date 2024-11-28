@@ -100,7 +100,8 @@
                 "profile_name": "IBM Cloud Framework for Financial Services",
                 "profile_version": "1.7.0"
               }
-            ]
+            ],
+            "controls": []
           },
           "configuration": [
             {
