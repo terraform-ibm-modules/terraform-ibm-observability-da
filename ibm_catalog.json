@@ -112,7 +112,7 @@
             {
               "name": "testing-deploy-arch-ibm-kms",
               "id": "85fdbd7a-8c77-4abd-b716-653a31f3aba9",
-              "version": ">=1.0.1",
+              "version": ">=1.0.5",
               "flavors": [
                 "standard"
               ],
@@ -128,7 +128,7 @@
             {
               "name": "deploy-arch-ibm-account-infra-base",
               "id": "63641cec-6093-4b4f-b7b0-98d2f4185cd6-global",
-              "version": ">=1.11.6",
+              "version": ">=v1.16.1",
               "flavors": [
                 "standard"
               ],
