@@ -137,7 +137,7 @@
               "input_mapping": [
                 {
                   "dependency_output": "workload_resource_group_name",
-                  "version_input": "existing_resource_group_name"
+                  "version_input": "resource_group_name"
                 },
                 {
                   "dependency_input": "prefix",
