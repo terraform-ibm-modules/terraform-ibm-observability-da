@@ -3,7 +3,7 @@
 ##############################################################################
 
 data "ibm_container_cluster_config" "cluster_config" {
-  cluster_name_id   = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].name : data.ibm_container_cluster.cluster[0].name
+  cluster_name_id   = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].id : data.ibm_container_cluster.cluster[0].id
   resource_group_id = var.cluster_resource_group_id
   config_dir        = "${path.module}/kubeconfig"
   endpoint_type     = var.cluster_config_endpoint_type != "default" ? var.cluster_config_endpoint_type : null
@@ -11,10 +11,12 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 module "observability_agents" {
   source                       = "terraform-ibm-modules/observability-agents/ibm"
-  version                      = "2.1.0"
+  version                      = "2.3.3"
   cluster_id                   = var.cluster_id
   cluster_resource_group_id    = var.cluster_resource_group_id
   cluster_config_endpoint_type = var.cluster_config_endpoint_type
+  wait_till_timeout            = var.wait_till_timeout
+  wait_till                    = var.wait_till
   # Cloud Monitoring (Sysdig) Agent
   cloud_monitoring_enabled           = var.cloud_monitoring_enabled
   cloud_monitoring_agent_name        = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_agent_name}" : var.cloud_monitoring_agent_name
