@@ -65,7 +65,6 @@ This deployable architecture includes:
 
 {{site.data.keyword.logs_full_notm}} is used to store platform logs, which are enabled by default. You can configure {{site.data.keyword.cos_full_notm}} buckets to store your {{site.data.keyword.logs_full_notm}} data and metrics from logs for long term storage and search. Additionally, {{site.data.keyword.logs_full_notm}} policies can be setup to better control the data that is ingested, and manage the data available for search within CL.
 
-
 5. {{site.data.keyword.en_full_notm}}
 
 It supports integration with {{site.data.keyword.en_full_notm}} to gather notification events, which can then be configured to consume notifications.
@@ -81,9 +80,10 @@ The following diagram represents the architecture for the Cloud Automation for O
 The Cloud automation for Observability deployable architecture automates the following.
 
 - creates the {{site.data.keyword.monitoringlong_notm}} and the {{site.data.keyword.logs_full_notm}} instances.
-- configures routing of the cloud platform activity events to the {{site.data.keyword.logs_full_notm}} and the {{site.data.keyword.cos_full_notm}} bucket.
+- configures {{site.data.keyword.logs_full_notm}} routing to route platform logs to {{site.data.keyword.logs_full_notm}}.
+- setup routing of the cloud platform activity events to the {{site.data.keyword.logs_full_notm}} and the {{site.data.keyword.cos_full_notm}} bucket.
 - configures routing of the cloud platform logs and the metrics from logs to {{site.data.keyword.cos_full_notm}} buckets.
-- integration of {{site.data.keyword.en_full_notm}} with {{site.data.keyword.logs_full_notm}}.
+- integration of the existing {{site.data.keyword.en_full_notm}} with {{site.data.keyword.logs_full_notm}}.
 - it also supports provisioning of a resource group, root keys in an existing key management service (KMS), {{site.data.keyword.cos_full_notm}} instance and KMS encrypted {{site.data.keyword.cos_full_notm}} buckets.
 
 It requires the `crn` of the KMS instance as a required input. You can also provide the KMS key crn for encryption. If you do not specify an KMS key, then the deployable architecture automatically creates one for you in a key ring of your choice (if you do not specify a key ring, then the default one is used).
