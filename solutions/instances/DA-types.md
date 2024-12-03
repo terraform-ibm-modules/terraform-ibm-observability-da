@@ -88,3 +88,38 @@ cloud_logs_policies = [
   }
 ]
 ```
+
+## Metric Router Routes <a name="metric_router_routes"></a>
+
+The `metric_router_routes` input variable allows you to provide a list of routes that will be configured in the Metric Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-about) for more information.
+
+- Variable name: `metric_router_routes`.
+- Type: A list of objects. Each object represents a policy.
+- Default value: An empty list (`[]`).
+
+### Options for metric_router_routes
+
+  - `name` (required):  The name of the route.
+  - `rules` (required): The routing rules that will be evaluated in their order of the array.
+    - `action` (optional): The action if the inclusion_filters matches, default is send action.
+    - `inclusion_filters` (required): A list of conditions to be satisfied for routing metrics to pre-defined target.
+    - `targets` (optional): The target uuid for a pre-defined metrics router target.
+
+### Example metric_router_routes
+
+```hcl
+metric_router_routes = {
+    name = "my-route"
+    rules {
+      action = "send"
+      targets {
+        id = "c3af557f-fb0e-4476-85c3-0889e7fe7bc4"
+      }
+      inclusion_filters {
+        operand = "location"
+        operator = "is"
+        values = [ "us-south" ]
+      }
+    }
+}
+```
