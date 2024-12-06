@@ -11,7 +11,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_cos_resource_group = var.existing_cos_instance_crn == null ? var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true : true
   # tflint-ignore: terraform_unused_declarations
-  validate_metric_routing_creation = var.enable_metric_routing_to_cloud_monitoring ? ((var.existing_cloud_monitoring_crn != "" || var.cloud_monitoring_provision) ? true : tobool("When `enable_metric_routing_to_cloud_monitoring` is set to true, you must either set `cloud_monitoring_provision` as true or provide the `existing_cloud_monitoring_crn`.")): true
+  validate_metric_routing_creation = var.enable_metric_routing_to_cloud_monitoring ? ((var.existing_cloud_monitoring_crn != "" || var.cloud_monitoring_provision) ? true : tobool("When `enable_metric_routing_to_cloud_monitoring` is set to true, you must either set `cloud_monitoring_provision` as true or provide the `existing_cloud_monitoring_crn`.")) : true
 
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
