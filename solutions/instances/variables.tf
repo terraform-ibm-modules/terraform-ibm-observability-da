@@ -284,13 +284,8 @@ variable "at_cos_bucket_retention" {
     minimum   = optional(number, 90)
     permanent = optional(bool, false)
   })
-  description = "value"
-  default = {
-    default   = 90
-    maximum   = 350
-    minimum   = 90
-    permanent = false
-  }
+  description = "The retention policy of the 'at_cos_bucket'."
+  default     = null
 }
 
 variable "cloud_log_data_bucket_retention" {
@@ -300,38 +295,9 @@ variable "cloud_log_data_bucket_retention" {
     minimum   = optional(number, 90)
     permanent = optional(bool, false)
   })
-  description = "value"
-  default = {
-    default   = 90
-    maximum   = 350
-    minimum   = 90
-    permanent = false
-  }
+  description = "The retention policy of the 'cloud_log_data_bucket'."
+  default     = null
 }
-
-# variable "retention_default" {
-#   description = "The number of days that an object can remain unmodified in an Object Storage bucket."
-#   type        = number
-#   default     = 90
-# }
-
-# variable "retention_maximum" {
-#   description = "The maximum number of days that an object can be kept unmodified in the bucket."
-#   type        = number
-#   default     = 350
-# }
-
-# variable "retention_minimum" {
-#   description = "The minimum number of days that an object must be kept unmodified in the bucket."
-#   type        = number
-#   default     = 90
-# }
-
-# variable "retention_permanent" {
-#   description = "Whether permanent retention status is enabled for the Object Storage bucket. [Learn more](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-immutable)."
-#   type        = bool
-#   default     = false
-# }
 
 variable "cos_instance_access_tags" {
   type        = list(string)
@@ -344,12 +310,6 @@ variable "log_archive_cos_bucket_name" {
   default     = "log-archive-cos-bucket"
   description = "The name of the Cloud Object Storage bucket to create to store log archive files. Cloud Object Storage bucket names are globally unique. If the `add_bucket_name_suffix` variable is set to `true`, 4 random characters are added to this name to ensure that the name of the bucket is globally unique. If the prefix input variable is passed, the name of the instance is prefixed to the value in the `<prefix>-value` format."
 }
-
-# variable "enable_at_cos_bucket_retention" {
-#   description = "Whether retention is enabled for the AT events Object Storage bucket."
-#   type        = bool
-#   default     = false
-# }
 
 variable "at_cos_target_bucket_name" {
   type        = string
