@@ -103,7 +103,7 @@ The `metric_router_routes` input variable allows you to provide a list of routes
   - `rules` (required): The routing rules that will be evaluated in their order of the array.
     - `action` (optional): The action if the inclusion_filters matches, default is send action.
     - `inclusion_filters` (required): A list of conditions to be satisfied for routing metrics to pre-defined target.
-    - `targets` (optional): The target uuid for a pre-defined metrics router target.
+    - `targets` (required): The target uuid for a pre-defined metrics router target.
 
 ### Example metric_router_routes
 

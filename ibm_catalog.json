@@ -451,10 +451,10 @@
               ]
             },
             {
-              "key": "metric_router_action"
+              "key": "enable_metric_routing_to_cloud_monitoring"
             },
             {
-              "key": "inclusion_filters"
+              "key": "metrics_router_routes"
             }
           ],
           "architecture": {

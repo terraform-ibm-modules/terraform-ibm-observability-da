@@ -10,6 +10,8 @@ locals {
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
   # tflint-ignore: terraform_unused_declarations
   validate_cos_resource_group = var.existing_cos_instance_crn == null ? var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_metric_routing_creation = var.enable_metric_routing_to_cloud_monitoring ? ((var.existing_cloud_monitoring_crn != "" || var.cloud_monitoring_provision) ? true : tobool("When `enable_metric_routing_to_cloud_monitoring` is set to true, you must either set `cloud_monitoring_provision` as true or provide the `existing_cloud_monitoring_crn`.")): true
 
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
@@ -303,9 +305,9 @@ module "observability_instance" {
   # Routes
   activity_tracker_routes = local.at_routes
 
-  # IBM Metrics Routing
+  # IBM Cloud Metrics Routing
 
-  metrics_router_targets = (var.enable_metric_routing_to_cloud_monitoring && (var.existing_cloud_monitoring_crn != "" || var.cloud_monitoring_provision)) ? [
+  metrics_router_targets = local.validate_metric_routing_creation ? [
     {
       destination_crn                     = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : var.existing_cloud_monitoring_crn
       target_name                         = local.metric_router_target_name
@@ -314,7 +316,7 @@ module "observability_instance" {
     }
   ] : []
 
-  metrics_router_routes = (var.enable_metric_routing_to_cloud_monitoring && (var.existing_cloud_monitoring_crn != "" || var.cloud_monitoring_provision)) ? (var.metrics_router_routes != null ? var.metrics_router_routes : local.default_metrics_router_route) : []
+  metrics_router_routes = local.validate_metric_routing_creation ? (var.metrics_router_routes != null ? var.metrics_router_routes : local.default_metrics_router_route) : []
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
