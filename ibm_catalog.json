@@ -497,7 +497,6 @@
               ]
             }
           ],
-          "dependency_version_2": true,
           "dependencies": [
             {
               "flavors": [
