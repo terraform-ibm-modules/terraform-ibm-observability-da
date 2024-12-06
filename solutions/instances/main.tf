@@ -52,11 +52,18 @@ locals {
   at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
 
+  empty_retention_data = {
+    default = 0
+    minimum = 0 
+    maximum = 0
+    permanent = false
+  }
+
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class     = var.log_archive_cos_bucket_class
     name      = local.log_archive_cos_bucket_name
     tag       = var.archive_bucket_access_tags
-    retention = null
+    retention = local.empty_retention_data
   } : null
 
   at_bucket_config = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket ? {
@@ -77,7 +84,7 @@ locals {
     class     = var.cloud_log_metrics_bucket_class
     name      = local.cloud_log_metrics_bucket
     tag       = var.cloud_log_metrics_bucket_access_tag
-    retention = null # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
+    retention = local.empty_retention_data # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
   } : null
 
   buckets_config = concat(
