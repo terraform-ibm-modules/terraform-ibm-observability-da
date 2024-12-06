@@ -53,9 +53,9 @@ locals {
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
 
   empty_retention_data = {
-    default = 0
-    minimum = 0 
-    maximum = 0
+    default   = 0
+    minimum   = 0
+    maximum   = 0
     permanent = false
   }
 
