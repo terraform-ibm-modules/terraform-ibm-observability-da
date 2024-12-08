@@ -15,7 +15,7 @@ module "resource_group" {
 ##############################################################################
 
 module "landing_zone" {
-  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v6.0.1"
+  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v6.4.4"
   region                              = var.region
   prefix                              = var.prefix
   tags                                = var.resource_tags
@@ -33,7 +33,7 @@ module "landing_zone" {
 
 module "cos" {
   source            = "terraform-ibm-modules/cos/ibm"
-  version           = "8.11.14"
+  version           = "8.15.10"
   resource_group_id = module.resource_group.resource_group_id
   cos_instance_name = "${var.prefix}-cos"
   cos_tags          = var.resource_tags
@@ -51,7 +51,7 @@ locals {
 
 module "buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.11.14"
+  version = "8.15.10"
   bucket_configs = [
     {
       bucket_name            = local.logs_bucket_name
@@ -81,7 +81,7 @@ locals {
 
 module "observability_instances" {
   source                             = "terraform-ibm-modules/observability-instances/ibm"
-  version                            = "3.0.2"
+  version                            = "3.3.1"
   resource_group_id                  = local.cluster_resource_group_id
   region                             = var.region
   cloud_monitoring_plan              = "graduated-tier"
