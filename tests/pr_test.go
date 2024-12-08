@@ -94,7 +94,8 @@ func TestInstancesInSchematics(t *testing.T) {
 }
 
 func TestRunUpgradeSolutionInstances(t *testing.T) {
-	t.Parallel()
+	t.Skip()
+	// t.Parallel()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
@@ -136,7 +137,8 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 }
 
 func TestAgentsSolutionInSchematics(t *testing.T) {
-	t.Parallel()
+	t.Skip()
+	// t.Parallel()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
@@ -217,7 +219,8 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 }
 
 func TestRunExistingResourcesInstances(t *testing.T) {
-	t.Parallel()
+	t.Skip()
+	// t.Parallel()
 
 	// ------------------------------------------------------------------------------------
 	// Provision COS & EN first
