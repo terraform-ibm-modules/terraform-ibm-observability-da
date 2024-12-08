@@ -47,7 +47,7 @@ output "cloud_monitoring_crn" {
 }
 
 output "cloud_monitoring_guid" {
-  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_guid : local.existing_cloud_monitoring_guid
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_guid : module.cloud_monitoring_crn_parser[0].service_instance
   description = "The guid of the provisioned IBM cloud monitoring instance."
 }
 
