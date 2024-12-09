@@ -316,7 +316,7 @@ module "observability_instance" {
     }
   ] : []
 
-  metrics_router_routes = local.validate_metric_routing_creation ? (var.metrics_router_routes != null ? var.metrics_router_routes : local.default_metrics_router_route) : []
+  metrics_router_routes = local.validate_metric_routing_creation ? (var.metrics_router_routes != null ? [var.metrics_router_routes] : local.default_metrics_router_route) : []
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
