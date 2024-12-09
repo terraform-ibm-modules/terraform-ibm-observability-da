@@ -91,11 +91,11 @@ cloud_logs_policies = [
 
 ## Metric Router Routes <a name="metric_router_routes"></a>
 
-The `metric_router_routes` input variable allows you to provide a list of routes that will be configured in the Metric Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-about) for more information.
+The `metric_router_routes` input variable allows you to provide a route that will be configured in the Metric Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-about) for more information.
 
 - Variable name: `metric_router_routes`.
-- Type: A list of objects. Each object represents a policy.
-- Default value: An empty list (`[]`).
+- Type: An object
+- Default value: `null`.
 
 ### Options for metric_router_routes
 
