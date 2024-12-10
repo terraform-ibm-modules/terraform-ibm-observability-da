@@ -63,29 +63,36 @@ locals {
     class     = var.log_archive_cos_bucket_class
     name      = local.log_archive_cos_bucket_name
     tag       = var.archive_bucket_access_tags
-    retention = local.empty_retention_data
+    # retention = {}
   } : null
 
   at_bucket_config = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket ? {
     class     = var.at_cos_target_bucket_class
     name      = local.at_cos_target_bucket_name
     tag       = var.at_cos_bucket_access_tags
-    retention = var.at_cos_bucket_retention
+    # retention = var.at_cos_bucket_retention
   } : null
 
   cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? {
     class     = var.cloud_log_data_bucket_class
     name      = local.cloud_log_data_bucket
     tag       = var.cloud_log_data_bucket_access_tag
-    retention = var.cloud_log_data_bucket_retention
+    # retention = var.cloud_log_data_bucket_retention
   } : null
 
   cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? {
     class     = var.cloud_log_metrics_bucket_class
     name      = local.cloud_log_metrics_bucket
     tag       = var.cloud_log_metrics_bucket_access_tag
-    retention = local.empty_retention_data # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
+    # retention = {} # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
   } : null
+
+  bucket_retention_config = [
+    null, 
+    local.at_bucket_config != null ? var.at_cos_bucket_retention: null,
+    local.cloud_log_data_bucket_config != null ? var.cloud_log_data_bucket_retention : null,
+    null
+  ]
 
   buckets_config = concat(
     local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
@@ -441,7 +448,7 @@ module "cos_bucket" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
   version = "8.14.1"
   bucket_configs = [
-    for value in local.buckets_config :
+    for idx, value in local.buckets_config :
     {
       access_tags                   = value.tag
       bucket_name                   = value.name
@@ -457,7 +464,7 @@ module "cos_bucket" {
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
-      retention_rule                = value.retention
+      retention_rule                = local.bucket_retention_config[idx]
       metrics_monitoring = {
         usage_metrics_enabled   = true
         request_metrics_enabled = true
