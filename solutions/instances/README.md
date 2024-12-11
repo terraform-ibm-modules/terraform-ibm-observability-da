@@ -12,7 +12,7 @@ This deployable architecture creates observability instances in IBM Cloud and su
 * A KMS-encrypted Object Storage bucket for Cloud Logs data, if one is not passed in.
 * A KMS-encrypted Object Storage bucket for Cloud Logs metrics, if one is not passed in.
 * An Activity Tracker event route to an Object Storage bucket and Cloud Logs target.
-* An IBM Cloud Metric Routing to a Cloud Monitoring instance.
+* An IBM Cloud Metric Routing, setting route to a Cloud Monitoring target.
 * An option to integrate Cloud Logs with existing event notification instance.
 * An option to configure Cloud logs policies (TCO Optimizer).
 

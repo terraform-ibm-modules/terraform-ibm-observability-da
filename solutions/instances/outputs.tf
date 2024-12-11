@@ -120,3 +120,15 @@ output "kms_keys" {
   description = "IDs of new KMS Keys created"
   value       = length(module.kms) > 0 ? module.kms[0].keys : null
 }
+
+## Metrics Routing
+
+output "mr_targets" {
+  description = "The map of created metrics routing targets."
+  value       = var.enable_metrics_routing_to_cloud_monitoring ? module.observability_instance.metrics_router_targets : null
+}
+
+output "mr_routes" {
+  description = "The map of created metrics routing routes."
+  value       = var.enable_metrics_routing_to_cloud_monitoring ? module.observability_instance.metrics_router_routes : null
+}

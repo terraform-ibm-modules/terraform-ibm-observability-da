@@ -451,7 +451,7 @@
               ]
             },
             {
-              "key": "enable_metric_routing_to_cloud_monitoring"
+              "key": "enable_metrics_routing_to_cloud_monitoring"
             },
             {
               "key": "metrics_router_routes"

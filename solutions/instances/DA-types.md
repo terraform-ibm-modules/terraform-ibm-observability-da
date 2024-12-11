@@ -91,18 +91,23 @@ cloud_logs_policies = [
 
 ## Metric Router Routes <a name="metric_router_routes"></a>
 
-The `metric_router_routes` input variable allows you to provide a route that will be configured in the Metric Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-about) for more information.
+The `metric_router_routes` input variable allows you to provide a list of route that will be configured in the IBM Cloud Metrics Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-about) for more information.
 
 - Variable name: `metric_router_routes`.
-- Type: An object
-- Default value: `null`.
+- Type: A list of objects. Each object represents a route.
+- Default value: An empty list (`[]`).
 
 ### Options for metric_router_routes
 
   - `name` (required):  The name of the route.
   - `rules` (required): The routing rules that will be evaluated in their order of the array.
-    - `action` (optional): The action if the inclusion_filters matches, default is send action.
-    - `inclusion_filters` (required): A list of conditions to be satisfied for routing metrics to pre-defined target.
+    - `action` (optional): The action if the inclusion_filters matches, default is send action. Allowed values are `send` and `drop`. You can configure up to 10 rules per route.
+    - `inclusion_filters` (required): A list of conditions to be satisfied for routing metrics to pre-defined target.'inclusion_filters' is an object with three parameters:
+        - `operand` - Part of CRN that can be compared with values. Allowable values are: `location`, `service_name`, `service_instance`, `resource_type`, `resource`.
+
+        - `operator` - The operation to be performed between operand and the provided values. Allowable values are: `is`, `in`.
+
+        - `values` - The provided string values of the operand to be compared with.
     - `targets` (required): The target uuid for a pre-defined metrics router target.
 
 ### Example metric_router_routes
@@ -123,3 +128,4 @@ metric_router_routes = {
     }
 }
 ```
+Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-route_rules_definitions&interface=ui) for more information about IBM Cloud Metrics Routing route.

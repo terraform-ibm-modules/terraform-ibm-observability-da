@@ -281,7 +281,7 @@ variable "enable_at_event_routing_to_cloud_logs" {
 ##############################################################################
 
 variable "metrics_router_routes" {
-  type = object({
+  type = list(object({
     name = string
     rules = list(object({
       action = string
@@ -294,14 +294,14 @@ variable "metrics_router_routes" {
         values   = list(string)
       }))
     }))
-  })
-  default     = null
-  description = "Routes for IBM Metrics Router"
+  }))
+  default     = []
+  description = "Routes for IBM Cloud Metrics Routing."
 }
 
-variable "enable_metric_routing_to_cloud_monitoring" {
+variable "enable_metrics_routing_to_cloud_monitoring" {
   type        = bool
-  description = "Whether to enable metric routing from IBM Cloud Metric Routing to Cloud Monitoring."
+  description = "Whether to enable metrics routing from IBM Cloud Metric Routing to Cloud Monitoring."
   default     = true
 }
 
