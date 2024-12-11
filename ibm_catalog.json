@@ -245,19 +245,10 @@
               "key": "cos_instance_access_tags"
             },
             {
-              "key": "enable_at_cos_bucket_retention"
+              "key": "at_cos_bucket_retention"
             },
             {
-              "key": "retention_default"
-            },
-            {
-              "key": "retention_maximum"
-            },
-            {
-              "key": "retention_minimum"
-            },
-            {
-              "key": "retention_permanent"
+              "key": "cloud_log_data_bucket_retention"
             },
             {
               "key": "add_bucket_name_suffix"
