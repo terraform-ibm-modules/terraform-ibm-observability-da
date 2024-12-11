@@ -52,40 +52,34 @@ locals {
   at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
 
-  empty_retention_data = {
-    default   = 0
-    minimum   = 0
-    maximum   = 0
-    permanent = false
-  }
-
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
-    class     = var.log_archive_cos_bucket_class
-    name      = local.log_archive_cos_bucket_name
-    tag       = var.archive_bucket_access_tags
-    retention = local.empty_retention_data
+    class = var.log_archive_cos_bucket_class
+    name  = local.log_archive_cos_bucket_name
+    tag   = var.archive_bucket_access_tags
   } : null
 
   at_bucket_config = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket ? {
-    class     = var.at_cos_target_bucket_class
-    name      = local.at_cos_target_bucket_name
-    tag       = var.at_cos_bucket_access_tags
-    retention = var.at_cos_bucket_retention
+    class = var.at_cos_target_bucket_class
+    name  = local.at_cos_target_bucket_name
+    tag   = var.at_cos_bucket_access_tags
   } : null
 
   cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? {
-    class     = var.cloud_log_data_bucket_class
-    name      = local.cloud_log_data_bucket
-    tag       = var.cloud_log_data_bucket_access_tag
-    retention = var.cloud_log_data_bucket_retention
+    class = var.cloud_log_data_bucket_class
+    name  = local.cloud_log_data_bucket
+    tag   = var.cloud_log_data_bucket_access_tag
   } : null
 
   cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? {
-    class     = var.cloud_log_metrics_bucket_class
-    name      = local.cloud_log_metrics_bucket
-    tag       = var.cloud_log_metrics_bucket_access_tag
-    retention = local.empty_retention_data # IBM Cloud Logs does not support IBM Cloud® Object Storage buckets configured with retention policies - https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-about-bucket
+    class = var.cloud_log_metrics_bucket_class
+    name  = local.cloud_log_metrics_bucket
+    tag   = var.cloud_log_metrics_bucket_access_tag
   } : null
+
+  bucket_retention_configs = merge(
+    local.at_bucket_config != null ? { (local.at_cos_target_bucket_name) = var.at_cos_bucket_retention } : null,
+    local.cloud_log_data_bucket_config != null ? { (local.cloud_log_data_bucket) = var.cloud_log_data_bucket_retention } : null
+  )
 
   buckets_config = concat(
     local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
@@ -457,7 +451,7 @@ module "cos_bucket" {
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
-      retention_rule                = value.retention
+      retention_rule                = lookup(local.bucket_retention_configs, value.name, null)
       metrics_monitoring = {
         usage_metrics_enabled   = true
         request_metrics_enabled = true
