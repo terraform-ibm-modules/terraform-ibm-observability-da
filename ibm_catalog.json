@@ -151,6 +151,9 @@
               "key": "cloud_logs_provision"
             },
             {
+              "key": "existing_cloud_logs_instance_crn"
+            },
+            {
               "key": "cloud_logs_instance_name"
             },
             {
@@ -195,6 +198,15 @@
             },
             {
               "key": "existing_en_instance_crn"
+            },
+            {
+              "key": "cloud_logs_en_from_email"
+            },
+            {
+              "key": "cloud_logs_en_reply_to_email"
+            },
+            {
+              "key": "cloud_logs_en_email_list"
             },
             {
               "key": "en_integration_name"
