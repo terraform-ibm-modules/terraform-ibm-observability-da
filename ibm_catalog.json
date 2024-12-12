@@ -141,10 +141,6 @@
                   "version_input": "resource_group_name"
                 },
                 {
-                  "dependency_input": "prefix",
-                  "version_input": "prefix"
-                },
-                {
                   "value": true,
                   "version_input": "use_existing_resource_group"
                 }
