@@ -180,7 +180,7 @@
             },
             {
               "key": "cloud_logs_provision",
-              "required": true
+              "required": false
             },
             {
               "key": "cloud_logs_instance_name",
@@ -498,7 +498,7 @@
             },
             {
               "key": "existing_cos_kms_key_crn",
-              "required": true
+              "required": false
             },
             {
               "key": "existing_kms_instance_crn",
