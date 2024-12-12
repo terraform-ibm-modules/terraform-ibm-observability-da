@@ -31,6 +31,7 @@ variable "use_existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision resources in."
+  default     = "obs-rg"
 }
 
 variable "cos_resource_group_name" {
@@ -48,7 +49,7 @@ variable "region" {
 variable "prefix" {
   type        = string
   description = "The prefix to add to all resources that this solution creates."
-  default     = null
+  default     = ""
 }
 
 ##############################################################################

@@ -159,11 +159,11 @@
             },
             {
               "key": "resource_group_name",
-              "required": true
+              "required": false
             },
             {
               "key": "use_existing_resource_group",
-              "required": true
+              "required": false
             },
             {
               "key": "region",
@@ -179,7 +179,7 @@
             },
             {
               "key": "cloud_logs_provision",
-              "required": false
+              "required": true
             },
             {
               "key": "cloud_logs_instance_name",
