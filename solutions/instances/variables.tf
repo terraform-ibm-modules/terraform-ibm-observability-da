@@ -277,25 +277,25 @@ variable "cos_instance_tags" {
   default     = []
 }
 
-variable "at_cos_bucket_retention" {
+variable "at_cos_bucket_retention_policy" {
   type = object({
     default   = optional(number, 90)
     maximum   = optional(number, 350)
     minimum   = optional(number, 90)
     permanent = optional(bool, false)
   })
-  description = "The retention policy of the 'at_cos_bucket'."
+  description = "The retention policy of the IBM Cloud Activity Tracker Event Routing COS target bucket."
   default     = null
 }
 
-variable "cloud_log_data_bucket_retention" {
+variable "cloud_log_data_bucket_retention_policy" {
   type = object({
     default   = optional(number, 90)
     maximum   = optional(number, 350)
     minimum   = optional(number, 90)
     permanent = optional(bool, false)
   })
-  description = "The retention policy of the 'cloud_log_data_bucket'."
+  description = "The retention policy of the IBM Cloud Logs data bucket."
   default     = null
 }
 
@@ -376,7 +376,7 @@ variable "at_cos_target_bucket_class" {
 variable "cloud_log_data_bucket_class" {
   type        = string
   default     = "smart"
-  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
+  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard` or `smart` (default)."
   validation {
     condition     = contains(["standard", "smart"], var.cloud_log_data_bucket_class)
     error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard` or `smart`. See more at https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-configure-data-bucket"
@@ -386,7 +386,7 @@ variable "cloud_log_data_bucket_class" {
 variable "cloud_log_metrics_bucket_class" {
   type        = string
   default     = "smart"
-  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard`, `vault`, `cold`, `smart` (default), or `onerate_active`."
+  description = "The storage class of the newly provisioned cloud logs Cloud Object Storage bucket. Specify one of the following values for the storage class: `standard` or `smart` (default)."
   validation {
     condition     = contains(["standard", "smart"], var.cloud_log_metrics_bucket_class)
     error_message = "Specify one of the following values for the `cos_bucket_class`:  `standard`, or `smart`. See more at https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-configure-data-bucket"

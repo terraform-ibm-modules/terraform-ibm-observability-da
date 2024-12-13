@@ -77,8 +77,8 @@ locals {
   } : null
 
   bucket_retention_configs = merge(
-    local.at_bucket_config != null ? { (local.at_cos_target_bucket_name) = var.at_cos_bucket_retention } : null,
-    local.cloud_log_data_bucket_config != null ? { (local.cloud_log_data_bucket) = var.cloud_log_data_bucket_retention } : null
+    local.at_bucket_config != null ? { (local.at_cos_target_bucket_name) = var.at_cos_bucket_retention_policy } : null,
+    local.cloud_log_data_bucket_config != null ? { (local.cloud_log_data_bucket) = var.cloud_log_data_bucket_retention_policy } : null
   )
 
   buckets_config = concat(
