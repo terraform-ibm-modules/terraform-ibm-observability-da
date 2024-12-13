@@ -256,7 +256,7 @@ variable "cloud_logs_policies" {
       id = string
     })))
   }))
-  description = "Configuration of Cloud Logs policies. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_policies)."
+  description = "Configuration of Cloud Logs policies. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#cloud-logs-policies-)."
   default     = []
 }
 
@@ -296,7 +296,7 @@ variable "metrics_router_routes" {
     }))
   }))
   default     = []
-  description = "Routes for IBM Cloud Metrics Routing."
+  description = "Routes for IBM Cloud Metrics Routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#metrics-router-routes-)"
 }
 
 variable "enable_metrics_routing_to_cloud_monitoring" {
