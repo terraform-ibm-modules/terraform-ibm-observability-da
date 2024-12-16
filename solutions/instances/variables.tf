@@ -284,7 +284,7 @@ variable "at_cos_bucket_retention_policy" {
     minimum   = optional(number, 90)
     permanent = optional(bool, false)
   })
-  description = "The retention policy of the IBM Cloud Activity Tracker Event Routing COS target bucket."
+  description = "The retention policy of the IBM Cloud Activity Tracker Event Routing COS target bucket. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#at_cos_bucket_retention_policy-)"
   default     = null
 }
 
@@ -295,7 +295,7 @@ variable "cloud_log_data_bucket_retention_policy" {
     minimum   = optional(number, 90)
     permanent = optional(bool, false)
   })
-  description = "The retention policy of the IBM Cloud Logs data bucket."
+  description = "The retention policy of the IBM Cloud Logs data bucket.[Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#cloud_log_data_bucket_retention_policy-)"
   default     = null
 }
 
