@@ -4,6 +4,7 @@ Several optional input variables in the IBM Cloud [Observability instances deplo
 
 * Cloud Logs Event Notification Instances (`cloud_logs_existing_en_instances`)
 * Cloud Logs policies (`cloud_logs_policies`)
+* Metrics Router Routes (`metrics_router_routes`)
 
 
 ## Cloud Logs Event Notification Instances <a name="cloud_logs_existing_en_instances"></a>
