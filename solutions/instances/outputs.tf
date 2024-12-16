@@ -123,12 +123,12 @@ output "kms_keys" {
 
 ## Metrics Routing
 
-output "mr_targets" {
+output "metrics_router_targets" {
   description = "The map of created metrics routing targets."
   value       = var.enable_metrics_routing_to_cloud_monitoring ? module.observability_instance.metrics_router_targets : null
 }
 
-output "mr_routes" {
+output "metrics_router_routes" {
   description = "The map of created metrics routing routes."
   value       = var.enable_metrics_routing_to_cloud_monitoring ? module.observability_instance.metrics_router_routes : null
 }

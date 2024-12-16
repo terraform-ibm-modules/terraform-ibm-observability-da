@@ -91,7 +91,7 @@ cloud_logs_policies = [
 
 ## Metrics Router Routes <a name="metrics_router_routes"></a>
 
-The `metrics_router_routes` input variable allows you to provide a list of route that will be configured in the IBM Cloud Metrics Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-about) for more information.
+The `metrics_router_routes` input variable allows you to provide a list of routes that will be configured in the IBM Cloud Metrics Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-about) for more information.
 
 - Variable name: `metrics_router_routes`.
 - Type: A list of objects. Each object represents a route.
@@ -100,8 +100,8 @@ The `metrics_router_routes` input variable allows you to provide a list of route
 ### Options for metrics_router_routes
 
   - `name` (required):  The name of the route.
-  - `rules` (required): The routing rules that will be evaluated in their order of the array.
-    - `action` (optional): The action if the inclusion_filters matches, default is send action. Allowed values are `send` and `drop`. You can configure up to 10 rules per route.
+  - `rules` (required): The routing rules that will be evaluated in their order of the array. You can configure up to 10 rules per route.
+    - `action` (optional): The action if the inclusion_filters matches, default is send action. Allowed values are `send` and `drop`.
     - `inclusion_filters` (required): A list of conditions to be satisfied for routing metrics to pre-defined target.'inclusion_filters' is an object with three parameters:
         - `operand` - Part of CRN that can be compared with values. Allowable values are: `location`, `service_name`, `service_instance`, `resource_type`, `resource`.
 
