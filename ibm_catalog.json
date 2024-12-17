@@ -449,6 +449,12 @@
                   "value": "private"
                 }
               ]
+            },
+            {
+              "key": "enable_metrics_routing_to_cloud_monitoring"
+            },
+            {
+              "key": "metrics_router_routes"
             }
           ],
           "architecture": {
