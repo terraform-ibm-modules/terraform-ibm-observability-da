@@ -143,10 +143,10 @@ The `at_cos_bucket_retention_policy` input variable allows you to provide the re
 
 ### Options for at_cos_bucket_retention_policy
 
-`default` (optional): The number of days that an object can remain unmodified in an Object Storage bucket.
-`maximum` (optional): The maximum number of days that an object can be kept unmodified in the bucket.
-`minimum` (optional): The minimum number of days that an object must be kept unmodified in the bucket.
-`permanent` (optional): Whether permanent retention status is enabled for the Object Storage bucket.
+- `default` (optional): The number of days that an object can remain unmodified in an Object Storage bucket.
+- `maximum` (optional): The maximum number of days that an object can be kept unmodified in the bucket.
+- `minimum` (optional): The minimum number of days that an object must be kept unmodified in the bucket.
+- `permanent` (optional): Whether permanent retention status is enabled for the Object Storage bucket.
 
 ### Example at_cos_bucket_retention_policy
 
@@ -169,10 +169,10 @@ The `cloud_log_data_bucket_retention_policy` input variable allows you to provid
 
 ### Options for cloud_log_data_bucket_retention_policy
 
-`default` (optional): The number of days that an object can remain unmodified in an Object Storage bucket.
-`maximum` (optional): The maximum number of days that an object can be kept unmodified in the bucket.
-`minimum` (optional): The minimum number of days that an object must be kept unmodified in the bucket.
-`permanent` (optional): Whether permanent retention status is enabled for the Object Storage bucket.
+- `default` (optional): The number of days that an object can remain unmodified in an Object Storage bucket.
+- `maximum` (optional): The maximum number of days that an object can be kept unmodified in the bucket.
+- `minimum` (optional): The minimum number of days that an object must be kept unmodified in the bucket.
+- `permanent` (optional): Whether permanent retention status is enabled for the Object Storage bucket.
 
 
 
