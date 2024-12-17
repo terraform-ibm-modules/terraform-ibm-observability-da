@@ -184,7 +184,7 @@ variable "cloud_logs_policies" {
       id = string
     })))
   }))
-  description = "Configuration of Cloud Logs policies. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/standard/DA-types.md#cloud_logs_policies)."
+  description = "Configuration of Cloud Logs policies. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#cloud-logs-policies-)."
   default     = []
 }
 
@@ -201,6 +201,35 @@ variable "enable_at_event_routing_to_cos_bucket" {
 variable "enable_at_event_routing_to_cloud_logs" {
   type        = bool
   description = "Whether to enable event routing from Activity Tracker to Cloud Log."
+  default     = true
+}
+
+##############################################################################
+# Metric Routing Variables
+##############################################################################
+
+variable "metrics_router_routes" {
+  type = list(object({
+    name = string
+    rules = list(object({
+      action = string
+      targets = list(object({
+        id = string
+      }))
+      inclusion_filters = list(object({
+        operand  = string
+        operator = string
+        values   = list(string)
+      }))
+    }))
+  }))
+  default     = []
+  description = "Routes for IBM Cloud Metrics Routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#metrics-router-routes-)"
+}
+
+variable "enable_metrics_routing_to_cloud_monitoring" {
+  type        = bool
+  description = "Whether to enable metrics routing from IBM Cloud Metric Routing to Cloud Monitoring."
   default     = true
 }
 

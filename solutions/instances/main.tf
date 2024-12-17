@@ -10,6 +10,8 @@ locals {
   validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
   # tflint-ignore: terraform_unused_declarations
   validate_cos_resource_group = var.existing_cos_instance_crn == null ? var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_metrics_routing = var.enable_metrics_routing_to_cloud_monitoring ? ((var.existing_cloud_monitoring_crn != null || var.cloud_monitoring_provision) ? true : tobool("When `enable_metrics_routing_to_cloud_monitoring` is set to true, you must either set `cloud_monitoring_provision` as true or provide the `existing_cloud_monitoring_crn`.")) : true
 
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
@@ -51,6 +53,19 @@ locals {
   cloud_logs_target_name     = var.prefix != null ? "${var.prefix}-cloud-logs-target" : "cloud-logs-target"
   at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
   at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
+  metric_router_target_name  = var.prefix != null ? "${var.prefix}-cloud-monitoring-target" : "cloud-monitoring-target"
+  metric_router_route_name   = var.prefix != null ? "${var.prefix}-metric-routing-route" : "metric-routing-route"
+
+  default_metrics_router_route = [{
+    name = local.metric_router_route_name
+    rules = [{
+      action = "send"
+      targets = [{
+        id = module.observability_instance.metrics_router_targets[local.metric_router_target_name].id
+      }]
+      inclusion_filters = []
+    }]
+  }]
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -161,13 +176,11 @@ module "cos_resource_group" {
 #######################################################################################################################
 
 locals {
-  parsed_existing_cloud_monitoring_crn = var.existing_cloud_monitoring_crn != null ? split(":", var.existing_cloud_monitoring_crn) : []
-  existing_cloud_monitoring_guid       = length(local.parsed_existing_cloud_monitoring_crn) > 0 ? local.parsed_existing_cloud_monitoring_crn[7] : null
-  cloud_monitoring_instance_name       = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
-  cloud_logs_instance_name             = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
-  cloud_logs_data_bucket_crn           = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
-  cloud_log_metrics_bucket_crn         = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
-  cloud_logs_buckets                   = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
+  cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
+  cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
+  cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
+  cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
+  cloud_logs_buckets             = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
 }
 
 data "ibm_iam_account_settings" "iam_account_settings" {
@@ -217,6 +230,13 @@ module "en_crn_parser" {
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
   version = "1.0.0"
   crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
+}
+
+module "cloud_monitoring_crn_parser" {
+  count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.0.0"
+  crn     = var.existing_cloud_monitoring_crn
 }
 
 module "observability_instance" {
@@ -290,6 +310,19 @@ module "observability_instance" {
 
   # Routes
   activity_tracker_routes = local.at_routes
+
+  # IBM Cloud Metrics Routing
+
+  metrics_router_targets = local.validate_metrics_routing ? [
+    {
+      destination_crn                     = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : var.existing_cloud_monitoring_crn
+      target_name                         = local.metric_router_target_name
+      target_region                       = var.cloud_monitoring_provision ? var.region : module.cloud_monitoring_crn_parser.region
+      skip_mrouter_sysdig_iam_auth_policy = false
+    }
+  ] : []
+
+  metrics_router_routes = local.validate_metrics_routing ? (var.metrics_router_routes != null ? var.metrics_router_routes : local.default_metrics_router_route) : []
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
