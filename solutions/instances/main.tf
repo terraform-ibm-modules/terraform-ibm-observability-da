@@ -91,6 +91,11 @@ locals {
     tag   = var.cloud_log_metrics_bucket_access_tag
   } : null
 
+  bucket_retention_configs = merge(
+    local.at_bucket_config != null ? { (local.at_cos_target_bucket_name) = var.at_cos_bucket_retention_policy } : null,
+    local.cloud_log_data_bucket_config != null ? { (local.cloud_log_data_bucket) = var.cloud_log_data_bucket_retention_policy } : null
+  )
+
   buckets_config = concat(
     local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
     local.at_bucket_config != null ? [local.at_bucket_config] : [],
@@ -98,13 +103,13 @@ locals {
     local.cloud_log_metrics_bucket_config != null ? [local.cloud_log_metrics_bucket_config] : []
   )
 
-  archive_rule = var.existing_at_cos_target_bucket_name == null ? {
+  archive_rule = length(local.buckets_config) != 0 ? {
     enable = true
     days   = 90
     type   = "Glacier"
   } : null
 
-  expire_rule = var.existing_at_cos_target_bucket_name == null ? {
+  expire_rule = length(local.buckets_config) != 0 ? {
     enable = true
     days   = 366
   } : null
@@ -120,6 +125,7 @@ locals {
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets[local.cloud_logs_target_name].id]
   }] : []
+
   apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
   at_routes         = concat(local.at_cos_route, local.at_cloud_logs_route)
 
@@ -478,7 +484,7 @@ module "cos_bucket" {
       force_delete                  = true
       archive_rule                  = local.archive_rule
       expire_rule                   = local.expire_rule
-      retention_rule                = null
+      retention_rule                = lookup(local.bucket_retention_configs, value.name, null)
       metrics_monitoring = {
         usage_metrics_enabled   = true
         request_metrics_enabled = true
