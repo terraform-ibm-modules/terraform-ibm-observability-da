@@ -313,7 +313,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 
 		options2 := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 			Testing: t,
-			Prefix:  "obs-agents",
+			Prefix:  "obs-ins-ext",
 			TarIncludePatterns: []string{
 				solutionInstanceDADir + "/*.*",
 			},
