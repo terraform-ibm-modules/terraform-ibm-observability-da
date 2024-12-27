@@ -55,8 +55,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestInstancesInSchematics(t *testing.T) {
-	// t.Parallel()
-	t.Skip()
+	t.Parallel()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
@@ -95,8 +94,7 @@ func TestInstancesInSchematics(t *testing.T) {
 }
 
 func TestRunUpgradeSolutionInstances(t *testing.T) {
-	// t.Parallel()
-	t.Skip()
+	t.Parallel()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
@@ -138,8 +136,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 }
 
 func TestAgentsSolutionInSchematics(t *testing.T) {
-	// t.Parallel()
-	t.Skip()
+	t.Parallel()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
