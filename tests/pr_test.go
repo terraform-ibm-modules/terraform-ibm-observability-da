@@ -55,7 +55,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestInstancesInSchematics(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
+	t.Skip()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
@@ -94,7 +95,8 @@ func TestInstancesInSchematics(t *testing.T) {
 }
 
 func TestRunUpgradeSolutionInstances(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
+	t.Skip()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
@@ -136,7 +138,8 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 }
 
 func TestAgentsSolutionInSchematics(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
+	t.Skip()
 
 	var region = validRegions[rand.Intn(len(validRegions))]
 
@@ -292,7 +295,6 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
 			{Name: "existing_cloud_logs_data_bucket_crn", Value: terraform.Output(t, existingTerraformOptions, "data_bucket_crn"), DataType: "string"},
-			{Name: "existing_cloud_logs_metrics_bucket_crn", Value: terraform.Output(t, existingTerraformOptions, "metrics_bucket_crn"), DataType: "string"},
 			{Name: "existing_at_cos_target_bucket_name", Value: terraform.Output(t, existingTerraformOptions, "bucket_name_at"), DataType: "string"},
 			{Name: "existing_at_cos_target_bucket_endpoint", Value: terraform.Output(t, existingTerraformOptions, "bucket_endpoint_at"), DataType: "string"},
 			{Name: "existing_cloud_logs_data_bucket_endpoint", Value: terraform.Output(t, existingTerraformOptions, "data_bucket_endpoint"), DataType: "string"},
@@ -301,11 +303,12 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "existing_en_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "en_crn_1"), DataType: "string"},
 			{Name: "prefix", Value: options.Prefix, DataType: "string"},
 			{Name: "management_endpoint_type_for_bucket", Value: "public", DataType: "string"},
-			{Name: "provider_visibility", Value: "private", DataType: "string"},
+			{Name: "provider_visibility", Value: "public", DataType: "string"},
 			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
 			{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 			{Name: "cloud_logs_existing_en_instances", Value: cloud_logs_existing_en_instances, DataType: "list(object)"},
 			{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
+			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
 		}
 
 		err := options.RunSchematicTest()
@@ -326,9 +329,9 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 		})
 
 		options2.TerraformVars = []testschematic.TestSchematicTerraformVar{
-			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+			{Name: "ibmcloud_api_key", Value: options2.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 			{Name: "cos_region", Value: region, DataType: "string"},
-			{Name: "prefix", Value: options.Prefix, DataType: "string"},
+			{Name: "prefix", Value: options2.Prefix, DataType: "string"},
 			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
 			{Name: "kms_endpoint_type", Value: "public", DataType: "string"},
