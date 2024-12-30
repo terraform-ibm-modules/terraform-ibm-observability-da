@@ -245,6 +245,12 @@
               "key": "cos_instance_access_tags"
             },
             {
+              "key": "at_cos_bucket_retention_policy"
+            },
+            {
+              "key": "cloud_log_data_bucket_retention_policy"
+            },
+            {
               "key": "add_bucket_name_suffix"
             },
             {
@@ -449,6 +455,12 @@
                   "value": "private"
                 }
               ]
+            },
+            {
+              "key": "enable_metrics_routing_to_cloud_monitoring"
+            },
+            {
+              "key": "metrics_router_routes"
             }
           ],
           "architecture": {
