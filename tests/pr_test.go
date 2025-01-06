@@ -61,7 +61,7 @@ func TestInstancesInSchematics(t *testing.T) {
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
-		Prefix:  "instance-da",
+		Prefix:  "inst-da",
 		TarIncludePatterns: []string{
 			"*.tf",
 			solutionInstanceDADir + "/*.tf",
