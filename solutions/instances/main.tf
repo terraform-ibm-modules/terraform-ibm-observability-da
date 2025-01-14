@@ -4,15 +4,6 @@
 
 locals {
 
-  # tflint-ignore: terraform_unused_declarations
-  validate_existing_kms_inputs = (var.existing_cos_kms_key_crn != null && !var.skip_cos_kms_auth_policy) ? (var.existing_kms_instance_crn == null ? tobool("The existing_kms_instance_crn is not provided and is required to configure the COS - KMS authorization policy") : true) : true
-  # tflint-ignore: terraform_unused_declarations
-  validate_existing_cloud_monitoring = var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null ? tobool("if cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa") : true
-  # tflint-ignore: terraform_unused_declarations
-  validate_cos_resource_group = var.existing_cos_instance_crn == null ? var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null ? tobool("if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null") : true : true
-  # tflint-ignore: terraform_unused_declarations
-  validate_metrics_routing = var.enable_metrics_routing_to_cloud_monitoring ? ((var.existing_cloud_monitoring_crn != null || var.cloud_monitoring_provision) ? true : tobool("When `enable_metrics_routing_to_cloud_monitoring` is set to true, you must either set `cloud_monitoring_provision` as true or provide the `existing_cloud_monitoring_crn`.")) : true
-
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
   cos_key_ring_name           = var.prefix != null ? "${var.prefix}-${var.cos_key_ring_name}" : var.cos_key_ring_name

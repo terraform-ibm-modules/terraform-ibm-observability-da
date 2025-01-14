@@ -231,6 +231,11 @@ variable "enable_metrics_routing_to_cloud_monitoring" {
   type        = bool
   description = "Whether to enable metrics routing from IBM Cloud Metric Routing to Cloud Monitoring."
   default     = true
+
+  validation {
+    condition = (var.enable_metrics_routing_to_cloud_monitoring && (var.existing_cloud_monitoring_crn != null || var.cloud_monitoring_provision))
+    error_message = "When `enable_metrics_routing_to_cloud_monitoring` is set to true, you must either set `cloud_monitoring_provision` as true or provide the `existing_cloud_monitoring_crn`."
+  }
 }
 
 ##############################################################################
@@ -241,6 +246,11 @@ variable "cloud_monitoring_provision" {
   description = "Whether to create an IBM cloud monitoring instance. Set to `false` if a CRN is specified in `existing_cloud_monitoring_crn`."
   type        = bool
   default     = true
+
+  validation {
+    condition = !(var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null)
+    error_message = "If cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa"
+  }
 }
 
 variable "existing_cloud_monitoring_crn" {
@@ -427,6 +437,11 @@ variable "existing_cos_instance_crn" {
   nullable    = true
   default     = null
   description = "The CRN of an existing Cloud Object Storage instance. If a CRN is not specified, a new instance of Cloud Object Storage is created."
+
+  validation {
+    condition = !(var.existing_cos_instance_crn == null && var.ibmcloud_cos_api_key != null && var.cos_resource_group_name == null)
+    error_message = "if value for `ibmcloud_cos_api_key` is set, then `cos_resource_group_name` cannot be null"
+  }
 }
 
 variable "existing_cloud_logs_data_bucket_crn" {
@@ -507,6 +522,11 @@ variable "existing_kms_instance_crn" {
   type        = string
   default     = null
   description = "The CRN of the key management service (KMS) that is used to create keys for encrypting the Cloud Object Storage bucket. If you are not using an existing KMS root key, you must specify this CRN. If you are using an existing KMS root key, an existing COS instance and auth policy is not set for COS to KMS, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required."
+
+  validation {
+    condition = !(var.existing_cos_kms_key_crn != null && !var.skip_cos_kms_auth_policy && var.existing_kms_instance_crn == null)
+    error_message = "The existing_kms_instance_crn is not provided and is required to configure the COS - KMS authorization policy."
+  }
 }
 
 variable "existing_cos_kms_key_crn" {
