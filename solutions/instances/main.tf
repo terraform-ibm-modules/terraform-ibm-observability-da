@@ -47,7 +47,7 @@ locals {
   metric_router_target_name  = var.prefix != null ? "${var.prefix}-cloud-monitoring-target" : "cloud-monitoring-target"
   metric_router_route_name   = var.prefix != null ? "${var.prefix}-metric-routing-route" : "metric-routing-route"
 
-  default_metrics_router_route = [{
+  default_metrics_router_route = var.enable_metrics_routing_to_cloud_monitoring ? [{
     name = local.metric_router_route_name
     rules = [{
       action = "send"
@@ -56,7 +56,7 @@ locals {
       }]
       inclusion_filters = []
     }]
-  }]
+  }] : []
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -304,16 +304,16 @@ module "observability_instance" {
 
   # IBM Cloud Metrics Routing
 
-  metrics_router_targets = local.validate_metrics_routing ? [
+  metrics_router_targets = var.enable_metrics_routing_to_cloud_monitoring ? [
     {
       destination_crn                     = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_crn : var.existing_cloud_monitoring_crn
       target_name                         = local.metric_router_target_name
-      target_region                       = var.cloud_monitoring_provision ? var.region : module.cloud_monitoring_crn_parser.region
+      target_region                       = var.cloud_monitoring_provision ? var.region : module.cloud_monitoring_crn_parser[0].region
       skip_mrouter_sysdig_iam_auth_policy = false
     }
   ] : []
 
-  metrics_router_routes = local.validate_metrics_routing ? (var.metrics_router_routes != null ? var.metrics_router_routes : local.default_metrics_router_route) : []
+  metrics_router_routes = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
