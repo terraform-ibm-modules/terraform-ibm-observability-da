@@ -157,7 +157,7 @@ variable "logs_routing_tenant_regions" {
 variable "manage_log_archive_cos_bucket" {
   type        = bool
   default     = false
-  description = "Log Analysis has been deprecated, and can no longer be deployed wuth this solution, however you can continue to manage the COS bucket that may have been in older versions for Log Analysis log archiving by setting this input to true."
+  description = "Log Analysis has been deprecated, and can no longer be deployed with this solution, however you can continue to manage the COS bucket that may have been in older versions for Log Analysis log archiving by setting this input to true."
 }
 
 ########################################################################

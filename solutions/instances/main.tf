@@ -13,6 +13,9 @@ locals {
 
   cos_instance_crn  = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
   cos_instance_guid = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
+  
+  cos_kms_key_crn   = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
+  cos_resource_group_id      = var.cos_resource_group_name != null ? module.cos_resource_group[0].resource_group_id : module.resource_group.resource_group_id
 
   # fetch KMS GUID from existing_kms_instance_crn if KMS resources are required
   existing_kms_guid = ((var.existing_cos_kms_key_crn != null && var.skip_cos_kms_auth_policy) ? null :
@@ -31,22 +34,7 @@ locals {
   kms_region = ((length(coalesce(local.buckets_config, [])) != 0) ?
   (var.existing_cos_kms_key_crn == null ? module.kms_instance_crn_parser[0].region : null) : null)
 
-  cos_kms_key_crn    = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
-  parsed_kms_key_crn = local.cos_kms_key_crn != null ? split(":", local.cos_kms_key_crn) : []
-  cos_kms_key_id     = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[9] : null
-  cos_kms_scope      = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[6] : null
-  kms_account_id     = length(local.parsed_kms_key_crn) > 0 ? split("/", local.cos_kms_scope)[1] : null
-
-  cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
-  cos_resource_group_id      = var.cos_resource_group_name != null ? module.cos_resource_group[0].resource_group_id : module.resource_group.resource_group_id
-  cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
-  cos_target_name            = var.prefix != null ? "${var.prefix}-cos-target" : "cos-target"
-  cloud_logs_target_name     = var.prefix != null ? "${var.prefix}-cloud-logs-target" : "cloud-logs-target"
-  at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
-  at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
-  metric_router_target_name  = var.prefix != null ? "${var.prefix}-cloud-monitoring-target" : "cloud-monitoring-target"
-  metric_router_route_name   = var.prefix != null ? "${var.prefix}-metric-routing-route" : "metric-routing-route"
-
+  # Set the metric router route with the default configuration if `metrics_router_routes` is not provided
   default_metrics_router_route = var.enable_metrics_routing_to_cloud_monitoring ? [{
     name = local.metric_router_route_name
     rules = [{
@@ -64,29 +52,34 @@ locals {
     tag   = var.archive_bucket_access_tags
   } : null
 
+  # `at_bucket_config` is a map with the configuration of COS bucket to create if enable event routing from AT to the Object Storage bucket is true and existing bucket is not provided.
   at_bucket_config = var.existing_at_cos_target_bucket_name == null && var.enable_at_event_routing_to_cos_bucket ? {
     class = var.at_cos_target_bucket_class
     name  = local.at_cos_target_bucket_name
     tag   = var.at_cos_bucket_access_tags
   } : null
 
+  # `cloud_log_data_bucket_config` is a map with the configuration of COS bucket to create if `cloud_logs_provision` is true and `existing_cloud_logs_data_bucket_crn` is not provided.
   cloud_log_data_bucket_config = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? {
     class = var.cloud_log_data_bucket_class
     name  = local.cloud_log_data_bucket
     tag   = var.cloud_log_data_bucket_access_tag
   } : null
 
+  # `cloud_log_metrics_bucket_config` is a map with the configuration of COS bucket to create if `cloud_logs_provision` is true and `existing_cloud_logs_metrics_bucket_crn` is not provided.
   cloud_log_metrics_bucket_config = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? {
     class = var.cloud_log_metrics_bucket_class
     name  = local.cloud_log_metrics_bucket
     tag   = var.cloud_log_metrics_bucket_access_tag
   } : null
 
+  # To create a map between at event routing cos bucket & cloud log data bucket with their respective retention policy
   bucket_retention_configs = merge(
     local.at_bucket_config != null ? { (local.at_cos_target_bucket_name) = var.at_cos_bucket_retention_policy } : null,
     local.cloud_log_data_bucket_config != null ? { (local.cloud_log_data_bucket) = var.cloud_log_data_bucket_retention_policy } : null
   )
 
+  # `buckets_config` creates a list of map objects that defines the configuration for multiple Cloud Object Storage buckets.
   buckets_config = concat(
     local.archive_bucket_config != null ? [local.archive_bucket_config] : [],
     local.at_bucket_config != null ? [local.at_bucket_config] : [],
@@ -94,44 +87,44 @@ locals {
     local.cloud_log_metrics_bucket_config != null ? [local.cloud_log_metrics_bucket_config] : []
   )
 
+  # Archive rule of all the COS buckets
   archive_rule = length(local.buckets_config) != 0 ? {
     enable = true
     days   = 90
     type   = "Glacier"
   } : null
 
+  # Expire rule of all the COS buckets
   expire_rule = length(local.buckets_config) != 0 ? {
     enable = true
     days   = 366
   } : null
 
+  # AT event routing to COS bucket route
   at_cos_route = var.enable_at_event_routing_to_cos_bucket ? [{
     route_name = local.at_cos_route_name
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets[local.cos_target_name].id]
   }] : []
 
+  # AT event routing to cloud logs instance route
   at_cloud_logs_route = var.enable_at_event_routing_to_cloud_logs ? [{
     route_name = local.at_cloud_logs_route_name
     locations  = ["*", "global"]
     target_ids = [module.observability_instance.activity_tracker_targets[local.cloud_logs_target_name].id]
   }] : []
 
+  # Condition to create an IAM Authorization Policy to allow COS to access KMS for the encryption key
   apply_auth_policy = (var.skip_cos_kms_auth_policy || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1
-  at_routes         = concat(local.at_cos_route, local.at_cloud_logs_route)
 
+  # Creating a list of routes for event routing by combining `at_cos_route` and `at_cloud_logs_route`
+  at_routes         = concat(local.at_cos_route, local.at_cloud_logs_route)
 
   # Cloud Logs data bucket
   cloud_log_data_bucket = var.prefix != null ? "${var.prefix}-${var.cloud_log_data_bucket_name}" : var.cloud_log_data_bucket_name
 
-  parsed_log_data_bucket_name         = var.existing_cloud_logs_data_bucket_crn != null ? split(":", var.existing_cloud_logs_data_bucket_crn) : []
-  existing_cloud_log_data_bucket_name = length(local.parsed_log_data_bucket_name) > 0 ? local.parsed_log_data_bucket_name[1] : null
-
   # Cloud Logs metrics bucket
   cloud_log_metrics_bucket = var.prefix != null ? "${var.prefix}-${var.cloud_log_metrics_bucket_name}" : var.cloud_log_metrics_bucket_name
-
-  parsed_log_metrics_bucket_name         = var.existing_cloud_logs_metrics_bucket_crn != null ? split(":", var.existing_cloud_logs_metrics_bucket_crn) : []
-  existing_cloud_log_metrics_bucket_name = length(local.parsed_log_metrics_bucket_name) > 0 ? local.parsed_log_metrics_bucket_name[1] : null
 
   # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
   cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
@@ -163,10 +156,69 @@ module "cos_resource_group" {
 }
 
 #######################################################################################################################
+# CRN Parser
+#######################################################################################################################
+
+module "en_crn_parser" {
+  count   = length(local.cloud_logs_existing_en_instances)
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.0.0"
+  crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
+}
+
+module "cloud_monitoring_crn_parser" {
+  count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.0.0"
+  crn     = var.existing_cloud_monitoring_crn
+}
+
+module "cos_kms_key_crn_parser" {
+  depends_on = [ module.kms ]
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.0.0"
+  crn     = local.cos_kms_key_crn
+}
+
+module "cloud_logs_data_bucket_crn_parser" {
+  count = var.existing_cloud_logs_data_bucket_crn != null ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.0.0"
+  crn = var.existing_cloud_logs_data_bucket_crn
+}
+
+module "cloud_logs_metric_bucket_crn_parser" {
+  count = var.existing_cloud_logs_metrics_bucket_crn != null ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.0.0"
+  crn = var.existing_cloud_logs_metrics_bucket_crn
+}
+
+# If existing KMS intance CRN passed, parse details from it
+module "kms_instance_crn_parser" {
+  count   = var.existing_kms_instance_crn != null ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.1.0"
+  crn     = var.existing_kms_instance_crn
+}
+
+#######################################################################################################################
 # Observability Instance
 #######################################################################################################################
 
 locals {
+  # Setting up AT event routing target & routes names
+  cos_target_name            = var.prefix != null ? "${var.prefix}-cos-target" : "cos-target"
+  cloud_logs_target_name     = var.prefix != null ? "${var.prefix}-cloud-logs-target" : "cloud-logs-target"
+  at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
+  at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
+  cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
+  cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
+
+  # Setting up metrics router target and route names
+  metric_router_target_name  = var.prefix != null ? "${var.prefix}-cloud-monitoring-target" : "cloud-monitoring-target"
+  metric_router_route_name   = var.prefix != null ? "${var.prefix}-metric-routing-route" : "metric-routing-route"
+
   cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
   cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
   cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
@@ -214,20 +266,6 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
     operator = "stringEquals"
     value    = regex("bucket:(.*)", local.cloud_logs_buckets[count.index])[0]
   }
-}
-
-module "en_crn_parser" {
-  count   = length(local.cloud_logs_existing_en_instances)
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.0.0"
-  crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
-}
-
-module "cloud_monitoring_crn_parser" {
-  count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.0.0"
-  crn     = var.existing_cloud_monitoring_crn
 }
 
 module "observability_instance" {
@@ -336,14 +374,6 @@ resource "ibm_iam_authorization_policy" "atracker_cos" {
 # KMS Key
 #######################################################################################################################
 
-# If existing KMS intance CRN passed, parse details from it
-module "kms_instance_crn_parser" {
-  count   = var.existing_kms_instance_crn != null ? 1 : 0
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.1.0"
-  crn     = var.existing_kms_instance_crn
-}
-
 module "kms" {
   providers = {
     ibm = ibm.kms
@@ -401,7 +431,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   source_service_name         = "cloud-object-storage"
   source_resource_instance_id = local.cos_instance_guid
   roles                       = ["Reader"]
-  description                 = "Allow the COS instance ${local.cos_instance_guid} to read the ${local.kms_service} key ${local.cos_kms_key_id} from the instance ${local.existing_kms_guid}"
+  description                 = "Allow the COS instance ${local.cos_instance_guid} to read the ${local.kms_service} key ${module.cos_kms_key_crn_parser.resource} from the instance ${local.existing_kms_guid}"
   resource_attributes {
     name     = "serviceName"
     operator = "stringEquals"
@@ -410,7 +440,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   resource_attributes {
     name     = "accountId"
     operator = "stringEquals"
-    value    = local.kms_account_id
+    value = split("/", module.cos_kms_key_crn_parser.scope)[1]
   }
   resource_attributes {
     name     = "serviceInstance"
@@ -425,7 +455,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   resource_attributes {
     name     = "resource"
     operator = "stringEquals"
-    value    = local.cos_kms_key_id
+    value    = module.cos_kms_key_crn_parser.resource
   }
   # Scope of policy now includes the key, so ensure to create new policy before
   # destroying old one to prevent any disruption to every day services.

@@ -75,7 +75,7 @@ output "cos_instance_name" {
 
 output "cos_instance_crn" {
   description = "COS instance crn"
-  value       = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null : null
+  value       = var.existing_cos_instance_crn != null ? var.existing_cos_instance_crn : length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_crn : null
 }
 
 ## COS Buckets
@@ -85,17 +85,17 @@ output "log_archive_cos_bucket_name" {
 }
 
 output "at_cos_target_bucket_name" {
-  value       = var.existing_at_cos_target_bucket_name == null ? var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null : var.existing_at_cos_target_bucket_name
+  value       = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
   description = "The name of the AT target COS bucket"
 }
 
 output "cloud_log_data_bucket_name" {
-  value       = var.existing_cloud_logs_data_bucket_crn == null && var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_name : local.existing_cloud_log_data_bucket_name
+  value       = var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_name : var.existing_cloud_logs_data_bucket_crn != null ? module.cloud_logs_data_bucket_crn_parser[0].resource : null
   description = "The name of the Cloud logs data COS bucket"
 }
 
 output "cloud_log_metrics_bucket_name" {
-  value       = var.existing_cloud_logs_metrics_bucket_crn == null && var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_name : local.existing_cloud_log_metrics_bucket_name
+  value       = var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_name : var.existing_cloud_logs_metrics_bucket_crn != null ? module.cloud_logs_metric_bucket_crn_parser[0].resource : null
   description = "The name of the Cloud logs metrics COS bucket"
 }
 
