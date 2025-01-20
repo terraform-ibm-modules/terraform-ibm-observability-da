@@ -90,12 +90,12 @@ output "at_cos_target_bucket_name" {
 }
 
 output "cloud_log_data_bucket_name" {
-  value       = var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_name : var.existing_cloud_logs_data_bucket_crn != null ? module.cloud_logs_data_bucket_crn_parser[0].resource : null
+  value       = var.existing_cloud_logs_data_bucket_crn != null ? module.cloud_logs_data_bucket_crn_parser[0].resource : var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_name : null
   description = "The name of the Cloud logs data COS bucket"
 }
 
 output "cloud_log_metrics_bucket_name" {
-  value       = var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_name : var.existing_cloud_logs_metrics_bucket_crn != null ? module.cloud_logs_metric_bucket_crn_parser[0].resource : null
+  value       = var.existing_cloud_logs_metrics_bucket_crn != null ? module.cloud_logs_metric_bucket_crn_parser[0].resource : var.cloud_logs_provision ? module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_name : null
   description = "The name of the Cloud logs metrics COS bucket"
 }
 

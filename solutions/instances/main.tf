@@ -15,6 +15,10 @@ locals {
   cos_instance_guid = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
 
   cos_kms_key_crn       = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
+  parsed_kms_key_crn = local.cos_kms_key_crn != null ? split(":", local.cos_kms_key_crn) : []
+  cos_kms_key_id     = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[9] : null
+  cos_kms_scope      = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[6] : null
+  kms_account_id     = length(local.parsed_kms_key_crn) > 0 ? split("/", local.cos_kms_scope)[1] : null
   cos_resource_group_id = var.cos_resource_group_name != null ? module.cos_resource_group[0].resource_group_id : module.resource_group.resource_group_id
 
   # fetch KMS GUID from existing_kms_instance_crn if KMS resources are required
@@ -171,13 +175,6 @@ module "cloud_monitoring_crn_parser" {
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
   version = "1.0.0"
   crn     = var.existing_cloud_monitoring_crn
-}
-
-module "cos_kms_key_crn_parser" {
-  depends_on = [module.kms]
-  source     = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version    = "1.0.0"
-  crn        = local.cos_kms_key_crn
 }
 
 module "cloud_logs_data_bucket_crn_parser" {
@@ -431,7 +428,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   source_service_name         = "cloud-object-storage"
   source_resource_instance_id = local.cos_instance_guid
   roles                       = ["Reader"]
-  description                 = "Allow the COS instance ${local.cos_instance_guid} to read the ${local.kms_service} key ${module.cos_kms_key_crn_parser.resource} from the instance ${local.existing_kms_guid}"
+  description                 = "Allow the COS instance ${local.cos_instance_guid} to read the ${local.kms_service} key ${local.cos_kms_key_id} from the instance ${local.existing_kms_guid}"
   resource_attributes {
     name     = "serviceName"
     operator = "stringEquals"
@@ -440,7 +437,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   resource_attributes {
     name     = "accountId"
     operator = "stringEquals"
-    value    = split("/", module.cos_kms_key_crn_parser.scope)[1]
+    value    = local.kms_account_id
   }
   resource_attributes {
     name     = "serviceInstance"
@@ -455,7 +452,7 @@ resource "ibm_iam_authorization_policy" "policy" {
   resource_attributes {
     name     = "resource"
     operator = "stringEquals"
-    value    = module.cos_kms_key_crn_parser.resource
+    value    = local.cos_kms_key_id
   }
   # Scope of policy now includes the key, so ensure to create new policy before
   # destroying old one to prevent any disruption to every day services.
