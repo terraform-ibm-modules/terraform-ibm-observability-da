@@ -29,6 +29,21 @@ output "cloud_logs_name" {
   description = "The name of the provisioned Cloud Logs instance."
 }
 
+output "cloud_logs_resource_group_id" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_resource_group_id : null
+  description = "The resource group where Cloud Logs instance resides."
+}
+
+output "cloud_logs_ingress_endpoint" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_ingress_endpoint : null
+  description = "The public ingress endpoint of the provisioned Cloud Logs instance."
+}
+
+output "cloud_logs_ingress_private_endpoint" {
+  value       = var.cloud_logs_provision ? module.observability_instance.cloud_logs_ingress_private_endpoint : null
+  description = "The private ingress endpoint of the provisioned Cloud Logs instance."
+}
+
 ## Cloud logs policies
 output "logs_policies_details" {
   value       = length(var.cloud_logs_policies) > 0 ? module.observability_instance.logs_policies_details : null
