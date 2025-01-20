@@ -15,10 +15,10 @@ locals {
   cos_instance_guid = var.existing_cos_instance_crn == null ? length(module.cos_instance) != 0 ? module.cos_instance[0].cos_instance_guid : null : element(split(":", var.existing_cos_instance_crn), length(split(":", var.existing_cos_instance_crn)) - 3)
 
   cos_kms_key_crn       = var.existing_cos_kms_key_crn != null ? var.existing_cos_kms_key_crn : length(coalesce(local.buckets_config, [])) != 0 ? module.kms[0].keys[format("%s.%s", local.cos_key_ring_name, local.cos_key_name)].crn : null
-  parsed_kms_key_crn = local.cos_kms_key_crn != null ? split(":", local.cos_kms_key_crn) : []
-  cos_kms_key_id     = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[9] : null
-  cos_kms_scope      = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[6] : null
-  kms_account_id     = length(local.parsed_kms_key_crn) > 0 ? split("/", local.cos_kms_scope)[1] : null
+  parsed_kms_key_crn    = local.cos_kms_key_crn != null ? split(":", local.cos_kms_key_crn) : []
+  cos_kms_key_id        = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[9] : null
+  cos_kms_scope         = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[6] : null
+  kms_account_id        = length(local.parsed_kms_key_crn) > 0 ? split("/", local.cos_kms_scope)[1] : null
   cos_resource_group_id = var.cos_resource_group_name != null ? module.cos_resource_group[0].resource_group_id : module.resource_group.resource_group_id
 
   # fetch KMS GUID from existing_kms_instance_crn if KMS resources are required
