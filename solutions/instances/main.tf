@@ -3,7 +3,6 @@
 #######################################################################################################################
 
 locals {
-
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
   cos_key_ring_name           = var.prefix != null ? "${var.prefix}-${var.cos_key_ring_name}" : var.cos_key_ring_name
@@ -263,20 +262,6 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
     operator = "stringEquals"
     value    = regex("bucket:(.*)", local.cloud_logs_buckets[count.index])[0]
   }
-}
-
-module "en_crn_parser" {
-  count   = length(local.cloud_logs_existing_en_instances)
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.1.0"
-  crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
-}
-
-module "cloud_monitoring_crn_parser" {
-  count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.1.0"
-  crn     = var.existing_cloud_monitoring_crn
 }
 
 module "observability_instance" {
