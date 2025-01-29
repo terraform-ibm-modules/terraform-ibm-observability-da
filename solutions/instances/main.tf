@@ -307,6 +307,7 @@ module "observability_instance" {
       target_name   = local.cloud_logs_target_name
     }
   ] : []
+  global_event_routing_settings = var.global_event_routing_settings
 
   # Routes
   activity_tracker_routes = local.at_routes
@@ -322,7 +323,8 @@ module "observability_instance" {
     }
   ] : []
 
-  metrics_router_routes = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
+  metrics_router_routes   = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
+  metrics_router_settings = var.metrics_router_settings
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
