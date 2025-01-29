@@ -66,3 +66,8 @@ output "en_crn_2" {
   description = "Event Notification CRN"
   value       = module.event_notification_2.crn
 }
+
+output "cloud_monitoring_crn" {
+  description = "Cloud Monitoring CRN"
+  value       = module.cloud_monitoring.crn
+}

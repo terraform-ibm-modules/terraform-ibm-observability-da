@@ -306,6 +306,8 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "cloud_logs_existing_en_instances", Value: cloud_logs_existing_en_instances, DataType: "list(object)"},
 			{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
 			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
+			{Name: "existing_cloud_monitoring_crn", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_crn"), DataType: "string"},
+			{Name: "cloud_monitoring_provision", Value: false, DataType: "bool"},
 		}
 
 		err := options.RunSchematicTest()
