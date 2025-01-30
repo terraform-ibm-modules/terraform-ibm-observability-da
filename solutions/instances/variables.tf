@@ -207,7 +207,7 @@ variable "global_event_routing_settings" {
   type = object({
     default_targets           = optional(list(string), [])
     metadata_region_primary   = string
-    metadata_region_backup    = optional(string)
+    metadata_region_backup    = optional(string, "us-south")
     permitted_target_regions  = list(string)
     private_api_endpoint_only = optional(bool, false)
   })
@@ -256,7 +256,7 @@ variable "metrics_router_settings" {
     })))
     permitted_target_regions  = optional(list(string))
     primary_metadata_region   = optional(string, "eu-de")
-    backup_metadata_region    = optional(string)
+    backup_metadata_region    = optional(string, "us-east")
     private_api_endpoint_only = optional(bool, false)
   })
   description = "Global settings for Metrics Routing."
