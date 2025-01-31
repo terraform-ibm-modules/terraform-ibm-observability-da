@@ -267,7 +267,7 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
 module "observability_instance" {
   depends_on        = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source            = "terraform-ibm-modules/observability-instances/ibm"
-  version           = "3.4.0"
+  version           = "3.4.1"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
 
