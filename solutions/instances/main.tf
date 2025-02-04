@@ -222,7 +222,14 @@ locals {
   cloud_logs_buckets             = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
 }
 
+# The data block is used to fetch the account id
 data "ibm_iam_account_settings" "iam_account_settings" {
+}
+
+# The data block is used to fetch the name of existing cloud monitoring instance name
+data "ibm_resource_instance" "existing_cloud_monitoring_instance_name" {
+  count      = var.existing_cloud_monitoring_crn != null ? 1 : 0
+  identifier = module.cloud_monitoring_crn_parser[0].service_instance
 }
 
 resource "ibm_iam_authorization_policy" "cos_policy" {

@@ -231,11 +231,6 @@ variable "enable_metrics_routing_to_cloud_monitoring" {
   type        = bool
   description = "Whether to enable metrics routing from IBM Cloud Metric Routing to Cloud Monitoring."
   default     = true
-
-  validation {
-    condition     = (var.enable_metrics_routing_to_cloud_monitoring && (var.existing_cloud_monitoring_crn != null || var.cloud_monitoring_provision))
-    error_message = "When `enable_metrics_routing_to_cloud_monitoring` is set to true, you must either set `cloud_monitoring_provision` as true or provide the `existing_cloud_monitoring_crn`."
-  }
 }
 
 ##############################################################################
@@ -248,7 +243,7 @@ variable "cloud_monitoring_provision" {
   default     = true
 
   validation {
-    condition     = !(var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null)
+    condition     = ((var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn == null) || (!var.cloud_monitoring_provision && var.existing_cloud_monitoring_crn != null))
     error_message = "If cloud_monitoring_provision is set to true, then existing_cloud_monitoring_crn should be null and vice versa"
   }
 }

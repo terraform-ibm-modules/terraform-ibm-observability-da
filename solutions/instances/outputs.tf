@@ -52,7 +52,7 @@ output "logs_policies_details" {
 
 ## Cloud Monitoring
 output "cloud_monitoring_name" {
-  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : (var.existing_cloud_monitoring_crn != null ? module.cloud_monitoring_crn_parser[0].service_name : null)
+  value       = var.cloud_monitoring_provision ? module.observability_instance.cloud_monitoring_name : (var.existing_cloud_monitoring_crn != null ? data.ibm_resource_instance.existing_cloud_monitoring_instance_name[0].name : null)
   description = "The name of the provisioned IBM cloud monitoring instance."
 }
 
