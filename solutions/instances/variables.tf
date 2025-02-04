@@ -213,11 +213,8 @@ variable "global_event_routing_settings" {
   })
   description = "Global settings for event routing"
   default = {
-    default_targets           = []
     metadata_region_primary   = "eu-de"
-    metadata_region_backup    = "eu-de"
     permitted_target_regions  = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor", "eu-es", "jp-tok", "jp-osa", "in-che", "eu-fr2"]
-    private_api_endpoint_only = false
   }
 }
 ##############################################################################
@@ -253,7 +250,7 @@ variable "metrics_router_settings" {
   type = object({
     default_targets = optional(list(object({
       id = string
-    })))
+    })),[])
     permitted_target_regions  = optional(list(string))
     primary_metadata_region   = optional(string, "eu-de")
     backup_metadata_region    = optional(string, "us-east")
@@ -261,11 +258,7 @@ variable "metrics_router_settings" {
   })
   description = "Global settings for Metrics Routing."
   default = {
-    default_targets           = []
     permitted_target_regions  = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor", "jp-tok", "jp-osa"]
-    primary_metadata_region   = "eu-de"
-    backup_metadata_region    = "us-east"
-    private_api_endpoint_only = false
   }
 }
 ##############################################################################
