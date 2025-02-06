@@ -102,7 +102,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		Testing:      t,
 		TerraformDir: solutionInstanceDADir,
 		Region:       region,
-		Prefix:       "obs-ins-upg",
+		Prefix:       "ob-ins-up",
 	})
 
 	options.TerraformVars = map[string]interface{}{
