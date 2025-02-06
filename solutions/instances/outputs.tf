@@ -147,3 +147,26 @@ output "metrics_router_routes" {
   description = "The map of created metrics routing routes."
   value       = var.enable_metrics_routing_to_cloud_monitoring ? module.observability_instance.metrics_router_routes : null
 }
+
+## Resource keys and service credentials
+output "cloud_monitoring_resource_keys" {
+  description = "List of resource keys"
+  value       = resource.ibm_resource_key.cloud_monitoring_resource_keys
+  sensitive   = true
+}
+
+output "cloud_logs_resource_keys" {
+  description = "List of resource keys"
+  value       = resource.ibm_resource_key.cloud_logs_resource_keys
+  sensitive   = true
+}
+
+output "service_credential_secrets" {
+  description = "Service credential secrets"
+  value       = length(local.service_credential_secrets) > 0 ? module.secrets_manager_service_credentials[0].secrets : null
+}
+
+output "service_credential_secret_groups" {
+  description = "Service credential secret groups"
+  value       = length(local.service_credential_secrets) > 0 ? module.secrets_manager_service_credentials[0].secret_groups : null
+}

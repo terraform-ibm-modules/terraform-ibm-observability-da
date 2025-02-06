@@ -499,3 +499,148 @@ module "cos_bucket" {
     }
   ]
 }
+
+########################################################################################################################
+# Resource keys and service credentials
+########################################################################################################################
+
+resource "ibm_resource_key" "cloud_monitoring_resource_keys" {
+  for_each             = { for key in var.cloud_monitoring_resource_keys : key.name => key }
+  name                 = each.value.key_name == null ? each.key : each.value.key_name
+  resource_instance_id = module.cloud_monitoring_instance_crn_parser[0].service_instance
+  role                 = each.value.role
+  parameters = {
+    "serviceid_crn" = each.value.service_id_crn
+    "HMAC"          = each.value.generate_hmac_credentials
+  }
+}
+
+resource "ibm_resource_key" "cloud_logs_resource_keys" {
+  for_each             = { for key in var.cloud_logs_resource_keys : key.name => key }
+  name                 = each.value.key_name == null ? each.key : each.value.key_name
+  resource_instance_id = module.cloud_logs_instance_crn_parser[0].service_instance
+  role                 = each.value.role
+  parameters = {
+    "serviceid_crn" = each.value.service_id_crn
+    "HMAC"          = each.value.generate_hmac_credentials
+  }
+}
+
+module "secrets_manager_instance_crn_parser" {
+  count   = var.existing_secrets_manager_instance_crn != null ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.1.0"
+  crn     = var.existing_secrets_manager_instance_crn
+}
+
+module "cloud_logs_instance_crn_parser" {
+  count   = var.cloud_logs_provision ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.1.0"
+  crn     = module.observability_instance.cloud_logs_crn
+}
+
+module "cloud_monitoring_instance_crn_parser" {
+  count   = var.cloud_monitoring_provision ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.1.0"
+  crn     = module.observability_instance.cloud_monitoring_crn
+}
+
+resource "ibm_iam_authorization_policy" "cloud_monitoring_key_manager" {
+  count                       = var.skip_secrets_manager_auth_policy || var.existing_secrets_manager_instance_crn == null ? 0 : 1
+  depends_on                  = [module.observability_instance]
+  source_service_name         = "secrets-manager"
+  source_resource_instance_id = module.secrets_manager_instance_crn_parser[0].service_instance
+  target_service_name         = "cloud-logs"
+  target_resource_instance_id = module.cloud_monitoring_instance_crn_parser[0].service_instance
+  roles                       = ["Key Manager"]
+  description                 = "Allow Secrets Manager with instance id ${module.secrets_manager_instance_crn_parser[0].service_instance} to manage key for the Cloud monitoring instance"
+}
+
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
+resource "time_sleep" "wait_for_cloud_monitoring_authorization_policy" {
+  count           = var.skip_secrets_manager_auth_policy || var.existing_secrets_manager_instance_crn == null ? 0 : 1
+  depends_on      = [ibm_iam_authorization_policy.cloud_monitoring_key_manager[0]]
+  create_duration = "30s"
+}
+
+locals {
+  cloud_logs_service_credential_secrets = [
+    for service_credentials in var.cloud_logs_service_credential_secrets : {
+      secret_group_name        = service_credentials.secret_group_name
+      secret_group_description = service_credentials.secret_group_description
+      existing_secret_group    = service_credentials.existing_secret_group
+      secrets = [
+        for secret in service_credentials.service_credentials : {
+          secret_name                                 = secret.secret_name
+          secret_labels                               = secret.secret_labels
+          secret_auto_rotation                        = secret.secret_auto_rotation
+          secret_auto_rotation_unit                   = secret.secret_auto_rotation_unit
+          secret_auto_rotation_interval               = secret.secret_auto_rotation_interval
+          service_credentials_ttl                     = secret.service_credentials_ttl
+          service_credential_secret_description       = secret.service_credential_secret_description
+          service_credentials_source_service_role_crn = secret.service_credentials_source_service_role_crn
+          service_credentials_source_service_crn      = module.observability_instance.cloud_logs_crn
+          secret_type                                 = "service_credentials" #checkov:skip=CKV_SECRET_6
+        }
+      ]
+    }
+  ]
+
+  cloud_monitoring_service_credential_secrets = [
+    for service_credentials in var.cloud_monitoring_service_credential_secrets : {
+      secret_group_name        = service_credentials.secret_group_name
+      secret_group_description = service_credentials.secret_group_description
+      existing_secret_group    = service_credentials.existing_secret_group
+      secrets = [
+        for secret in service_credentials.service_credentials : {
+          secret_name                                 = secret.secret_name
+          secret_labels                               = secret.secret_labels
+          secret_auto_rotation_unit                   = secret.secret_auto_rotation_unit
+          secret_auto_rotation                        = secret.secret_auto_rotation
+          secret_auto_rotation_interval               = secret.secret_auto_rotation_interval
+          service_credentials_ttl                     = secret.service_credentials_ttl
+          service_credential_secret_description       = secret.service_credential_secret_description
+          service_credentials_source_service_role_crn = secret.service_credentials_source_service_role_crn
+          service_credentials_source_service_crn      = module.observability_instance.cloud_monitoring_crn
+          secret_type                                 = "service_credentials" #checkov:skip=CKV_SECRET_6
+        }
+      ]
+    }
+  ]
+
+  service_credential_secrets = merge(local.cloud_monitoring_service_credential_secrets, local.cloud_logs_service_credential_secrets)
+
+  # tflint-ignore: terraform_unused_declarations
+  validate_sm_crn = length(local.service_credential_secrets) > 0 && var.existing_secrets_manager_instance_crn == null ? tobool("`existing_secrets_manager_instance_crn` is required when adding service credentials to a secrets manager secret.") : false
+}
+
+module "secrets_manager_service_credentials" {
+  count                       = length(local.service_credential_secrets) > 0 ? 1 : 0
+  depends_on                  = [time_sleep.wait_for_cloud_monitoring_authorization_policy, time_sleep.wait_for_cloud_logs_authorization_policy]
+  source                      = "terraform-ibm-modules/secrets-manager/ibm//modules/secrets"
+  version                     = "1.22.0"
+  existing_sm_instance_guid   = module.secrets_manager_instance_crn_parser[0].service_instance
+  existing_sm_instance_region = module.secrets_manager_instance_crn_parser[0].region
+  endpoint_type               = var.existing_secrets_manager_endpoint_type
+  secrets                     = local.service_credential_secrets
+}
+
+resource "ibm_iam_authorization_policy" "cloud_logs_key_manager" {
+  count                       = var.skip_secrets_manager_auth_policy || var.existing_secrets_manager_instance_crn == null ? 0 : 1
+  depends_on                  = [module.observability_instance]
+  source_service_name         = "secrets-manager"
+  source_resource_instance_id = module.secrets_manager_instance_crn_parser[0].service_instance
+  target_service_name         = "cloud-logs"
+  target_resource_instance_id = module.observability_instance.cloud_logs_crn
+  roles                       = ["Key Manager"]
+  description                 = "Allow Secrets Manager with instance id ${module.secrets_manager_instance_crn_parser[0].service_instance} to manage key for the Cloud logs instance"
+}
+
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
+resource "time_sleep" "wait_for_cloud_logs_authorization_policy" {
+  count           = var.skip_secrets_manager_auth_policy || var.existing_secrets_manager_instance_crn == null ? 0 : 1
+  depends_on      = [ibm_iam_authorization_policy.cloud_logs_key_manager]
+  create_duration = "30s"
+}
