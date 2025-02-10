@@ -714,6 +714,98 @@
               }
             ]
           }
+        },
+        {
+          "label": "Tenants",
+          "name": "tenants",
+          "install_type": "extension",
+          "working_directory": "solutions/tenants",
+          "iam_permissions": [
+            {
+              "service_name": "containers-kubernetes",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Viewer"
+              ]
+            }
+          ],
+          "dependencies": [
+            {
+              "flavors": [
+                "quickstart",
+                "standard"
+              ],
+              "id": "95fccffc-ae3b-42df-b6d9-80be5914d852-global",
+              "name": "deploy-arch-ibm-slz-ocp",
+              "version": ">=v3.0.0",
+              "optional": true
+            },
+            {
+              "flavors": [
+                "instances"
+              ],
+              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
+              "id": "a3137d28-79e0-479d-8a24-758ebd5a0eab-global",
+              "name": "deploy-arch-ibm-observability",
+              "version": ">=v1.3.1",
+              "optional": true
+            }
+          ],
+          "configuration": [
+            {
+              "key": "ibmcloud_api_key"
+            },
+            {
+              "key": "provider_visibility",
+              "options": [
+                {
+                  "displayname": "private",
+                  "value": "private"
+                },
+                {
+                  "displayname": "public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "public-and-private",
+                  "value": "public-and-private"
+                }
+              ]
+            },
+            {
+              "key": "prefix"
+            },
+            {
+              "key": "tenant_configuration"
+            }
+          ],
+          "architecture": {
+            "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs agent on an existing Red Hat OpenShift cluster.",
+            "features": [
+              {
+                "title": "Works with any openshift or k8s cluster",
+                "description": "Works with the Red Hat OpenShift cluster."
+              },
+              {
+                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
+                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster."
+              },
+              {
+                "title": "Deploys the IBM Logs agent on an existing cluster.",
+                "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster."
+              }
+            ],
+            "diagrams": [
+              {
+                "diagram": {
+                  "caption": "Observability agents on a Red Hat OpenShift cluster",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
+                  "type": "image/svg+xml"
+                },
+                "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
+              }
+            ]
+          }
         }
       ]
     }
