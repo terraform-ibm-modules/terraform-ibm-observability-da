@@ -1,10 +1,8 @@
 # Configuring Tenants for Log Routing to Cloud Logs Instances
 
-When you create a log router tenant from the IBM cloud catalog you can configure in which
+When you create a log router tenant from the IBM cloud catalog you can configure in which region you want to create the router tenant 
 
-region you want to create the router tenant and which cloud logs instance you want to target 
-
-and give names to the tenant and the target
+and which cloud logs instance you want to target  and give names to the tenant and the target
 
 ### Options for tenant configuration
 - `tenant_region` (required): The region in which the tenant will be created
