@@ -4,12 +4,6 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
-variable "prefix" {
-  type        = string
-  description = "The prefix for resources created by this solution."
-  default     = null
-}
-
 variable "provider_visibility" {
   description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
   type        = string
@@ -22,6 +16,8 @@ variable "provider_visibility" {
 }
 
 variable "tenant_configuration" {
+
+  description = "List of tenants to be created for log routing"
   type = list(object({
     create_new_tenant   = optional(bool)
     existing_tenant_crn = optional(string) # validate this has a value if create_new_tenant is false. Parse the region from the CRN
@@ -31,6 +27,7 @@ variable "tenant_configuration" {
     log_sink_crn        = string
   }))
 
+  default = []
   validation {
     condition = alltrue([for tenant in var.tenant_configuration :
       (tenant.create_new_tenant == false || tenant.create_new_tenant == null) ?
@@ -40,5 +37,3 @@ variable "tenant_configuration" {
     error_message = "If 'create_new_tenant' is false or not provided, 'existing_tenant_crn' must be provided. If 'create_new_tenant' is true, both 'new_tenant_region' and 'new_tenant_name' must be provided."
   }
 }
-
-

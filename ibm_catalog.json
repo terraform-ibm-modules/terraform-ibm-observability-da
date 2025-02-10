@@ -773,9 +773,6 @@
               ]
             },
             {
-              "key": "prefix"
-            },
-            {
               "key": "tenant_configuration"
             }
           ],
