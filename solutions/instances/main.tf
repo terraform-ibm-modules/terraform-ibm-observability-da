@@ -176,8 +176,8 @@ module "cos_resource_group" {
 #######################################################################################################################
 
 locals {
-  cloud_monitoring_instance_name = (var.prefix != null && var.prefix != "") ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
-  cloud_logs_instance_name       = (var.prefix != null && var.prefix != "") ? "${var.prefix}-cloud-logs" : var.cloud_logs_instance_name
+  cloud_monitoring_instance_name = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_instance_name}" : var.cloud_monitoring_instance_name
+  cloud_logs_instance_name       = var.prefix != null ? "${var.prefix}-${var.cloud_logs_instance_name}" : var.cloud_logs_instance_name
   cloud_logs_data_bucket_crn     = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
   cloud_log_metrics_bucket_crn   = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
   cloud_logs_buckets             = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
