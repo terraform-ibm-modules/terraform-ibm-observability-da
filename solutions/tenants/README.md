@@ -1,8 +1,6 @@
 # Creating Tenants for Log Routing to Cloud Logs Intances
 
-This architecture creates the following observability tenants :
-
-* Cloud Logs agent
+This architecture supports creating Cloud Logs tenants
 
 ## Before you begin
 
