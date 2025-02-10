@@ -11,7 +11,7 @@ data "ibm_resource_instance" "icl_instance" {
 }
 
 resource "ibm_logs_router_tenant" "logs_router_tenant_instances" {
-  for_each = { for idx, tenant in var.tenant_configuration : idx => tenant if tenant.create_new_tenant == true }
+  for_each = { for idx, tenant in var.tenant_configuration : idx => tenant }
   name     = each.value.new_tenant_name
   region   = each.value.new_tenant_region
   targets {
