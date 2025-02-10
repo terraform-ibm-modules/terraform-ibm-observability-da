@@ -784,12 +784,8 @@
                 "description": "Works with the Red Hat OpenShift cluster."
               },
               {
-                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
-                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster."
-              },
-              {
-                "title": "Deploys the IBM Logs agent on an existing cluster.",
-                "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster."
+                "title": "Creates Log Router Tenant for routing logs to cloud logs instance",
+                "description": "Creates Log Router Tenant for routing logs to cloud logs instance"
               }
             ],
             "diagrams": [
