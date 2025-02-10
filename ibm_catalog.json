@@ -777,7 +777,7 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs agent on an existing Red Hat OpenShift cluster.",
+            "descriptions": "This architecture supports the deployment of Log Router Tenant for routing logs to cloud logs instance",
             "features": [
               {
                 "title": "Works with any openshift or k8s cluster",
@@ -791,11 +791,11 @@
             "diagrams": [
               {
                 "diagram": {
-                  "caption": "Observability agents on a Red Hat OpenShift cluster",
+                  "caption": "Log Router Tenant for routing logs to cloud logs instance",
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
                   "type": "image/svg+xml"
                 },
-                "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
+                "description": "Log Router Tenant for routing logs to cloud logs instance"
               }
             ]
           }
