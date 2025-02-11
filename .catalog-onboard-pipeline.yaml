@@ -5,6 +5,7 @@ offerings:
     kind: solution
     catalog_id: 7df1e4ca-d54c-4fd0-82ce-3d13247308cd
     offering_id: a3137d28-79e0-479d-8a24-758ebd5a0eab
+    variations:
       - name: logs-routing
         mark_ready: true
         install_type: fullstack
