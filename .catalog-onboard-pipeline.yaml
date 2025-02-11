@@ -5,15 +5,6 @@ offerings:
     kind: solution
     catalog_id: 7df1e4ca-d54c-4fd0-82ce-3d13247308cd
     offering_id: a3137d28-79e0-479d-8a24-758ebd5a0eab
-    variations:
-      - name: instances
+      - name: logs-routing
         mark_ready: true
         install_type: fullstack
-        scc:
-          instance_id: 1c7d5f78-9262-44c3-b779-b28fe4d88c37
-          region: us-south
-      - name: agents
-        mark_ready: true
-        install_type: extension
-        pre_validation: "tests/scripts/pre-validation-deploy-slz-roks-and-obs-instances.sh"
-        post_validation: "tests/scripts/post-validation-destroy-slz-roks-and-obs-instances.sh"
