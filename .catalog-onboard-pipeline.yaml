@@ -17,3 +17,5 @@ offerings:
         install_type: extension
         pre_validation: "tests/scripts/pre-validation-deploy-slz-roks-and-obs-instances.sh"
         post_validation: "tests/scripts/post-validation-destroy-slz-roks-and-obs-instances.sh"
+      - name: logs-routing
+        mark_ready: true
