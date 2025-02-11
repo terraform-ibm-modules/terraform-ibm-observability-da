@@ -26,7 +26,7 @@ const resourceGroup = "geretain-test-observability-instances"
 
 const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
-const solutionTenantsDADir = "solutions/tenants"
+const solutionTenantsDADir = "solutions/logs-routing"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Currently only including regions that Event Notification support
@@ -368,7 +368,7 @@ func TestTenantsInSchematics(t *testing.T) {
 			"tenant_region": "jp-osa",
 			"tenant_name":   "test-tenant",
 			"target_name":   "test-target",
-			"log_sink_crn":  "crn:v1:bluemix:public:logs:us-east:a/abac0df06b644a9cabc6e44f55b3880e:6e931667-0f47-4c59-be2e-fa9b9f13f1a4::",
+			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
 		},
 	}
 
@@ -387,7 +387,6 @@ func TestTenantsInSchematics(t *testing.T) {
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "tenant_configuration", Value: tenant_configuration, DataType: "list(object)"},
-		{Name: "provider_visibility", Value: "public", DataType: "string"},
 	}
 
 	err := options.RunSchematicTest()
@@ -402,7 +401,7 @@ func TestTenantsUpgradeTest(t *testing.T) {
 			"tenant_region": "br-sao",
 			"tenant_name":   "test-tenant",
 			"target_name":   "test-target",
-			"log_sink_crn":  "crn:v1:bluemix:public:logs:us-east:a/abac0df06b644a9cabc6e44f55b3880e:6e931667-0f47-4c59-be2e-fa9b9f13f1a4::",
+			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
 		},
 	}
 
@@ -412,7 +411,6 @@ func TestTenantsUpgradeTest(t *testing.T) {
 	})
 
 	options.TerraformVars = map[string]interface{}{
-		"provider_visibility":  "public",
 		"tenant_configuration": tenant_configuration,
 	}
 

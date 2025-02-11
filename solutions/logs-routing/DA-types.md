@@ -17,14 +17,14 @@ tenant_configuration = [
     {
       tenant_region = "eu-de"
       tenant_name   = "test-tenant-1"
-      target_name       = "test-target-1"
-      log_sink_crn      = "crn:v1:bluemix:public:logs:us-south::2fde707d-7cb6-4aed-80df-ab038599872c::"
+      target_name   = "test-target-1"
+      log_sink_crn  = "crn:v1:bluemix:public:logs:us-south::2fde707d-7cb6-4aed-80df-ab038599872c::"
     },
     {
       tenant_region = "br-sao"
       tenant_name   = "test-tenant-2"
-      target_name       = "test-target-2"
-      log_sink_crn      = "crn:v1:bluemix:public:logs:us-south::2fde707d-7cb6-4aed-80df-ab038599872c::"
+      target_name   = "test-target-2"
+      log_sink_crn  = "crn:v1:bluemix:public:logs:us-south::2fde707d-7cb6-4aed-80df-ab038599872c::"
     }
 ]
 ```

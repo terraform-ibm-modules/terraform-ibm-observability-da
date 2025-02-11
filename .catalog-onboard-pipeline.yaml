@@ -19,3 +19,4 @@ offerings:
         post_validation: "tests/scripts/post-validation-destroy-slz-roks-and-obs-instances.sh"
       - name: logs-routing
         mark_ready: true
+        install_type: fullstack

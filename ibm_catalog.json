@@ -150,6 +150,9 @@
               "key": "cloud_logs_provision"
             },
             {
+              "key": "cloud_logs_policies"
+            },
+            {
               "key": "cloud_logs_instance_name"
             },
             {
@@ -157,6 +160,9 @@
             },
             {
               "key": "cloud_logs_access_tags"
+            },
+            {
+              "key": "manage_log_archive_cos_bucket"
             },
             {
               "key": "cloud_logs_retention_period",
@@ -234,6 +240,12 @@
             },
             {
               "key": "cloud_monitoring_tags"
+            },
+            {
+              "key": "cos_resource_group_name"
+            },
+            {
+              "key": "cos_region"
             },
             {
               "key": "cos_instance_name"
@@ -398,12 +410,6 @@
               "key": "existing_cos_instance_crn"
             },
             {
-              "key": "existing_log_archive_cos_bucket_name"
-            },
-            {
-              "key": "existing_log_archive_cos_bucket_endpoint"
-            },
-            {
               "key": "existing_at_cos_target_bucket_name"
             },
             {
@@ -444,6 +450,12 @@
               "key": "cos_key_ring_name"
             },
             {
+              "key": "ibmcloud_cos_api_key"
+            },
+            {
+              "key": "ibmcloud_kms_api_key"
+            },
+            {
               "key": "kms_endpoint_type",
               "options": [
                 {
@@ -455,6 +467,9 @@
                   "value": "private"
                 }
               ]
+            },
+            {
+              "key": "enable_platform_metrics"
             },
             {
               "key": "enable_metrics_routing_to_cloud_monitoring"
@@ -621,6 +636,9 @@
               "key": "cloud_monitoring_metrics_filter"
             },
             {
+              "key": "cloud_monitoring_container_filter"
+            },
+            {
               "key": "cloud_monitoring_agent_tags"
             },
             {
@@ -718,13 +736,13 @@
         {
           "label": "logs-routing",
           "name": "logs-routing",
-          "working_directory": "solutions/tenants",
+          "install_type": "fullstack",
+          "working_directory": "solutions/logs-routing",
           "iam_permissions": [
             {
-              "service_name": "containers-kubernetes",
+              "service_name": "logs-router",
               "role_crns": [
-                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-                "crn:v1:bluemix:public:iam::::role:Viewer"
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager"
               ]
             }
           ],
@@ -769,10 +787,6 @@
             "descriptions": "This architecture supports the deployment of Log Router Tenant for routing logs to cloud logs instance",
             "features": [
               {
-                "title": "Works with any openshift or k8s cluster",
-                "description": "Works with the Red Hat OpenShift cluster."
-              },
-              {
                 "title": "Creates Log Router Tenant for routing logs to cloud logs instance",
                 "description": "Creates Log Router Tenant for routing logs to cloud logs instance"
               }
@@ -780,7 +794,7 @@
             "diagrams": [
               {
                 "diagram": {
-                  "caption": "Log Router Tenant for routing logs to cloud logs instance",
+                  "caption": "logs-router",
                   "url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/reference-architecture/deployable-architecture-logs-routing.svg",
                   "type": "image/svg+xml"
                 },
