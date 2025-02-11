@@ -734,7 +734,7 @@
           }
         },
         {
-          "label": "logs-routing",
+          "label": "Logs Routing",
           "name": "logs-routing",
           "install_type": "fullstack",
           "working_directory": "solutions/logs-routing",
