@@ -476,27 +476,6 @@
             },
             {
               "key": "metrics_router_routes"
-            },
-            {
-              "key": "cloud_logs_policies"
-            },
-            {
-              "key": "cos_region"
-            },
-            {
-              "key": "cos_resource_group_name"
-            },
-            {
-              "key": "enable_platform_metrics"
-            },
-            {
-              "key": "ibmcloud_cos_api_key"
-            },
-            {
-              "key": "ibmcloud_kms_api_key"
-            },
-            {
-              "key": "manage_log_archive_cos_bucket"
             }
           ],
           "architecture": {
@@ -724,9 +703,6 @@
             },
             {
               "key": "cloud_logs_ingress_port"
-            },
-            {
-              "key": "cloud_monitoring_container_filter"
             }
           ],
           "architecture": {
