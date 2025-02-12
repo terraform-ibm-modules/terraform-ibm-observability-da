@@ -1,3 +1,6 @@
+locals {
+  prefix = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
+}
 ##############################################################################
 # Observability Agents
 ##############################################################################
@@ -19,11 +22,11 @@ module "observability_agents" {
   wait_till                    = var.wait_till
   # Cloud Monitoring (Sysdig) Agent
   cloud_monitoring_enabled           = var.cloud_monitoring_enabled
-  cloud_monitoring_agent_name        = (var.prefix != null && var.prefix != "") ? "${var.prefix}-${var.cloud_monitoring_agent_name}" : var.cloud_monitoring_agent_name
+  cloud_monitoring_agent_name        = try("${local.prefix}-${var.cloud_monitoring_agent_name}", var.cloud_monitoring_agent_name)
   cloud_monitoring_agent_namespace   = var.cloud_monitoring_agent_namespace
   cloud_monitoring_endpoint_type     = var.cloud_monitoring_endpoint_type
   cloud_monitoring_access_key        = var.cloud_monitoring_access_key
-  cloud_monitoring_secret_name       = (var.prefix != null && var.prefix != "") ? "${var.prefix}-${var.cloud_monitoring_secret_name}" : var.cloud_monitoring_secret_name
+  cloud_monitoring_secret_name       = try("${local.prefix}-${var.cloud_monitoring_secret_name}", var.cloud_monitoring_secret_name)
   cloud_monitoring_metrics_filter    = var.cloud_monitoring_metrics_filter
   cloud_monitoring_container_filter  = var.cloud_monitoring_container_filter
   cloud_monitoring_agent_tags        = var.cloud_monitoring_agent_tags
