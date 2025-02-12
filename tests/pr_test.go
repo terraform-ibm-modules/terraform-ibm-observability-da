@@ -26,6 +26,7 @@ const resourceGroup = "geretain-test-observability-instances"
 
 const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
+const solutionTenantsDADir = "solutions/logs-routing"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Currently only including regions that Event Notification support
@@ -357,4 +358,62 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
+}
+
+func TestTenantsInSchematics(t *testing.T) {
+	t.Parallel()
+
+	tenant_configuration := []map[string]interface{}{
+		{
+			"tenant_region": "jp-osa",
+			"tenant_name":   "test-tenant",
+			"target_name":   "test-target",
+			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
+		},
+	}
+
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing: t,
+		TarIncludePatterns: []string{
+			"*.tf",
+			solutionTenantsDADir + "/*.tf",
+		},
+		TemplateFolder:         solutionTenantsDADir,
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
+	})
+
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "tenant_configuration", Value: tenant_configuration, DataType: "list(object)"},
+	}
+
+	err := options.RunSchematicTest()
+	assert.Nil(t, err, "This should not have errored")
+}
+
+func TestTenantsUpgradeTest(t *testing.T) {
+	t.Parallel()
+
+	tenant_configuration := []map[string]interface{}{
+		{
+			"tenant_region": "br-sao",
+			"tenant_name":   "test-tenant",
+			"target_name":   "test-target",
+			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
+		},
+	}
+
+	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
+		Testing:      t,
+		TerraformDir: solutionTenantsDADir,
+	})
+
+	options.TerraformVars = map[string]interface{}{
+		"tenant_configuration": tenant_configuration,
+	}
+
+	_, err := options.RunTestUpgrade()
+	assert.Nil(t, err, "This should not have errored")
 }
