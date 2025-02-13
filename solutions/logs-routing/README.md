@@ -1,6 +1,8 @@
-# Creating Tenants for Log Routing to Cloud Logs Intances
+# Create Tenants for Log Routing to Cloud Logs Instances
 
-This architecture supports creating Cloud Logs tenants
+This architecture supports creating Cloud Logs tenants.
+
+![logs-routing-deployable-architecture](../../reference-architecture/deployable-architecture-logs-routing.svg)
 
 ## Before you begin
 

@@ -746,18 +746,6 @@
               ]
             }
           ],
-          "dependencies": [
-            {
-              "flavors": [
-                "instances"
-              ],
-              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
-              "id": "a3137d28-79e0-479d-8a24-758ebd5a0eab-global",
-              "name": "deploy-arch-ibm-observability",
-              "version": ">=v1.3.1",
-              "optional": true
-            }
-          ],
           "configuration": [
             {
               "key": "ibmcloud_api_key"
