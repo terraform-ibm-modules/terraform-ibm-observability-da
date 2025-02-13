@@ -142,10 +142,6 @@ locals {
   parsed_log_metrics_bucket_name         = var.existing_cloud_logs_metrics_bucket_crn != null ? split(":", var.existing_cloud_logs_metrics_bucket_crn) : []
   existing_cloud_log_metrics_bucket_name = length(local.parsed_log_metrics_bucket_name) > 0 ? local.parsed_log_metrics_bucket_name[1] : null
 
-  # Event Notifications
-  parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
-  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
-
   # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
   cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
     instance_crn        = var.existing_en_instance_crn
@@ -525,7 +521,7 @@ resource "time_sleep" "wait_for_observability" {
 resource "ibm_en_topic" "en_topic" {
   count         = var.existing_en_instance_crn != null && var.cloud_logs_provision ? 1 : 0
   depends_on    = [time_sleep.wait_for_observability]
-  instance_guid = local.existing_en_guid
+  instance_guid = module.en_crn_parser[0].service_instance
   name          = local.en_topic
   description   = "Topic for Cloud Logs events routing"
   sources {
@@ -539,7 +535,7 @@ resource "ibm_en_topic" "en_topic" {
 
 resource "ibm_en_subscription_email" "email_subscription" {
   count          = var.existing_en_instance_crn != null && var.cloud_logs_provision && length(var.cloud_logs_en_email_list) > 0 ? 1 : 0
-  instance_guid  = local.existing_en_guid
+  instance_guid  = module.en_crn_parser[0].service_instance
   name           = local.en_subscription_email
   description    = "Subscription for Cloud Logs Events"
   destination_id = [for s in toset(data.ibm_en_destinations.en_destinations[count.index].destinations) : s.id if s.type == "smtp_ibm"][0]
