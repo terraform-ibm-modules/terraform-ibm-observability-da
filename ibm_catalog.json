@@ -476,6 +476,27 @@
             },
             {
               "key": "metrics_router_routes"
+            },
+            {
+              "key": "cloud_logs_resource_keys"
+            },
+            {
+              "key": "cloud_logs_service_credential_secrets"
+            },
+            {
+              "key": "cloud_monitoring_resource_keys"
+            },
+            {
+              "key": "cloud_monitoring_service_credential_secrets"
+            },
+            {
+              "key": "existing_secrets_manager_endpoint_type"
+            },
+            {
+              "key": "existing_secrets_manager_instance_crn"
+            },
+            {
+              "key": "skip_secrets_manager_auth_policy"
             }
           ],
           "architecture": {

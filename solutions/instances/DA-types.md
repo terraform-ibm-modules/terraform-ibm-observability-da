@@ -7,6 +7,8 @@ Several optional input variables in the IBM Cloud [Observability instances deplo
 * Metrics Router Routes (`metrics_router_routes`)
 * Activity Tracker Event Routing COS bucket retention policy (`at_cos_bucket_retention_policy`)
 * Cloud Logs data bucket retention policy(`cloud_log_data_bucket_retention_policy`)
+* [Resource keys](#resource-keys) (`resource_keys`)
+* [Service credential secrets](#service-credential-secrets) (`service_credential_secrets`)
 
 
 ## Cloud Logs Event Notification Instances <a name="cloud_logs_existing_en_instances"></a>
@@ -187,14 +189,8 @@ cloud_log_data_bucket_retention_policy = {
 }
 ```
 
-# Configuring complex inputs in IBM Cloud Object Storage in IBM Cloud projects
-Several optional input variables in the IBM Cloud Object Storage [deployable architecture](https://cloud.ibm.com/catalog#deployable_architecture) use complex object types. You specify these inputs when you configure your deployable architecture.
-
-- [Resource keys](#resource-keys) (`resource_keys`)
-- [Service credential secrets](#service-credential-secrets) (`service_credential_secrets`)
-
 ## Resource keys <a name="resource-keys"></a>
-When you add an IBM Cloud Object Storage service from the IBM Cloud catalog to an IBM Cloud Projects service, you can configure resource keys. In the edit mode for the projects configuration, select the Configure panel and then click the optional tab.
+When you add an IBM Cloud Logs or IBM Cloud Monitoring services from the IBM Cloud catalog to an IBM Cloud Projects service, you can configure resource keys via the cloud_logs_resource_keys and cloud_monitoring_resource_keys inputs. In the edit mode for the projects configuration, select the Configure panel and then click the optional tab.
 
 In the configuration, specify the name of the resource key, whether HMAC credentials should be included, the Role of the key and an optional Service ID CRN to create with a Service ID.
 
@@ -202,7 +198,7 @@ To enter a custom value, use the edit action to open the "Edit Array" panel. Add
 
  [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/resource_key) about resource keys.
 
-- Variable name: `resource_keys`.
+- Variable name: `cloud_logs_resource_keys` and `cloud_monitoring_resource_keys`.
 - Type: A list of objects that represent a resource key
 - Default value: An empty list (`[]`)
 
@@ -230,7 +226,7 @@ The following example includes all the configuration options for two resource ke
 ```
 
 ## Service credential secrets <a name="service-credential-secrets"></a>
-When you add an IBM Cloud Object Storage service from the IBM Cloud catalog to an IBM Cloud Projects service, you can configure service credentials. In the edit mode for the projects configuration, select the Configure panel and then click the optional tab.
+When you add an IBM Cloud Logs or IBM Cloud Monitoring services from the IBM Cloud catalog to an IBM Cloud Projects service, you can configure service credentials. In the edit mode for the projects configuration, select the Configure panel and then click the optional tab.
 
 In the configuration, specify the secret group name, whether it already exists or will be created and include all the necessary service credential secrets that need to be created within that secret group.
 
@@ -238,7 +234,7 @@ To enter a custom value, use the edit action to open the "Edit Array" panel. Add
 
  [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/sm_service_credentials_secret) about service credential secrets.
 
-- Variable name: `service_credential_secrets`.
+- Variable name: `cloud_monitoring_service_credential_secrets` and `cloud_logs_service_credential_secrets`.
 - Type: A list of objects that represent a service credential secret groups and secrets
 - Default value: An empty list (`[]`)
 

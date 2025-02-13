@@ -161,12 +161,12 @@ output "cloud_logs_resource_keys" {
   sensitive   = true
 }
 
-output "service_credential_secrets" {
+output "cloud_monitoring_service_credential_secrets" {
   description = "Service credential secrets"
-  value       = length(local.service_credential_secrets) > 0 ? module.secrets_manager_service_credentials[0].secrets : null
+  value       = length(local.cloud_monitoring_service_credential_secrets) > 0 ? module.cloud_monitoring_secrets_manager_service_credentials[0].secrets : null
 }
 
-output "service_credential_secret_groups" {
-  description = "Service credential secret groups"
-  value       = length(local.service_credential_secrets) > 0 ? module.secrets_manager_service_credentials[0].secret_groups : null
+output "cloud_logs_service_credential_secrets" {
+  description = "Service credential secrets"
+  value       = length(local.cloud_logs_service_credential_secrets) > 0 ? module.cloud_logs_secrets_manager_service_credentials[0].secrets : null
 }
