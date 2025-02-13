@@ -537,7 +537,7 @@ resource "ibm_en_topic" "en_topic" {
 }
 
 resource "ibm_en_subscription_email" "email_subscription" {
-  count          = var.existing_en_instance_crn != null && var.cloud_logs_provision == null && length(var.cloud_logs_en_email_list) > 0 ? 1 : 0
+  count          = var.existing_en_instance_crn != null && var.cloud_logs_provision && length(var.cloud_logs_en_email_list) > 0 ? 1 : 0
   instance_guid  = local.existing_en_guid
   name           = local.en_subscription_email
   description    = "Subscription for Cloud Logs Events"
