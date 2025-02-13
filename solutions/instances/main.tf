@@ -522,7 +522,7 @@ resource "time_sleep" "wait_for_observability" {
 }
 
 resource "ibm_en_topic" "en_topic" {
-  count         = var.existing_en_instance_crn != null && var.cloud_logs_provision == true ? 1 : 0
+  count         = var.existing_en_instance_crn != null && var.cloud_logs_provision ? 1 : 0
   depends_on    = [time_sleep.wait_for_observability]
   instance_guid = local.existing_en_guid
   name          = local.en_topic
