@@ -61,14 +61,14 @@ module "cloud_log_buckets" {
 
 
 module "cloud_monitoring" {
-  source            = "terraform-ibm-modules/observability-instances/ibm//modules/cloud_monitoring"
-  version           = "3.4.0"
-  region            = var.region
-  resource_group_id = module.resource_group.resource_group_id
-  instance_name     = "${var.prefix}-sysdig"
-  plan              = "lite"
-  tags              = var.resource_tags
-
+  source                  = "terraform-ibm-modules/observability-instances/ibm//modules/cloud_monitoring"
+  version                 = "3.4.0"
+  region                  = var.region
+  resource_group_id       = module.resource_group.resource_group_id
+  instance_name           = "${var.prefix}-sysdig"
+  plan                    = "lite"
+  tags                    = var.resource_tags
+  enable_platform_metrics = false
 }
 
 ##############################################################################
