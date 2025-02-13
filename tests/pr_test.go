@@ -26,6 +26,7 @@ const resourceGroup = "geretain-test-observability-instances"
 
 const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
+const solutionTenantsDADir = "solutions/logs-routing"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Currently only including regions that Event Notification support
@@ -216,7 +217,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 	}
 }
 
-func TestRunExistingResourcesInstances(t *testing.T) {
+func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 	t.Parallel()
 
 	// ------------------------------------------------------------------------------------
@@ -244,100 +245,109 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			"region":        region,
 			"resource_tags": tags,
 		},
-		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
-		// This is the same as setting the -upgrade=true flag with terraform.
 		Upgrade: true,
 	})
 
 	terraform.WorkspaceSelectOrNew(t, existingTerraformOptions, prefix)
 	_, existErr := terraform.InitAndApplyE(t, existingTerraformOptions)
+
+	cloud_logs_existing_en_instances := []map[string]interface{}{
+		{
+			"instance_crn":     terraform.Output(t, existingTerraformOptions, "en_crn_2"),
+			"integration_name": "en-2",
+		},
+	}
+
+	cloud_logs_policies := []map[string]interface{}{
+		{
+			"logs_policy_name":     "test-policy",
+			"logs_policy_priority": "type_low",
+			"log_rules": []map[string]interface{}{
+				{
+					"severities": []string{"info"},
+				},
+			},
+		},
+	}
+
 	if existErr != nil {
 		assert.True(t, existErr == nil, "Init and Apply of temp existing resource failed")
 	} else {
-
-		// ------------------------------------------------------------------------------------
-		// Deploy Observability instances DA passing in existing COS instance, and bucket details
-		// ------------------------------------------------------------------------------------
-
-		options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-			Testing:      t,
-			TerraformDir: solutionInstanceDADir,
-			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
-			ImplicitRequired: false,
-			Region:           region,
-			TerraformVars: map[string]interface{}{
-				"prefix":                                      prefix,
-				"cos_region":                                  region,
-				"resource_group_name":                         terraform.Output(t, existingTerraformOptions, "resource_group_name"),
-				"use_existing_resource_group":                 true,
-				"existing_at_cos_target_bucket_name":          terraform.Output(t, existingTerraformOptions, "bucket_name_at"),
-				"existing_at_cos_target_bucket_endpoint":      terraform.Output(t, existingTerraformOptions, "bucket_endpoint_at"),
-				"existing_cos_instance_crn":                   terraform.Output(t, existingTerraformOptions, "cos_crn"),
-				"existing_cloud_logs_data_bucket_crn":         terraform.Output(t, existingTerraformOptions, "data_bucket_crn"),
-				"existing_cloud_logs_data_bucket_endpoint":    terraform.Output(t, existingTerraformOptions, "data_bucket_endpoint"),
-				"existing_cloud_logs_metrics_bucket_crn":      terraform.Output(t, existingTerraformOptions, "metrics_bucket_crn"),
-				"existing_cloud_logs_metrics_bucket_endpoint": terraform.Output(t, existingTerraformOptions, "metrics_bucket_endpoint"),
-				"existing_en_instance_crn":                    terraform.Output(t, existingTerraformOptions, "en_crn_1"),
-				"cloud_logs_existing_en_instances": []map[string]interface{}{
-					{
-						"instance_crn":     terraform.Output(t, existingTerraformOptions, "en_crn_2"),
-						"integration_name": "en-2",
-					},
-				},
-				"management_endpoint_type_for_bucket": "public",
-				"provider_visibility":                 "public",
-				"enable_platform_metrics":             "false",
-				"enable_platform_logs":                "false",
-				"cloud_logs_policies": []map[string]interface{}{
-					{
-						"logs_policy_name":     "test-policy",
-						"logs_policy_priority": "type_low",
-						"log_rules": []map[string]interface{}{
-							{
-								"severities": []string{"info"},
-							},
-						},
-					},
-				},
+		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+			Testing: t,
+			Prefix:  "obs-ins-ext",
+			TarIncludePatterns: []string{
+				solutionInstanceDADir + "/*.*",
 			},
+			ResourceGroup:          terraform.Output(t, existingTerraformOptions, "resource_group_name"),
+			TemplateFolder:         solutionInstanceDADir,
+			Tags:                   []string{"test-schematic"},
+			DeleteWorkspaceOnFail:  false,
+			WaitJobCompleteMinutes: 60,
+			Region:                 region,
 		})
 
-		output, err := options.RunTestConsistency()
+		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+			{Name: "cos_region", Value: region, DataType: "string"},
+			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
+			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
+			{Name: "existing_cloud_logs_data_bucket_crn", Value: terraform.Output(t, existingTerraformOptions, "data_bucket_crn"), DataType: "string"},
+			{Name: "existing_at_cos_target_bucket_name", Value: terraform.Output(t, existingTerraformOptions, "bucket_name_at"), DataType: "string"},
+			{Name: "existing_at_cos_target_bucket_endpoint", Value: terraform.Output(t, existingTerraformOptions, "bucket_endpoint_at"), DataType: "string"},
+			{Name: "existing_cloud_logs_data_bucket_endpoint", Value: terraform.Output(t, existingTerraformOptions, "data_bucket_endpoint"), DataType: "string"},
+			{Name: "existing_cloud_logs_metrics_bucket_crn", Value: terraform.Output(t, existingTerraformOptions, "metrics_bucket_crn"), DataType: "string"},
+			{Name: "existing_cloud_logs_metrics_bucket_endpoint", Value: terraform.Output(t, existingTerraformOptions, "metrics_bucket_endpoint"), DataType: "string"},
+			{Name: "existing_en_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "en_crn_1"), DataType: "string"},
+			{Name: "prefix", Value: options.Prefix, DataType: "string"},
+			{Name: "management_endpoint_type_for_bucket", Value: "private", DataType: "string"},
+			{Name: "provider_visibility", Value: "public", DataType: "string"},
+			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
+			{Name: "enable_platform_logs", Value: false, DataType: "bool"},
+			{Name: "cloud_logs_existing_en_instances", Value: cloud_logs_existing_en_instances, DataType: "list(object)"},
+			{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
+			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
+			{Name: "existing_cloud_monitoring_crn", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_crn"), DataType: "string"},
+			{Name: "cloud_monitoring_provision", Value: false, DataType: "bool"},
+		}
+
+		err := options.RunSchematicTest()
 		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output, "Expected some output")
 
-		// ------------------------------------------------------------------------------------
-		// Deploy Observability instance DA passing in existing COS instance (not bucket), and KMS key
-		// ------------------------------------------------------------------------------------
-
-		options2 := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-			Testing:      t,
-			TerraformDir: solutionInstanceDADir,
-			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
-			ImplicitRequired: false,
-			TerraformVars: map[string]interface{}{
-				"prefix":                              prefix,
-				"cos_region":                          region,
-				"resource_group_name":                 terraform.Output(t, existingTerraformOptions, "resource_group_name"),
-				"use_existing_resource_group":         true,
-				"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
-				"existing_cos_kms_key_crn":            permanentResources["hpcs_south_root_key_crn"],
-				"kms_endpoint_type":                   "public",
-				"provider_visibility":                 "public",
-				"existing_cos_instance_crn":           terraform.Output(t, existingTerraformOptions, "cos_crn"),
-				"management_endpoint_type_for_bucket": "public",
-				"enable_platform_metrics":             "false",
-				"enable_platform_logs":                "false",
+		options2 := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+			Testing: t,
+			Prefix:  "obs-ext",
+			TarIncludePatterns: []string{
+				solutionInstanceDADir + "/*.*",
 			},
+			ResourceGroup:          terraform.Output(t, existingTerraformOptions, "resource_group_name"),
+			TemplateFolder:         solutionInstanceDADir,
+			Tags:                   []string{"test-schematic"},
+			DeleteWorkspaceOnFail:  false,
+			WaitJobCompleteMinutes: 60,
+			Region:                 region,
 		})
 
-		output2, err := options2.RunTestConsistency()
+		options2.TerraformVars = []testschematic.TestSchematicTerraformVar{
+			{Name: "ibmcloud_api_key", Value: options2.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+			{Name: "cos_region", Value: region, DataType: "string"},
+			{Name: "prefix", Value: options2.Prefix, DataType: "string"},
+			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
+			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
+			{Name: "kms_endpoint_type", Value: "private", DataType: "string"},
+			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
+			{Name: "management_endpoint_type_for_bucket", Value: "private", DataType: "string"},
+			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
+			{Name: "enable_platform_logs", Value: false, DataType: "bool"},
+			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+			{Name: "existing_cos_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
+		}
+
+		err = options2.RunSchematicTest()
 		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output2, "Expected some output")
 
 	}
 
-	// Check if "DO_NOT_DESTROY_ON_FAILURE" is set
 	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
 	// Destroy the temporary existing resources if required
 	if t.Failed() && strings.ToLower(envVal) == "true" {
@@ -348,4 +358,62 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
+}
+
+func TestTenantsInSchematics(t *testing.T) {
+	t.Parallel()
+
+	tenant_configuration := []map[string]interface{}{
+		{
+			"tenant_region": "jp-osa",
+			"tenant_name":   "test-tenant",
+			"target_name":   "test-target",
+			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
+		},
+	}
+
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing: t,
+		TarIncludePatterns: []string{
+			"*.tf",
+			solutionTenantsDADir + "/*.tf",
+		},
+		TemplateFolder:         solutionTenantsDADir,
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
+	})
+
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "tenant_configuration", Value: tenant_configuration, DataType: "list(object)"},
+	}
+
+	err := options.RunSchematicTest()
+	assert.Nil(t, err, "This should not have errored")
+}
+
+func TestTenantsUpgradeTest(t *testing.T) {
+	t.Parallel()
+
+	tenant_configuration := []map[string]interface{}{
+		{
+			"tenant_region": "br-sao",
+			"tenant_name":   "test-tenant",
+			"target_name":   "test-target",
+			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
+		},
+	}
+
+	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
+		Testing:      t,
+		TerraformDir: solutionTenantsDADir,
+	})
+
+	options.TerraformVars = map[string]interface{}{
+		"tenant_configuration": tenant_configuration,
+	}
+
+	_, err := options.RunTestUpgrade()
+	assert.Nil(t, err, "This should not have errored")
 }
