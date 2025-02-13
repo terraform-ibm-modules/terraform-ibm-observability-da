@@ -145,7 +145,7 @@ locals {
   # Event Notifications
   parsed_existing_en_instance_crn = var.existing_en_instance_crn != null ? split(":", var.existing_en_instance_crn) : []
   existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
-  
+
   # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
   cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
     instance_crn        = var.existing_en_instance_crn
@@ -510,15 +510,8 @@ module "cos_bucket" {
 # Cloud Logs - Event Notifications Configuration
 #######################################################################################################################
 
-module "en_crn_parser" {
-  count   = var.existing_en_instance_crn != null ? 1 : 0
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.0.0"
-  crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
-}
-
 data "ibm_en_destinations" "en_destinations" {
-  count         = var.existing_en_instance_crn != null ? 1 : 0
+  count         = length(local.cloud_logs_existing_en_instances)
   instance_guid = module.en_crn_parser[0].service_instance
 }
 
