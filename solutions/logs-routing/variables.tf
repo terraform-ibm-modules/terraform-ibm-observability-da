@@ -18,7 +18,7 @@ variable "provider_visibility" {
 
 variable "tenant_configuration" {
 
-  description = "List of tenants to be created for log routing.[Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/tenants/DA-types.md)."
+  description = "List of tenants to be created for log routing.[Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/logs-routing/DA-types.md)."
   type = list(object({
     tenant_region = string
     tenant_name   = string

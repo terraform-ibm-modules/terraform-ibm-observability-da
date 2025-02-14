@@ -341,6 +341,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+			{Name: "region", Value: region, DataType: "string"},
 			{Name: "cos_region", Value: region, DataType: "string"},
 			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
