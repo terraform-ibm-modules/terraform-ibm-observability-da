@@ -107,6 +107,12 @@
               "key": "ibmcloud_api_key"
             },
             {
+              "key": "ibmcloud_cos_api_key"
+            },
+            {
+              "key": "ibmcloud_kms_api_key"
+            },
+            {
               "key": "provider_visibility",
               "options": [
                 {
@@ -131,6 +137,12 @@
             },
             {
               "key": "resource_group_name"
+            },
+            {
+              "key": "cos_resource_group_name"
+            },
+            {
+              "key": "cos_region"
             },
             {
               "custom_config": {
@@ -190,7 +202,13 @@
               ]
             },
             {
+              "key": "cloud_logs_policies"
+            },
+            {
               "key": "enable_platform_logs"
+            },
+            {
+              "key": "enable_platform_metrics"
             },
             {
               "key": "logs_routing_tenant_regions"
@@ -264,6 +282,9 @@
             },
             {
               "key": "add_bucket_name_suffix"
+            },
+            {
+              "key": "manage_log_archive_cos_bucket"
             },
             {
               "key": "log_archive_cos_bucket_name"
@@ -615,6 +636,9 @@
             },
             {
               "key": "cloud_monitoring_secret_name"
+            },
+            {
+              "key": "cloud_monitoring_container_filter"
             },
             {
               "key": "cloud_monitoring_instance_region"
