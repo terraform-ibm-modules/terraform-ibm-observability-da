@@ -538,3 +538,70 @@ variable "cos_key_name" {
   default     = "observability-cos-key"
   description = "The name of the key to create for the Cloud Object Storage bucket. This name will be used by both the log archive bucket and the IBM Cloud Activity Tracker Cloud Object Storage bucket. If an existing key is used, this variable is not required. If the prefix input variable is passed, the name of the key is prefixed to the value in the `prefix-value` format."
 }
+
+##############################################################
+# Context-based restriction (CBR)
+##############################################################
+
+variable "cbr_rules_at" {
+  type = list(object({
+    description = string
+    account_id  = string
+    rule_contexts = list(object({
+      attributes = optional(list(object({
+        name  = string
+        value = string
+    }))) }))
+    enforcement_mode = string
+    operations = optional(list(object({
+      api_types = list(object({
+        api_type_id = string
+      }))
+    })))
+  }))
+  description = "(Optional, list) List of context-based restrictions rules to create.[Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/instances/DA-types.md)."
+  default     = []
+  # Validation happens in the rule module
+}
+
+variable "cbr_rules_icl" {
+  type = list(object({
+    description = string
+    account_id  = string
+    rule_contexts = list(object({
+      attributes = optional(list(object({
+        name  = string
+        value = string
+    }))) }))
+    enforcement_mode = string
+    operations = optional(list(object({
+      api_types = list(object({
+        api_type_id = string
+      }))
+    })))
+  }))
+  description = "(Optional, list) List of context-based restrictions rules to create.[Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/instances/DA-types.md)."
+  default     = []
+  # Validation happens in the rule module
+}
+
+variable "cbr_rules_sysdig" {
+  type = list(object({
+    description = string
+    account_id  = string
+    rule_contexts = list(object({
+      attributes = optional(list(object({
+        name  = string
+        value = string
+    }))) }))
+    enforcement_mode = string
+    operations = optional(list(object({
+      api_types = list(object({
+        api_type_id = string
+      }))
+    })))
+  }))
+  description = "(Optional, list) List of context-based restrictions rules to create.[Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/tree/main/solutions/instances/DA-types.md)."
+  default     = []
+  # Validation happens in the rule module
+}
