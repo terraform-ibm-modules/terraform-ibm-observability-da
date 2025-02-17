@@ -47,8 +47,8 @@ variable "region" {
 
 variable "prefix" {
   type        = string
-  description = "(Optional) Prefix to add to all resources created by this solution. To not use any prefix value, you can set this value to `null` or an empty string."
-  default     = null
+  description = "The prefix to add to all resources that this solution creates. To not use any prefix value, you can set this value to `null` or an empty string."
+  default     = "dev"
   validation {
     condition = (var.prefix == null ? true :
       alltrue([
@@ -63,7 +63,7 @@ variable "prefix" {
 variable "provider_visibility" {
   description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
   type        = string
-  # Defaulting this to public to workaround https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5824
+  # Defaulting this to public to workaround https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5977
   default = "public"
 
   validation {
@@ -71,6 +71,7 @@ variable "provider_visibility" {
     error_message = "Invalid visibility option. Allowed values are 'public', 'private', or 'public-and-private'."
   }
 }
+
 ##############################################################################
 # IBM Cloud Logs
 ##############################################################################
