@@ -127,6 +127,7 @@ module "trusted_profile" {
       service = "logs"
     }]
   }]
+
   # Set up fine-grained authorization for `logs-agent` running in ROKS cluster in `ibm-observe` namespace.
   trusted_profile_links = [{
     cr_type = "ROKS_SA"
