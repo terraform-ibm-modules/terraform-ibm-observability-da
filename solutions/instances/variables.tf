@@ -55,7 +55,7 @@ variable "provider_visibility" {
   description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
   type        = string
   # Defaulting this to public to workaround https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5977
-  default = "public"
+  default = "private"
 
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.provider_visibility)
@@ -205,7 +205,20 @@ variable "enable_at_event_routing_to_cloud_logs" {
   description = "Whether to enable event routing from Activity Tracker to Cloud Log."
   default     = true
 }
-
+variable "global_event_routing_settings" {
+  type = object({
+    default_targets           = optional(list(string), [])
+    metadata_region_primary   = string
+    metadata_region_backup    = optional(string, "us-south")
+    permitted_target_regions  = list(string)
+    private_api_endpoint_only = optional(bool, false)
+  })
+  description = "Global settings for event routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#global-event-routing-settings-)"
+  default = {
+    metadata_region_primary  = "eu-de"
+    permitted_target_regions = []
+  }
+}
 ##############################################################################
 # Metric Routing Variables
 ##############################################################################
@@ -235,6 +248,22 @@ variable "enable_metrics_routing_to_cloud_monitoring" {
   default     = true
 }
 
+variable "metrics_router_settings" {
+  type = object({
+    default_targets = optional(list(object({
+      id = string
+    })), [])
+    permitted_target_regions  = optional(list(string))
+    primary_metadata_region   = optional(string)
+    backup_metadata_region    = optional(string, "us-east")
+    private_api_endpoint_only = optional(bool, false)
+  })
+  description = "Global settings for Metrics Routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#metrics-router-settings-)"
+  default = {
+    primary_metadata_region  = "eu-de"
+    permitted_target_regions = []
+  }
+}
 ##############################################################################
 # Cloud Monitoring Variables
 ##############################################################################
