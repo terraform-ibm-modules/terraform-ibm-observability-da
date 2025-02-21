@@ -151,6 +151,8 @@ locals {
     integration_name    = var.en_integration_name
     skip_en_auth_policy = var.skip_en_auth_policy
   }] : [])
+  en_topic              = var.prefix != null ? "${var.prefix} - Cloud Logs Topic" : "Cloud Logs Topic"
+  en_subscription_email = var.prefix != null ? "${var.prefix} - Email for Cloud Logs Subscription" : "Email for Cloud Logs Subscription"
 }
 
 #######################################################################################################################
@@ -501,4 +503,51 @@ module "cos_bucket" {
       }
     }
   ]
+}
+
+#######################################################################################################################
+# Cloud Logs - Event Notifications Configuration
+#######################################################################################################################
+
+data "ibm_en_destinations" "en_destinations" {
+  count         = length(local.cloud_logs_existing_en_instances)
+  instance_guid = module.en_crn_parser[0].service_instance
+}
+
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5533.
+resource "time_sleep" "wait_for_observability" {
+  depends_on = [module.observability_instance]
+
+  create_duration = "60s"
+}
+
+resource "ibm_en_topic" "en_topic" {
+  count         = var.existing_en_instance_crn != null && var.cloud_logs_provision ? 1 : 0
+  depends_on    = [time_sleep.wait_for_observability]
+  instance_guid = module.en_crn_parser[0].service_instance
+  name          = local.en_topic
+  description   = "Topic for Cloud Logs events routing"
+  sources {
+    id = module.observability_instance.cloud_logs_crn
+    rules {
+      enabled           = true
+      event_type_filter = "$.*"
+    }
+  }
+}
+
+resource "ibm_en_subscription_email" "email_subscription" {
+  count          = var.existing_en_instance_crn != null && var.cloud_logs_provision && length(var.cloud_logs_en_email_list) > 0 ? 1 : 0
+  instance_guid  = module.en_crn_parser[0].service_instance
+  name           = local.en_subscription_email
+  description    = "Subscription for Cloud Logs Events"
+  destination_id = [for s in toset(data.ibm_en_destinations.en_destinations[count.index].destinations) : s.id if s.type == "smtp_ibm"][0]
+  topic_id       = ibm_en_topic.en_topic[count.index].topic_id
+  attributes {
+    add_notification_payload = true
+    reply_to_mail            = var.cloud_logs_en_reply_to_email
+    reply_to_name            = "Cloud Logs Event Notifications Bot"
+    from_name                = var.cloud_logs_en_from_email
+    invited                  = var.cloud_logs_en_email_list
+  }
 }
