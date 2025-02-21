@@ -133,6 +133,65 @@ metrics_router_routes = {
 ```
 Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-route_rules_definitions&interface=ui) for more information about IBM Cloud Metrics Routing route.
 
+
+## Metrics Router Settings <a name="metrics_router_settings"></a>
+
+The `metrics_router_settings` input variable allows you configure global settings for Metrics Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-settings-about&interface=ui) for more information.
+
+- Variable name: `metrics_router_settings`.
+- Type: A list of objects. Each object represents a route.
+- Default value: An empty list (`[]`).
+
+### Options for metrics_router_settings
+
+  - `default_targets` (optional): (List) -  A list of default target references.
+  - `permitted_target_regions` (optional):(List)  If present then only these regions may be used to define a target.
+  - `primary_metadata_region` (optional): To store all your meta data in a single region. For new accounts, all target / route creation will fail until primary_metadata_region is set.
+  - `backup_metadata_region` (optional): To backup all your meta data in a different region.
+  - `private_api_endpoint_only` (optional): If you set this true then you cannot access api through public network.
+
+### Example metrics_router_settings
+
+```hcl
+metrics_router_settings = {
+  default_targets = []
+  permitted_target_regions = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor", "jp-tok", "jp-osa"]
+  primary_metadata_region = "eu-de"
+  backup_metadata_region = "us-east"
+  private_api_endpoint_only = true
+}
+```
+Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-settings&interface=ui) for more information about IBM Cloud Metrics Routing Settings.
+
+
+## Event Router Settings <a name="global_event_routing_settings"></a>
+
+The `global_event_routing_settings` input variable allows you configure global settings for Activity Tracker Event Routing. Refer [here](https://cloud.ibm.com/docs/atracker?topic=atracker-settings&interface=ui) for more information.
+
+- Variable name: `global_event_routing_settings`.
+- Type: A list of objects. Each object represents a route.
+- Default value: An empty list (`[]`).
+
+### Options for global_event_routing_settings
+
+  - `default_targets` (optional): (List) -  The target ID List. In the event that no routing rule causes the event to be sent to a target, these targets will receive the event.
+  - `metadata_region_primary` (required): To store all your meta data in a single region.
+  - `metadata_region_backup` (optional): The routing rules that will be evaluated in their order of the array. You can configure up to 10 rules per route.
+  - `permitted_target_regions` (required):(List)  If present then only these regions may be used to define a target.
+  - `private_api_endpoint_only` (optional): If you set this true then you cannot access api through public network.
+
+### Example global_event_routing_settings
+
+```hcl
+global_event_routing_settings = {
+  default_targets           = []
+  metadata_region_primary   = "eu-de"
+  metadata_region_backup    = "us-south"
+  permitted_target_regions  = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor", "eu-es", "jp-tok", "jp-osa", "in-che", "eu-fr2"]
+  private_api_endpoint_only = true
+}
+```
+
 ## at_cos_bucket_retention_policy <a name="at_cos_bucket_retention_policy"></a>
 
 The `at_cos_bucket_retention_policy` input variable allows you to provide the retention policy of the IBM Cloud Activity Tracker Event Routing COS target bucket that will be configured. Refer [here](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-immutable) for more information.

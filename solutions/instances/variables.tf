@@ -55,7 +55,7 @@ variable "provider_visibility" {
   description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
   type        = string
   # Defaulting this to public to workaround https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5977
-  default = "public"
+  default = "private"
 
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.provider_visibility)
@@ -213,10 +213,10 @@ variable "global_event_routing_settings" {
     permitted_target_regions  = list(string)
     private_api_endpoint_only = optional(bool, false)
   })
-  description = "Global settings for event routing"
+  description = "Global settings for event routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#global-event-routing-settings-)"
   default = {
     metadata_region_primary  = "eu-de"
-    permitted_target_regions = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor", "eu-es", "jp-tok", "jp-osa", "in-che", "eu-fr2"]
+    permitted_target_regions = []
   }
 }
 ##############################################################################
@@ -254,13 +254,14 @@ variable "metrics_router_settings" {
       id = string
     })), [])
     permitted_target_regions  = optional(list(string))
-    primary_metadata_region   = optional(string, "eu-de")
+    primary_metadata_region   = optional(string)
     backup_metadata_region    = optional(string, "us-east")
     private_api_endpoint_only = optional(bool, false)
   })
-  description = "Global settings for Metrics Routing."
+  description = "Global settings for Metrics Routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#metrics-router-settings-)"
   default = {
-    permitted_target_regions = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor", "jp-tok", "jp-osa"]
+    primary_metadata_region  = "eu-de"
+    permitted_target_regions = []
   }
 }
 ##############################################################################
