@@ -74,6 +74,53 @@ func TestInstancesInSchematics(t *testing.T) {
 		WaitJobCompleteMinutes: 60,
 	})
 
+	logsServiceCredentialSecrets := []map[string]interface{}{
+		{
+			"secret_group_name": fmt.Sprintf("%s-logs-group", options.Prefix),
+			"service_credentials": []map[string]string{
+				{
+					"secret_name": fmt.Sprintf("%s-logs-reader", options.Prefix),
+					"service_credentials_source_service_role_crn": "crn:v1:bluemix:public:iam::::role:Viewer",
+				},
+				{
+					"secret_name": fmt.Sprintf("%s-logs-access-reader", options.Prefix),
+					"service_credentials_source_service_role_crn": "crn:v1:bluemix:public:logs::::serviceRole:DataAccessReader",
+				},
+			},
+		},
+	}
+
+	monitoringServiceCredentialSecrets := []map[string]interface{}{
+		{
+			"secret_group_name": fmt.Sprintf("%s-monitoring-group", options.Prefix),
+			"service_credentials": []map[string]string{
+				{
+					"secret_name": fmt.Sprintf("%s-monitoring-reader", options.Prefix),
+					"service_credentials_source_service_role_crn": "crn:v1:bluemix:public:iam::::role:Viewer",
+				},
+				{
+					"secret_name": fmt.Sprintf("%s-monitoring-publisher", options.Prefix),
+					"service_credentials_source_service_role_crn": "crn:v1:bluemix:public:sysdig-monitor::::serviceRole:Publisher",
+				},
+			},
+		},
+	}
+
+	resourceKeys := []map[string]interface{}{
+		{
+			"name": "admin",
+			"role": "Administrator",
+		},
+		{
+			"name": "user1",
+			"role": "Viewer",
+		},
+		{
+			"name": "user2",
+			"role": "Editor",
+		},
+	}
+
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
@@ -88,6 +135,11 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "cloud_log_data_bucket_access_tag", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
+		{Name: "existing_secrets_manager_instance_crn", Value: permanentResources["secretsManagerCRN"], DataType: "string"},
+		{Name: "cloud_logs_resource_keys", Value: resourceKeys, DataType: "list(object)"},
+		{Name: "cloud_monitoring_resource_keys", Value: resourceKeys, DataType: "list(object)"},
+		{Name: "cloud_logs_service_credential_secrets", Value: logsServiceCredentialSecrets, DataType: "list(object)"},
+		{Name: "cloud_monitoring_service_credential_secrets", Value: monitoringServiceCredentialSecrets, DataType: "list(object)"},
 	}
 
 	err := options.RunSchematicTest()
