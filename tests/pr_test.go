@@ -188,6 +188,12 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
+			IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
+				List: []string{
+					"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
+					"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
+				},
+			},
 		})
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
