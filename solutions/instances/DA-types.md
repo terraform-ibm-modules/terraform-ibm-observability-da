@@ -154,7 +154,11 @@ The `metrics_router_settings` input variable allows you configure global setting
 
 ```hcl
 metrics_router_settings = {
-  default_targets = []
+  default_targets = [
+    "f3a1b2c4-89d7-4e6f-9153-2d6a8f9e0b7c",
+    "7d5e2f1a-cb34-4679-823a-1f9c0e8d5b6a",
+    "ae89c3f5-42d1-4b7e-9f62-8d0e7a1b4c5f",
+  ]
   permitted_target_regions = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor", "jp-tok", "jp-osa"]
   primary_metadata_region = "eu-de"
   backup_metadata_region = "us-east"
@@ -184,7 +188,11 @@ The `global_event_routing_settings` input variable allows you configure global s
 
 ```hcl
 global_event_routing_settings = {
-  default_targets           = []
+  default_targets           = [
+    "f3a1b2c4-89d7-4e6f-9153-2d6a8f9e0b7c",
+    "7d5e2f1a-cb34-4679-823a-1f9c0e8d5b6a",
+    "ae89c3f5-42d1-4b7e-9f62-8d0e7a1b4c5f",
+  ]
   metadata_region_primary   = "eu-de"
   metadata_region_backup    = "us-south"
   permitted_target_regions  = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor", "eu-es", "jp-tok", "jp-osa", "in-che", "eu-fr2"]
