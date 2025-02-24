@@ -219,6 +219,9 @@
               "key": "enable_at_event_routing_to_cloud_logs"
             },
             {
+              "key": "global_event_routing_settings"
+            },
+            {
               "key": "cloud_monitoring_provision"
             },
             {
@@ -478,6 +481,9 @@
             },
             {
               "key": "metrics_router_routes"
+            },
+            {
+              "key": "metrics_router_settings"
             }
           ],
           "architecture": {
