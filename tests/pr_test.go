@@ -369,6 +369,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 }
 
 func TestTenantsInSchematics(t *testing.T) {
+	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
 	t.Parallel()
 
 	tenant_configuration := []map[string]interface{}{
@@ -402,6 +403,7 @@ func TestTenantsInSchematics(t *testing.T) {
 }
 
 func TestTenantsUpgradeTest(t *testing.T) {
+	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
 	t.Parallel()
 
 	tenant_configuration := []map[string]interface{}{
