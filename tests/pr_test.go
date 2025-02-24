@@ -116,7 +116,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"management_endpoint_type_for_bucket": "public",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
-		"region"                               options.Region,
+		"region":                              options.Region,
 		"cloud_logs_policies": []map[string]interface{}{
 			{
 				"logs_policy_name":     "upg-test-policy",
