@@ -116,6 +116,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"management_endpoint_type_for_bucket": "public",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
+		"region":                              options.Region,
 		"cloud_logs_policies": []map[string]interface{}{
 			{
 				"logs_policy_name":     "upg-test-policy",
@@ -368,6 +369,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 }
 
 func TestTenantsInSchematics(t *testing.T) {
+	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
 	t.Parallel()
 
 	tenant_configuration := []map[string]interface{}{
@@ -401,6 +403,7 @@ func TestTenantsInSchematics(t *testing.T) {
 }
 
 func TestTenantsUpgradeTest(t *testing.T) {
+	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
 	t.Parallel()
 
 	tenant_configuration := []map[string]interface{}{
