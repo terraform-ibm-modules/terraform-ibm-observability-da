@@ -26,6 +26,7 @@ const resourceGroup = "geretain-test-observability-instances"
 
 const solutionInstanceDADir = "solutions/instances"
 const solutionAgentsDADir = "solutions/agents"
+const solutionTenantsDADir = "solutions/logs-routing"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 // Currently only including regions that Event Notification support
@@ -115,6 +116,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"management_endpoint_type_for_bucket": "public",
 		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
+		"region":                              options.Region,
 		"cloud_logs_policies": []map[string]interface{}{
 			{
 				"logs_policy_name":     "upg-test-policy",
@@ -186,6 +188,12 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
+			IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
+				List: []string{
+					"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
+					"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
+				},
+			},
 		})
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
@@ -288,6 +296,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+			{Name: "region", Value: region, DataType: "string"},
 			{Name: "cos_region", Value: region, DataType: "string"},
 			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
@@ -357,4 +366,64 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
+}
+
+func TestTenantsInSchematics(t *testing.T) {
+	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
+	t.Parallel()
+
+	tenant_configuration := []map[string]interface{}{
+		{
+			"tenant_region": "jp-osa",
+			"tenant_name":   "test-tenant",
+			"target_name":   "test-target",
+			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
+		},
+	}
+
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing: t,
+		TarIncludePatterns: []string{
+			"*.tf",
+			solutionTenantsDADir + "/*.tf",
+		},
+		TemplateFolder:         solutionTenantsDADir,
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
+	})
+
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "tenant_configuration", Value: tenant_configuration, DataType: "list(object)"},
+	}
+
+	err := options.RunSchematicTest()
+	assert.Nil(t, err, "This should not have errored")
+}
+
+func TestTenantsUpgradeTest(t *testing.T) {
+	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
+	t.Parallel()
+
+	tenant_configuration := []map[string]interface{}{
+		{
+			"tenant_region": "br-sao",
+			"tenant_name":   "test-tenant",
+			"target_name":   "test-target",
+			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
+		},
+	}
+
+	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
+		Testing:      t,
+		TerraformDir: solutionTenantsDADir,
+	})
+
+	options.TerraformVars = map[string]interface{}{
+		"tenant_configuration": tenant_configuration,
+	}
+
+	_, err := options.RunTestUpgrade()
+	assert.Nil(t, err, "This should not have errored")
 }
