@@ -261,7 +261,6 @@ module "observability_instance" {
   cloud_logs_provision         = var.cloud_logs_provision
   cloud_logs_instance_name     = local.cloud_logs_instance_name
   cloud_logs_plan              = "standard"
-  enable_platform_logs         = var.enable_platform_logs
   cloud_logs_access_tags       = var.cloud_logs_access_tags
   cloud_logs_tags              = var.cloud_logs_tags
   cloud_logs_service_endpoints = "public-and-private"
