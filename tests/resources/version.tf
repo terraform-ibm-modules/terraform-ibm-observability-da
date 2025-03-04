@@ -3,7 +3,8 @@ terraform {
   required_providers {
     ibm = {
       source  = "ibm-cloud/ibm"
-      version = ">= 1.49.0, < 2.0.0"
+      # lock into 1.75.2 until fix for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/6036 is released
+      version = "1.75.2"
     }
   }
 }
