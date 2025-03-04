@@ -130,7 +130,9 @@
               ]
             },
             {
-              "key": "prefix"
+              "key": "prefix",
+              "required": true,
+              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
             },
             {
               "key": "use_existing_resource_group"
@@ -162,6 +164,9 @@
               "key": "cloud_logs_provision"
             },
             {
+              "key": "cloud_logs_policies"
+            },
+            {
               "key": "cloud_logs_instance_name"
             },
             {
@@ -169,6 +174,9 @@
             },
             {
               "key": "cloud_logs_access_tags"
+            },
+            {
+              "key": "manage_log_archive_cos_bucket"
             },
             {
               "key": "cloud_logs_retention_period",
@@ -252,6 +260,12 @@
             },
             {
               "key": "cloud_monitoring_tags"
+            },
+            {
+              "key": "cos_resource_group_name"
+            },
+            {
+              "key": "cos_region"
             },
             {
               "key": "cos_instance_name"
@@ -459,6 +473,12 @@
               "key": "cos_key_ring_name"
             },
             {
+              "key": "ibmcloud_cos_api_key"
+            },
+            {
+              "key": "ibmcloud_kms_api_key"
+            },
+            {
               "key": "kms_endpoint_type",
               "options": [
                 {
@@ -470,6 +490,9 @@
                   "value": "private"
                 }
               ]
+            },
+            {
+              "key": "enable_platform_metrics"
             },
             {
               "key": "enable_metrics_routing_to_cloud_monitoring"
@@ -568,7 +591,9 @@
               ]
             },
             {
-              "key": "prefix"
+              "key": "prefix",
+              "required": true,
+              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
             },
             {
               "key": "cluster_id"
@@ -637,6 +662,9 @@
             },
             {
               "key": "cloud_monitoring_metrics_filter"
+            },
+            {
+              "key": "cloud_monitoring_container_filter"
             },
             {
               "key": "cloud_monitoring_agent_tags"
@@ -729,6 +757,64 @@
                   "type": "image/svg+xml"
                 },
                 "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Logs Routing",
+          "name": "logs-routing",
+          "install_type": "fullstack",
+          "working_directory": "solutions/logs-routing",
+          "iam_permissions": [
+            {
+              "service_name": "logs-router",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager"
+              ]
+            }
+          ],
+          "configuration": [
+            {
+              "key": "ibmcloud_api_key"
+            },
+            {
+              "key": "provider_visibility",
+              "options": [
+                {
+                  "displayname": "private",
+                  "value": "private"
+                },
+                {
+                  "displayname": "public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "public-and-private",
+                  "value": "public-and-private"
+                }
+              ]
+            },
+            {
+              "key": "tenant_configuration"
+            }
+          ],
+          "architecture": {
+            "descriptions": "This architecture supports the deployment of Log Router Tenant for routing logs to cloud logs instance",
+            "features": [
+              {
+                "title": "Creates Log Router Tenant for routing logs to cloud logs instance",
+                "description": "Creates Log Router Tenant for routing logs to cloud logs instance"
+              }
+            ],
+            "diagrams": [
+              {
+                "diagram": {
+                  "caption": "logs-router",
+                  "url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/reference-architecture/deployable-architecture-logs-routing.svg",
+                  "type": "image/svg+xml"
+                },
+                "description": "Log Router Tenant for routing logs to cloud logs instance"
               }
             ]
           }
