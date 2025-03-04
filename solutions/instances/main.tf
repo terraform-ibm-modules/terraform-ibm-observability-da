@@ -2,10 +2,7 @@
 # Local Variables
 #######################################################################################################################
 locals {
-  prefix = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
-}
-
-locals {
+  prefix             = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
   default_cos_region = var.cos_region != null ? var.cos_region : var.region
 
   cos_key_ring_name           = try("${local.prefix}-${var.cos_key_ring_name}", var.cos_key_ring_name)
@@ -39,14 +36,6 @@ locals {
   # fetch KMS region from existing_kms_instance_crn if KMS resources are required and existing_cos_kms_key_crn is not provided
   kms_region = ((length(coalesce(local.buckets_config, [])) != 0) ?
   (var.existing_cos_kms_key_crn == null ? module.kms_instance_crn_parser[0].region : null) : null)
-  cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
-  cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
-  cos_target_name            = try("${local.prefix}-cos-target", "cos-target")
-  cloud_logs_target_name     = try("${local.prefix}-cloud-logs-target", "cloud-logs-target")
-  at_cos_route_name          = try("${local.prefix}-at-cos-route", "at-cos-route")
-  at_cloud_logs_route_name   = try("${local.prefix}-at-cloud-logs-route", "at-cloud-logs-route")
-  metric_router_target_name  = try("${local.prefix}-cloud-monitoring-target", "cloud-monitoring-target")
-  metric_router_route_name   = try("${local.prefix}-metric-routing-route", "metric-routing-route")
 
   default_metrics_router_route = var.enable_metrics_routing_to_cloud_monitoring ? [{
     name = local.metric_router_route_name
@@ -222,16 +211,16 @@ locals {
   cloud_monitoring_instance_name = try("${local.prefix}-${var.cloud_monitoring_instance_name}", var.cloud_monitoring_instance_name)
   cloud_logs_instance_name       = try("${local.prefix}-${var.cloud_logs_instance_name}", var.cloud_logs_instance_name)
   # Setting up AT event routing target & routes names
-  cos_target_name            = var.prefix != null ? "${var.prefix}-cos-target" : "cos-target"
-  cloud_logs_target_name     = var.prefix != null ? "${var.prefix}-cloud-logs-target" : "cloud-logs-target"
-  at_cos_route_name          = var.prefix != null ? "${var.prefix}-at-cos-route" : "at-cos-route"
-  at_cloud_logs_route_name   = var.prefix != null ? "${var.prefix}-at-cloud-logs-route" : "at-cloud-logs-route"
+  cos_target_name            = try("${local.prefix}-cos-target", "cos-target")
+  cloud_logs_target_name     = try("${local.prefix}-cloud-logs-target", "cloud-logs-target")
+  at_cos_route_name          = try("${local.prefix}-at-cos-route", "at-cos-route")
+  at_cloud_logs_route_name   = try("${local.prefix}-at-cloud-logs-route", "at-cloud-logs-route")
   cos_target_bucket_name     = var.existing_at_cos_target_bucket_name != null ? var.existing_at_cos_target_bucket_name : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].bucket_name : null
   cos_target_bucket_endpoint = var.existing_at_cos_target_bucket_endpoint != null ? var.existing_at_cos_target_bucket_endpoint : var.enable_at_event_routing_to_cos_bucket ? module.cos_bucket[0].buckets[local.at_cos_target_bucket_name].s3_endpoint_private : null
 
   # Setting up metrics router target and route names
-  metric_router_target_name    = var.prefix != null ? "${var.prefix}-cloud-monitoring-target" : "cloud-monitoring-target"
-  metric_router_route_name     = var.prefix != null ? "${var.prefix}-metric-routing-route" : "metric-routing-route"
+  metric_router_target_name    = try("${local.prefix}-cloud-monitoring-target", "cloud-monitoring-target")
+  metric_router_route_name     = try("${local.prefix}-metric-routing-route", "metric-routing-route")
   cloud_logs_data_bucket_crn   = var.existing_cloud_logs_data_bucket_crn != null ? var.existing_cloud_logs_data_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].bucket_crn
   cloud_log_metrics_bucket_crn = var.existing_cloud_logs_metrics_bucket_crn != null ? var.existing_cloud_logs_metrics_bucket_crn : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].bucket_crn
   cloud_logs_buckets           = [local.cloud_logs_data_bucket_crn, local.cloud_log_metrics_bucket_crn]
