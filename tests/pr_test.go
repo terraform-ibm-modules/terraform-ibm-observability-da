@@ -81,7 +81,6 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_logs_tags", Value: options.Tags, DataType: "list(string)"},
-		{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
 		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
@@ -114,8 +113,8 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"kms_endpoint_type":                   "public",
 		"provider_visibility":                 "public",
 		"management_endpoint_type_for_bucket": "public",
-		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
+		"logs_routing_tenant_regions":         []string{options.Region},
 		"region":                              options.Region,
 		"cloud_logs_policies": []map[string]interface{}{
 			{
@@ -311,7 +310,6 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "management_endpoint_type_for_bucket", Value: "private", DataType: "string"},
 			{Name: "provider_visibility", Value: "public", DataType: "string"},
 			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
-			{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 			{Name: "cloud_logs_existing_en_instances", Value: cloud_logs_existing_en_instances, DataType: "list(object)"},
 			{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
 			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
@@ -346,7 +344,6 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
 			{Name: "management_endpoint_type_for_bucket", Value: "private", DataType: "string"},
 			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
-			{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 			{Name: "existing_cos_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
 		}

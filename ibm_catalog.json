@@ -192,9 +192,6 @@
               ]
             },
             {
-              "key": "enable_platform_logs"
-            },
-            {
               "key": "logs_routing_tenant_regions"
             },
             {
