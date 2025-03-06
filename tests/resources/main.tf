@@ -15,7 +15,7 @@ module "resource_group" {
 ##############################################################################
 
 module "landing_zone" {
-  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v7.0.2"
+  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v7.3.0"
   region                              = var.region
   prefix                              = var.prefix
   tags                                = var.resource_tags
@@ -33,7 +33,7 @@ module "landing_zone" {
 
 module "cos" {
   source            = "terraform-ibm-modules/cos/ibm"
-  version           = "8.16.4"
+  version           = "8.19.3"
   resource_group_id = module.resource_group.resource_group_id
   cos_instance_name = "${var.prefix}-cos"
   cos_tags          = var.resource_tags
@@ -51,7 +51,7 @@ locals {
 
 module "buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.16.4"
+  version = "8.19.3"
   bucket_configs = [
     {
       bucket_name            = local.logs_bucket_name
@@ -81,7 +81,7 @@ locals {
 
 module "observability_instances" {
   source                             = "terraform-ibm-modules/observability-instances/ibm"
-  version                            = "3.4.0"
+  version                            = "3.4.2"
   resource_group_id                  = local.cluster_resource_group_id
   region                             = var.region
   cloud_monitoring_plan              = "graduated-tier"
@@ -127,6 +127,7 @@ module "trusted_profile" {
       service = "logs"
     }]
   }]
+
   # Set up fine-grained authorization for `logs-agent` running in ROKS cluster in `ibm-observe` namespace.
   trusted_profile_links = [{
     cr_type = "ROKS_SA"
