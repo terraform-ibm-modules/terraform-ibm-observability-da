@@ -114,7 +114,6 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"provider_visibility":                 "public",
 		"management_endpoint_type_for_bucket": "public",
 		"enable_platform_metrics":             "false",
-		"logs_routing_tenant_regions":         []string{options.Region},
 		"region":                              options.Region,
 		"cloud_logs_policies": []map[string]interface{}{
 			{
