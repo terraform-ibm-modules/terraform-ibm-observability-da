@@ -256,6 +256,7 @@ module "observability_instance" {
   cloud_monitoring_tags              = var.cloud_monitoring_tags
   cloud_monitoring_service_endpoints = "public-and-private"
   enable_platform_metrics            = var.enable_platform_metrics
+  cbr_rules_sysdig                   = var.cbr_rules_sysdig
 
   # IBM Cloud Logs
   cloud_logs_provision         = var.cloud_logs_provision
@@ -289,6 +290,7 @@ module "observability_instance" {
   }]
   skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
   logs_routing_tenant_regions   = var.logs_routing_tenant_regions
+  cbr_rules_icl                 = var.cbr_rules_icl
 
   # Activity Tracker
   at_cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
@@ -310,6 +312,8 @@ module "observability_instance" {
       target_name   = local.cloud_logs_target_name
     }
   ] : []
+
+  cbr_rules_at = var.cbr_rules_at
 
   # Routes
   activity_tracker_routes = local.at_routes

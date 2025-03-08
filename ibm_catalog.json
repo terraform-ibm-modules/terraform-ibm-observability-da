@@ -478,6 +478,15 @@
             },
             {
               "key": "metrics_router_routes"
+            },
+            {
+              "key": "cbr_rules_sysdig"
+            },
+            {
+              "key": "cbr_rules_icl"
+            },
+            {
+              "key": "cbr_rules_at"
             }
           ],
           "architecture": {
