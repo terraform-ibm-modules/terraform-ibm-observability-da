@@ -89,7 +89,6 @@ module "observability_instances" {
   cloud_monitoring_instance_name     = "${var.prefix}-cloud-monitoring"
   cloud_logs_instance_name           = "${var.prefix}-cloud-logs"
   enable_platform_metrics            = false
-  enable_platform_logs               = false
   cloud_logs_tags                    = var.resource_tags
   cloud_logs_data_storage = {
     # logs and metrics buckets must be different
