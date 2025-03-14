@@ -3,6 +3,5 @@
   "resource_group_name": $PREFIX,
   "existing_kms_instance_crn": $HPCS_US_SOUTH_CRN,
   "region": "us-south",
-  "enable_platform_metrics": false,
   "prefix": $PREFIX
 }
