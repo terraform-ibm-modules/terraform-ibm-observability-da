@@ -15,7 +15,7 @@ module "resource_group" {
 ##############################################################################
 
 module "landing_zone" {
-  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v7.3.0"
+  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v7.3.1"
   region                              = var.region
   prefix                              = var.prefix
   tags                                = var.resource_tags
@@ -33,7 +33,7 @@ module "landing_zone" {
 
 module "cos" {
   source            = "terraform-ibm-modules/cos/ibm"
-  version           = "8.19.8"
+  version           = "8.20.2"
   resource_group_id = module.resource_group.resource_group_id
   cos_instance_name = "${var.prefix}-cos"
   cos_tags          = var.resource_tags
@@ -51,7 +51,7 @@ locals {
 
 module "buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.19.8"
+  version = "8.20.2"
   bucket_configs = [
     {
       bucket_name            = local.logs_bucket_name
@@ -81,7 +81,7 @@ locals {
 
 module "observability_instances" {
   source                             = "terraform-ibm-modules/observability-instances/ibm"
-  version                            = "3.4.3"
+  version                            = "3.5.0"
   resource_group_id                  = local.cluster_resource_group_id
   region                             = var.region
   cloud_monitoring_plan              = "graduated-tier"
@@ -116,7 +116,7 @@ locals {
 
 module "trusted_profile" {
   source                      = "terraform-ibm-modules/trusted-profile/ibm"
-  version                     = "2.0.0"
+  version                     = "2.0.1"
   trusted_profile_name        = "${var.prefix}-profile"
   trusted_profile_description = "Logs agent Trusted Profile"
   # As a `Sender`, you can send logs to your IBM Cloud Logs service instance - but not query or tail logs. This role is meant to be used by agents and routers sending logs.
