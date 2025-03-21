@@ -245,7 +245,7 @@ module "cloud_monitoring_crn_parser" {
 module "observability_instance" {
   depends_on        = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source            = "terraform-ibm-modules/observability-instances/ibm"
-  version           = "3.4.3"
+  version           = "3.5.0"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
 
@@ -451,7 +451,7 @@ module "cos_instance" {
   }
   count                    = var.existing_cos_instance_crn == null && length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "8.19.8"
+  version                  = "8.20.2"
   resource_group_id        = local.cos_resource_group_id
   create_cos_instance      = true
   cos_instance_name        = try("${local.prefix}-${var.cos_instance_name}", var.cos_instance_name)
@@ -468,7 +468,7 @@ module "cos_bucket" {
   }
   count   = length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.19.8"
+  version = "8.20.2"
   bucket_configs = [
     for value in local.buckets_config :
     {
