@@ -69,6 +69,11 @@ locals {
       inclusion_filters = []
     }]
   }] : []
+  metrics_router_settings = {
+    default_targets          = []
+    primary_metadata_region  = var.region
+    permitted_target_regions = []
+  }
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -325,6 +330,8 @@ module "observability_instance" {
   ] : []
 
   metrics_router_routes = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
+
+  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? local.metrics_router_settings : null
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
