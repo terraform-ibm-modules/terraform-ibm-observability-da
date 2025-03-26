@@ -475,6 +475,9 @@
             },
             {
               "key": "metrics_router_routes"
+            },
+            {
+              "key": "metrics_router_settings"
             }
           ],
           "architecture": {

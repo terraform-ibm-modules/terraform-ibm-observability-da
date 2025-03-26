@@ -72,6 +72,7 @@ locals {
   metrics_router_settings = {
     default_targets          = []
     primary_metadata_region  = var.region
+    backup_metadata_region   = "eu-de"
     permitted_target_regions = []
   }
 
@@ -331,7 +332,7 @@ module "observability_instance" {
 
   metrics_router_routes = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
 
-  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? local.metrics_router_settings : null
+  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? (var.metrics_router_settings != null ? var.metrics_router_settings : local.metrics_router_settings) : null
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
