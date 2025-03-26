@@ -727,7 +727,7 @@
               {
                 "diagram": {
                   "caption": "Observability agents on a Red Hat OpenShift cluster",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-logs-routing.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
@@ -786,7 +786,7 @@
               {
                 "diagram": {
                   "caption": "logs-router",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/4ec8ed3ebe6c5d057876bb3f7f6fd125074f3f45/reference-architecture/deployable-architecture-logs-routing.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-logs-routing.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "Log Router Tenant for routing logs to cloud logs instance"
