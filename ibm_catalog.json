@@ -48,6 +48,7 @@
           "label": "Instances",
           "name": "instances",
           "install_type": "fullstack",
+          "index": 1,
           "working_directory": "solutions/instances",
           "iam_permissions": [
             {
@@ -738,6 +739,7 @@
           "label": "Logs Routing",
           "name": "logs-routing",
           "install_type": "fullstack",
+          "index": 2,
           "working_directory": "solutions/logs-routing",
           "iam_permissions": [
             {
@@ -784,7 +786,7 @@
               {
                 "diagram": {
                   "caption": "logs-router",
-                  "url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/reference-architecture/deployable-architecture-logs-routing.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/4ec8ed3ebe6c5d057876bb3f7f6fd125074f3f45/reference-architecture/deployable-architecture-logs-routing.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "Log Router Tenant for routing logs to cloud logs instance"
