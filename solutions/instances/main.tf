@@ -70,10 +70,11 @@ locals {
     }]
   }] : []
   metrics_router_settings = {
-    default_targets          = []
-    primary_metadata_region  = var.region
-    backup_metadata_region   = "eu-de"
-    permitted_target_regions = []
+    default_targets           = []
+    primary_metadata_region   = var.region
+    backup_metadata_region    = "eu-de"
+    permitted_target_regions  = []
+    private_api_endpoint_only = false
   }
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
