@@ -229,6 +229,20 @@ variable "enable_metrics_routing_to_cloud_monitoring" {
   default     = true
 }
 
+variable "metrics_router_settings" {
+  type = object({
+    permitted_target_regions  = optional(list(string))
+    primary_metadata_region   = optional(string)
+    backup_metadata_region    = optional(string)
+    private_api_endpoint_only = optional(bool, false)
+    default_targets = optional(list(object({
+      id = string
+    })))
+  })
+  description = "Global settings for Metrics Routing"
+  default     = null
+}
+
 ##############################################################################
 # Cloud Monitoring Variables
 ##############################################################################
