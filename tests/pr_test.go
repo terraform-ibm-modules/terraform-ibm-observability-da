@@ -72,6 +72,12 @@ func TestInstancesInSchematics(t *testing.T) {
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
+		IgnoreUpdates: testhelper.Exemptions{
+			List: []string{
+				// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+				"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
+			},
+		},
 	})
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
@@ -103,6 +109,12 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		TerraformDir: solutionInstanceDADir,
 		Region:       region,
 		Prefix:       "obs-ins-upg",
+		IgnoreUpdates: testhelper.Exemptions{
+			List: []string{
+				// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+				"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
+			},
+		},
 	})
 
 	options.TerraformVars = map[string]interface{}{
@@ -290,6 +302,12 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
+			IgnoreUpdates: testhelper.Exemptions{
+				List: []string{
+					// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+					"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
+				},
+			},
 		})
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
@@ -331,6 +349,12 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
+			IgnoreUpdates: testhelper.Exemptions{
+				List: []string{
+					// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+					"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
+				},
+			},
 		})
 
 		options2.TerraformVars = []testschematic.TestSchematicTerraformVar{
