@@ -4,7 +4,7 @@
 
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.1.6"
+  version = "1.2.0"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -15,7 +15,7 @@ module "resource_group" {
 ##############################################################################
 
 module "landing_zone" {
-  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v7.0.2"
+  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v7.4.3"
   region                              = var.region
   prefix                              = var.prefix
   tags                                = var.resource_tags
@@ -33,7 +33,7 @@ module "landing_zone" {
 
 module "cos" {
   source            = "terraform-ibm-modules/cos/ibm"
-  version           = "8.16.4"
+  version           = "8.21.8"
   resource_group_id = module.resource_group.resource_group_id
   cos_instance_name = "${var.prefix}-cos"
   cos_tags          = var.resource_tags
@@ -51,7 +51,7 @@ locals {
 
 module "buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.16.4"
+  version = "8.21.8"
   bucket_configs = [
     {
       bucket_name            = local.logs_bucket_name
@@ -81,7 +81,7 @@ locals {
 
 module "observability_instances" {
   source                             = "terraform-ibm-modules/observability-instances/ibm"
-  version                            = "3.4.0"
+  version                            = "3.5.0"
   resource_group_id                  = local.cluster_resource_group_id
   region                             = var.region
   cloud_monitoring_plan              = "graduated-tier"
@@ -89,7 +89,6 @@ module "observability_instances" {
   cloud_monitoring_instance_name     = "${var.prefix}-cloud-monitoring"
   cloud_logs_instance_name           = "${var.prefix}-cloud-logs"
   enable_platform_metrics            = false
-  enable_platform_logs               = false
   cloud_logs_tags                    = var.resource_tags
   cloud_logs_data_storage = {
     # logs and metrics buckets must be different
@@ -117,7 +116,7 @@ locals {
 
 module "trusted_profile" {
   source                      = "terraform-ibm-modules/trusted-profile/ibm"
-  version                     = "2.0.0"
+  version                     = "2.0.1"
   trusted_profile_name        = "${var.prefix}-profile"
   trusted_profile_description = "Logs agent Trusted Profile"
   # As a `Sender`, you can send logs to your IBM Cloud Logs service instance - but not query or tail logs. This role is meant to be used by agents and routers sending logs.
@@ -127,6 +126,7 @@ module "trusted_profile" {
       service = "logs"
     }]
   }]
+
   # Set up fine-grained authorization for `logs-agent` running in ROKS cluster in `ibm-observe` namespace.
   trusted_profile_links = [{
     cr_type = "ROKS_SA"

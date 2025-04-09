@@ -48,6 +48,7 @@
           "label": "Instances",
           "name": "instances",
           "install_type": "fullstack",
+          "index": 1,
           "working_directory": "solutions/instances",
           "iam_permissions": [
             {
@@ -125,8 +126,7 @@
             },
             {
               "key": "prefix",
-              "required": true,
-              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
+              "required": true
             },
             {
               "key": "use_existing_resource_group"
@@ -190,9 +190,6 @@
                   "value": "90"
                 }
               ]
-            },
-            {
-              "key": "enable_platform_logs"
             },
             {
               "key": "logs_routing_tenant_regions"
@@ -478,6 +475,9 @@
             },
             {
               "key": "metrics_router_routes"
+            },
+            {
+              "key": "metrics_router_settings"
             }
           ],
           "architecture": {
@@ -571,8 +571,7 @@
             },
             {
               "key": "prefix",
-              "required": true,
-              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
+              "required": true
             },
             {
               "key": "cluster_id"
@@ -741,6 +740,7 @@
           "label": "Logs Routing",
           "name": "logs-routing",
           "install_type": "fullstack",
+          "index": 2,
           "working_directory": "solutions/logs-routing",
           "iam_permissions": [
             {
@@ -787,7 +787,7 @@
               {
                 "diagram": {
                   "caption": "logs-router",
-                  "url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/reference-architecture/deployable-architecture-logs-routing.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-logs-routing.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "Log Router Tenant for routing logs to cloud logs instance"
