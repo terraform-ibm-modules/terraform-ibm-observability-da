@@ -62,7 +62,7 @@ func TestInstancesInSchematics(t *testing.T) {
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
-		Prefix:  "instance-da",
+		Prefix:  "ins-da",
 		TarIncludePatterns: []string{
 			"*.tf",
 			solutionInstanceDADir + "/*.tf",
@@ -108,7 +108,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		Testing:      t,
 		TerraformDir: solutionInstanceDADir,
 		Region:       region,
-		Prefix:       "obs-ins-upg",
+		Prefix:       "ob-ins-up",
 		IgnoreUpdates: testhelper.Exemptions{
 			List: []string{
 				// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
@@ -187,7 +187,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 			Testing: t,
-			Prefix:  "obs-agents",
+			Prefix:  "obs-agt",
 			TarIncludePatterns: []string{
 				solutionAgentsDADir + "/*.*",
 				agentsKubeconfigDir + "/*.*",
@@ -292,7 +292,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 	} else {
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 			Testing: t,
-			Prefix:  "obs-ins-ext",
+			Prefix:  "ob-in-ext",
 			TarIncludePatterns: []string{
 				solutionInstanceDADir + "/*.*",
 			},
