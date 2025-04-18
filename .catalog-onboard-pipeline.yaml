@@ -15,8 +15,8 @@ offerings:
       - name: agents
         mark_ready: true
         install_type: extension
-        pre_validation: "tests/scripts/pre-validation-deploy-slz-roks-and-obs-instances.sh"
-        post_validation: "tests/scripts/post-validation-destroy-slz-roks-and-obs-instances.sh"
+        pre_validation: "tests/scripts/pre-validation-deploy-ocp-and-obs-instances.sh"
+        post_validation: "tests/scripts/post-validation-destroy-ocp-and-obs-instances.sh"
       - name: logs-routing
         mark_ready: true
         install_type: fullstack

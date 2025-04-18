@@ -1,8 +1,8 @@
 #! /bin/bash
 
 ############################################################################################################
-## This script is used by the catalog pipeline to deploy the SLZ ROKS and Observability instances,
-## which are the prerequisites for the Observability Agents extension.
+## This script is used by the catalog pipeline to deploy the OCP cluster and Observability instances,
+## which are the prerequisites for the Observability Agents DA.
 ############################################################################################################
 
 set -e
@@ -16,7 +16,7 @@ TF_VARS_FILE="terraform.tfvars"
 (
   cwd=$(pwd)
   cd ${TERRAFORM_SOURCE_DIR}
-  echo "Provisioning prerequisite SLZ ROKS CLUSTER and Observability Instances .."
+  echo "Provisioning prerequisite OCP CLUSTER and Observability instances .."
   terraform init || exit 1
   # $VALIDATION_APIKEY is available in the catalog runtime
   {
@@ -28,9 +28,9 @@ TF_VARS_FILE="terraform.tfvars"
 
   region_var_name="region"
   cluster_id_var_name="cluster_id"
-  cluster_id_value=$(terraform output -state=terraform.tfstate -raw workload_cluster_id)
+  cluster_id_value=$(terraform output -state=terraform.tfstate -raw cluster_id)
   cluster_resource_group_id_var_name="cluster_resource_group_id"
-  cluster_resource_group_id_value=$(terraform output -state=terraform.tfstate -raw cluster_resource_group_id)
+  cluster_resource_group_id_value=$(terraform output -state=terraform.tfstate -raw resource_group_id)
   cloud_monitoring_instance_region_var_name="cloud_monitoring_instance_region"
   cloud_monitoring_access_key_var_name="cloud_monitoring_access_key"
   cloud_monitoring_access_key_value=$(terraform output -state=terraform.tfstate -raw cloud_monitoring_access_key)
