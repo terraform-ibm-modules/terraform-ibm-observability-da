@@ -183,5 +183,4 @@ module "ocp_base" {
   vpc_id                              = ibm_is_vpc.vpc.id
   vpc_subnets                         = local.cluster_vpc_subnets
   worker_pools                        = local.worker_pools
-  disable_outbound_traffic_protection = true # set as True to enable outbound traffic; required for accessing Operator Hub in the OpenShift console.
 }
