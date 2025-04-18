@@ -11,20 +11,30 @@ module "resource_group" {
 }
 
 ##############################################################################
-# SLZ ROKS Pattern
+# VPC + Subnet + Public Gateway
 ##############################################################################
 
-module "landing_zone" {
-  source                              = "git::https://github.com/terraform-ibm-modules/terraform-ibm-landing-zone//patterns//roks//module?ref=v7.4.4"
-  region                              = var.region
-  prefix                              = var.prefix
-  tags                                = var.resource_tags
-  add_atracker_route                  = false
-  enable_transit_gateway              = false
-  cluster_force_delete_storage        = true
-  verify_cluster_network_readiness    = false
-  use_ibm_cloud_private_api_endpoints = false
-  ignore_vpcs_for_cluster_deployment  = ["management"]
+resource "ibm_is_vpc" "vpc" {
+  name                      = "${var.prefix}-vpc"
+  resource_group            = module.resource_group.resource_group_id
+  address_prefix_management = "auto"
+  tags                      = var.resource_tags
+}
+
+resource "ibm_is_public_gateway" "gateway" {
+  name           = "${var.prefix}-gateway-1"
+  vpc            = ibm_is_vpc.vpc.id
+  resource_group = module.resource_group.resource_group_id
+  zone           = "${var.region}-1"
+}
+
+resource "ibm_is_subnet" "subnet_zone_1" {
+  name                     = "${var.prefix}-subnet-1"
+  vpc                      = ibm_is_vpc.vpc.id
+  resource_group           = module.resource_group.resource_group_id
+  zone                     = "${var.region}-1"
+  total_ipv4_address_count = 256
+  public_gateway           = ibm_is_public_gateway.gateway.id
 }
 
 ##############################################################################
@@ -74,15 +84,10 @@ module "buckets" {
 # - Monitoring instance
 ##############################################################################
 
-locals {
-  cluster_resource_group_id = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].resource_group_id
-  cluster_crn               = module.landing_zone.cluster_data["${var.prefix}-workload-cluster"].crn
-}
-
 module "observability_instances" {
   source                             = "terraform-ibm-modules/observability-instances/ibm"
   version                            = "3.5.0"
-  resource_group_id                  = local.cluster_resource_group_id
+  resource_group_id                  = module.resource_group.resource_group_id
   region                             = var.region
   cloud_monitoring_plan              = "graduated-tier"
   cloud_monitoring_service_endpoints = "public-and-private"
@@ -131,10 +136,52 @@ module "trusted_profile" {
   trusted_profile_links = [{
     cr_type = "ROKS_SA"
     links = [{
-      crn       = local.cluster_crn
+      crn       = module.ocp_base.cluster_crn
       namespace = local.logs_agent_namespace
       name      = local.logs_agent_name
     }]
     }
   ]
+}
+
+##############################################################################
+# OCP VPC cluster (single zone)
+##############################################################################
+
+locals {
+  cluster_vpc_subnets = {
+    default = [
+      {
+        id         = ibm_is_subnet.subnet_zone_1.id
+        cidr_block = ibm_is_subnet.subnet_zone_1.ipv4_cidr_block
+        zone       = ibm_is_subnet.subnet_zone_1.zone
+      }
+    ]
+  }
+
+  worker_pools = [
+    {
+      subnet_prefix    = "default"
+      pool_name        = "default" # ibm_container_vpc_cluster automatically names default pool "default" (See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/2849)
+      machine_type     = "bx2.4x16"
+      workers_per_zone = 2 # minimum of 2 is allowed when using single zone
+      operating_system = "REDHAT_8_64"
+    }
+  ]
+}
+
+module "ocp_base" {
+  source                              = "terraform-ibm-modules/base-ocp-vpc/ibm"
+  version                             = "3.46.1"
+  resource_group_id                   = module.resource_group.resource_group_id
+  region                              = var.region
+  tags                                = var.resource_tags
+  cluster_name                        = var.prefix
+  force_delete_storage                = true
+  use_existing_cos                    = true
+  existing_cos_id                     = module.cos.cos_instance_id
+  vpc_id                              = ibm_is_vpc.vpc.id
+  vpc_subnets                         = local.cluster_vpc_subnets
+  worker_pools                        = local.worker_pools
+  disable_outbound_traffic_protection = true # set as True to enable outbound traffic; required for accessing Operator Hub in the OpenShift console.
 }
