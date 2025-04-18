@@ -3,13 +3,13 @@
 ##############################################################################
 
 output "prefix" {
-  value       = module.landing_zone.prefix
+  value       = var.prefix
   description = "prefix"
 }
 
 output "region" {
   value       = var.region
-  description = "Region where SLZ ROKS Cluster is deployed."
+  description = "Region where OCP Cluster is deployed."
 }
 
 output "cluster_id" {
