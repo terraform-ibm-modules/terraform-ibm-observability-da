@@ -72,6 +72,12 @@ func TestInstancesInSchematics(t *testing.T) {
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
+		IgnoreUpdates: testhelper.Exemptions{
+			List: []string{
+				// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+				"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
+			},
+		},
 	})
 
 	logsServiceCredentialSecrets := []map[string]interface{}{
@@ -128,7 +134,6 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_logs_tags", Value: options.Tags, DataType: "list(string)"},
-		{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
 		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
@@ -156,6 +161,12 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		TerraformDir: solutionInstanceDADir,
 		Region:       region,
 		Prefix:       "obs-ins-upg",
+		IgnoreUpdates: testhelper.Exemptions{
+			List: []string{
+				// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+				"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
+			},
+		},
 	})
 
 	options.TerraformVars = map[string]interface{}{
@@ -166,8 +177,8 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		"kms_endpoint_type":                   "public",
 		"provider_visibility":                 "public",
 		"management_endpoint_type_for_bucket": "public",
-		"enable_platform_logs":                "false",
 		"enable_platform_metrics":             "false",
+		"region":                              options.Region,
 		"cloud_logs_policies": []map[string]interface{}{
 			{
 				"logs_policy_name":     "upg-test-policy",
@@ -239,15 +250,21 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
+			IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
+				List: []string{
+					"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
+					"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
+				},
+			},
 		})
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 			{Name: "cloud_monitoring_instance_region", Value: region, DataType: "string"},
-			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "workload_cluster_id"), DataType: "string"},
+			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_id"), DataType: "string"},
 			{Name: "logs_agent_trusted_profile", Value: terraform.Output(t, existingTerraformOptions, "trusted_profile_id"), DataType: "string"},
 			{Name: "cloud_logs_ingress_endpoint", Value: terraform.Output(t, existingTerraformOptions, "cloud_logs_ingress_private_endpoint"), DataType: "string"},
-			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_resource_group_id"), DataType: "string"},
+			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "resource_group_id"), DataType: "string"},
 			{Name: "cloud_monitoring_access_key", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_access_key"), DataType: "string", Secure: true},
 			{Name: "prefix", Value: options.Prefix, DataType: "string"},
 		}
@@ -337,6 +354,12 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
+			IgnoreUpdates: testhelper.Exemptions{
+				List: []string{
+					// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+					"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
+				},
+			},
 		})
 
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
@@ -356,7 +379,6 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "management_endpoint_type_for_bucket", Value: "private", DataType: "string"},
 			{Name: "provider_visibility", Value: "public", DataType: "string"},
 			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
-			{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 			{Name: "cloud_logs_existing_en_instances", Value: cloud_logs_existing_en_instances, DataType: "list(object)"},
 			{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
 			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
@@ -379,6 +401,12 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
+			IgnoreUpdates: testhelper.Exemptions{
+				List: []string{
+					// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+					"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
+				},
+			},
 		})
 
 		options2.TerraformVars = []testschematic.TestSchematicTerraformVar{
@@ -391,7 +419,6 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
 			{Name: "management_endpoint_type_for_bucket", Value: "private", DataType: "string"},
 			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
-			{Name: "enable_platform_logs", Value: false, DataType: "bool"},
 			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 			{Name: "existing_cos_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
 		}
@@ -414,6 +441,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 }
 
 func TestTenantsInSchematics(t *testing.T) {
+	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
 	t.Parallel()
 
 	tenant_configuration := []map[string]interface{}{
@@ -447,6 +475,7 @@ func TestTenantsInSchematics(t *testing.T) {
 }
 
 func TestTenantsUpgradeTest(t *testing.T) {
+	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
 	t.Parallel()
 
 	tenant_configuration := []map[string]interface{}{

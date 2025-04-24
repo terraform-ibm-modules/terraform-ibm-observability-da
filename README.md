@@ -6,9 +6,6 @@
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-> [!IMPORTANT]
-> The IBM Log Analysis and IBM Cloud Activity Tracker services are deprecated. IBM Cloud Logs is the replacement service. This module will be updated to provision the new services before the end of support in March 2025.
-
 This repository contains the following infrastructure as code solutions:
 - [IBM Cloud Observability instances solution](./solutions/instances)
 - [IBM Cloud Observability agents solution](./solutions/agents)

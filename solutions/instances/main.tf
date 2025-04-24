@@ -69,6 +69,13 @@ locals {
       inclusion_filters = []
     }]
   }] : []
+  metrics_router_settings = {
+    default_targets           = []
+    primary_metadata_region   = var.region
+    backup_metadata_region    = null
+    permitted_target_regions  = []
+    private_api_endpoint_only = false
+  }
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -159,7 +166,7 @@ locals {
 
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.1.6"
+  version                      = "1.2.0"
   resource_group_name          = var.use_existing_resource_group == false ? (try("${local.prefix}-${var.resource_group_name}", var.resource_group_name)) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
@@ -170,7 +177,7 @@ module "cos_resource_group" {
     ibm = ibm.cos
   }
   source              = "terraform-ibm-modules/resource-group/ibm"
-  version             = "1.1.6"
+  version             = "1.2.0"
   resource_group_name = try("${local.prefix}-${var.cos_resource_group_name}", var.cos_resource_group_name)
 }
 
@@ -245,7 +252,7 @@ module "cloud_monitoring_crn_parser" {
 module "observability_instance" {
   depends_on        = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source            = "terraform-ibm-modules/observability-instances/ibm"
-  version           = "3.4.2"
+  version           = "3.5.1"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
 
@@ -261,7 +268,6 @@ module "observability_instance" {
   cloud_logs_provision         = var.cloud_logs_provision
   cloud_logs_instance_name     = local.cloud_logs_instance_name
   cloud_logs_plan              = "standard"
-  enable_platform_logs         = var.enable_platform_logs
   cloud_logs_access_tags       = var.cloud_logs_access_tags
   cloud_logs_tags              = var.cloud_logs_tags
   cloud_logs_service_endpoints = "public-and-private"
@@ -326,6 +332,8 @@ module "observability_instance" {
   ] : []
 
   metrics_router_routes = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
+
+  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? (var.metrics_router_settings != null ? var.metrics_router_settings : local.metrics_router_settings) : null
 }
 
 resource "time_sleep" "wait_for_atracker_cos_authorization_policy" {
@@ -362,7 +370,7 @@ module "kms" {
   }
   count                       = (var.existing_cos_kms_key_crn != null || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.19.1"
+  version                     = "4.21.10"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_crn   = var.existing_kms_instance_crn
@@ -452,7 +460,7 @@ module "cos_instance" {
   }
   count                    = var.existing_cos_instance_crn == null && length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "8.16.4"
+  version                  = "8.21.14"
   resource_group_id        = local.cos_resource_group_id
   create_cos_instance      = true
   cos_instance_name        = try("${local.prefix}-${var.cos_instance_name}", var.cos_instance_name)
@@ -469,7 +477,7 @@ module "cos_bucket" {
   }
   count   = length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.16.4"
+  version = "8.21.14"
   bucket_configs = [
     for value in local.buckets_config :
     {

@@ -143,12 +143,6 @@ variable "skip_logs_routing_auth_policy" {
   default     = false
 }
 
-variable "enable_platform_logs" {
-  type        = bool
-  description = "Setting this to true will create a tenant in the same region that the Cloud Logs instance is provisioned to enable platform logs for that region. To send platform logs from other regions, you can explicitially specify a list of regions using the `logs_routing_tenant_regions` input. NOTE: You can only have 1 tenant per region in an account."
-  default     = true
-}
-
 variable "logs_routing_tenant_regions" {
   type        = list(any)
   default     = []
@@ -233,6 +227,20 @@ variable "enable_metrics_routing_to_cloud_monitoring" {
   type        = bool
   description = "Whether to enable metrics routing from IBM Cloud Metric Routing to Cloud Monitoring."
   default     = true
+}
+
+variable "metrics_router_settings" {
+  type = object({
+    permitted_target_regions  = optional(list(string))
+    primary_metadata_region   = optional(string)
+    backup_metadata_region    = optional(string)
+    private_api_endpoint_only = optional(bool, false)
+    default_targets = optional(list(object({
+      id = string
+    })))
+  })
+  description = "Global settings for Metrics Routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#metrics-router-settings-)"
+  default     = null
 }
 
 ##############################################################################

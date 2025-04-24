@@ -4,7 +4,7 @@
 
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.1.6"
+  version = "1.2.0"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -16,7 +16,7 @@ module "resource_group" {
 
 module "cos" {
   source                 = "terraform-ibm-modules/cos/ibm"
-  version                = "8.16.4"
+  version                = "8.21.14"
   resource_group_id      = module.resource_group.resource_group_id
   region                 = var.region
   cos_instance_name      = "${var.prefix}-cos"
@@ -28,7 +28,7 @@ module "cos" {
 
 module "additional_cos_bucket" {
   source                   = "terraform-ibm-modules/cos/ibm"
-  version                  = "8.16.4"
+  version                  = "8.21.14"
   region                   = var.region
   create_cos_instance      = false
   existing_cos_instance_id = module.cos.cos_instance_id
@@ -38,7 +38,7 @@ module "additional_cos_bucket" {
 
 module "cloud_log_buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.16.4"
+  version = "8.21.14"
   bucket_configs = [
     {
       bucket_name            = "${var.prefix}-data-bucket"
@@ -62,7 +62,7 @@ module "cloud_log_buckets" {
 
 module "cloud_monitoring" {
   source                  = "terraform-ibm-modules/observability-instances/ibm//modules/cloud_monitoring"
-  version                 = "3.4.0"
+  version                 = "3.5.1"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = "${var.prefix}-sysdig"
@@ -77,7 +77,7 @@ module "cloud_monitoring" {
 
 module "event_notification_1" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "1.15.11"
+  version           = "1.19.19"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en-1"
   tags              = var.resource_tags
@@ -88,7 +88,7 @@ module "event_notification_1" {
 
 module "event_notification_2" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "1.15.11"
+  version           = "1.19.19"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en-2"
   tags              = var.resource_tags

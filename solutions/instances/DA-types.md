@@ -5,25 +5,25 @@ Several optional input variables in the IBM Cloud [Observability instances deplo
 * Cloud Logs Event Notification Instances (`cloud_logs_existing_en_instances`)
 * Cloud Logs policies (`cloud_logs_policies`)
 * Metrics Router Routes (`metrics_router_routes`)
+* Metrics Router Settings(`metrics_router_settings`)
 * Activity Tracker Event Routing COS bucket retention policy (`at_cos_bucket_retention_policy`)
 * Cloud Logs data bucket retention policy(`cloud_log_data_bucket_retention_policy`)
 * [Resource keys](#resource-keys) (`resource_keys`)
 * [Service credential secrets](#service-credential-secrets) (`service_credential_secrets`)
 
-
 ## Cloud Logs Event Notification Instances <a name="cloud_logs_existing_en_instances"></a>
 
 The `cloud_logs_existing_en_instances` input variable allows you to provide a list of existing Event Notification (EN) instances that will be integrated with the Cloud Logging service. For each EN instance, you need to specify its CRN (Cloud Resource Name). You can also optionally configure a integration name and control whether to skip the creation of an authentication policy for the instance.
 
-- Variable name: `cloud_logs_existing_en_instances`.
-- Type: A list of objects. Each object represents an EN instance.
-- Default value: An empty list (`[]`).
+* Variable name: `cloud_logs_existing_en_instances`.
+* Type: A list of objects. Each object represents an EN instance.
+* Default value: An empty list (`[]`).
 
 ### Options for cloud_logs_existing_en_instances
 
-  - `instance_crn` (required): The Cloud Resource Name (CRN) of the Event Notification instance.
-  - `integration_name` (optional): The name of the Event Notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. Defaults to `"cloud-logs-en-integration"`.
-  - `skip_en_auth_policy` (optional): A boolean flag to determine whether to skip the creation of an authentication policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. Defaults to `false`.
+* `instance_crn` (required): The Cloud Resource Name (CRN) of the Event Notification instance.
+* `integration_name` (optional): The name of the Event Notification integration that gets created. If a prefix input variable is passed, it is prefixed to the value in the `<prefix>-value` format. Defaults to `"cloud-logs-en-integration"`.
+* `skip_en_auth_policy` (optional): A boolean flag to determine whether to skip the creation of an authentication policy that allows Cloud Logs 'Event Source Manager' role access in the existing event notification instance. Defaults to `false`.
 
 ### Example Event Notification Instance Configuration
 
@@ -42,26 +42,27 @@ cloud_logs_existing_en_instances = [
 ```
 
 In this example:
-- The first EN instance has a integration name `"custom-logging-en-integration"` and skips the authentication policy.
-- The second EN instance uses the default integration name and includes the authentication policy.
+
+* The first EN instance has a integration name `"custom-logging-en-integration"` and skips the authentication policy.
+* The second EN instance uses the default integration name and includes the authentication policy.
 
 ## Cloud Logs Policies <a name="cloud_logs_policies"></a>
 
 The `cloud_logs_policies` input variable allows you to provide a list of policies that will be configured in the Cloud Logs service. Refer [here](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-tco-optimizer) for more information.
 
-- Variable name: `cloud_logs_policies`.
-- Type: A list of objects. Each object represents a policy.
-- Default value: An empty list (`[]`).
+* Variable name: `cloud_logs_policies`.
+* Type: A list of objects. Each object represents a policy.
+* Default value: An empty list (`[]`).
 
 ### Options for cloud_logs_policies
 
-  - `logs_policy_name` (required): The unique policy name.
-  - `logs_policy_description` (optional): The description of the policy to create.
-  - `logs_policy_priority` (required): The priority to determine the pipeline for the logs. Allowed values are: type_unspecified, type_block, type_low, type_medium, type_high. High (priority value) sent to 'Priority insights' (TCO pipleine), Medium to 'Analyze and alert', Low to 'Store and search', Blocked are not sent to any pipeline.
-  - `application_rule` (optional): The rules to include in the policy configuration for matching applications.
-  - `subsystem_rule` (optional): The subsystem rules to include in the policy configuration for matching applications.
-  - `log_rules` (required): The log severities to include in the policy configuration.
-  - `archive_retention` (optional): Define archive retention.
+* `logs_policy_name` (required): The unique policy name.
+* `logs_policy_description` (optional): The description of the policy to create.
+* `logs_policy_priority` (required): The priority to determine the pipeline for the logs. Allowed values are: type_unspecified, type_block, type_low, type_medium, type_high. High (priority value) sent to 'Priority insights' (TCO pipleine), Medium to 'Analyze and alert', Low to 'Store and search', Blocked are not sent to any pipeline.
+* `application_rule` (optional): The rules to include in the policy configuration for matching applications.
+* `subsystem_rule` (optional): The subsystem rules to include in the policy configuration for matching applications.
+* `log_rules` (required): The log severities to include in the policy configuration.
+* `archive_retention` (optional): Define archive retention.
 
 ### Example cloud_logs_policies
 
@@ -98,22 +99,22 @@ cloud_logs_policies = [
 
 The `metrics_router_routes` input variable allows you to provide a list of routes that will be configured in the IBM Cloud Metrics Routing. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-about) for more information.
 
-- Variable name: `metrics_router_routes`.
-- Type: A list of objects. Each object represents a route.
-- Default value: An empty list (`[]`).
+* Variable name: `metrics_router_routes`.
+* Type: A list of objects. Each object represents a route.
+* Default value: An empty list (`[]`).
 
 ### Options for metrics_router_routes
 
-  - `name` (required):  The name of the route.
-  - `rules` (required): The routing rules that will be evaluated in their order of the array. You can configure up to 10 rules per route.
-    - `action` (optional): The action if the inclusion_filters matches, default is send action. Allowed values are `send` and `drop`.
-    - `inclusion_filters` (required): A list of conditions to be satisfied for routing metrics to pre-defined target.'inclusion_filters' is an object with three parameters:
-        - `operand` - Part of CRN that can be compared with values. Allowable values are: `location`, `service_name`, `service_instance`, `resource_type`, `resource`.
+* `name` (required):  The name of the route.
+* `rules` (required): The routing rules that will be evaluated in their order of the array. You can configure up to 10 rules per route.
+  * `action` (optional): The action if the inclusion_filters matches, default is send action. Allowed values are `send` and `drop`.
+  * `inclusion_filters` (required): A list of conditions to be satisfied for routing metrics to pre-defined target.'inclusion_filters' is an object with three parameters:
+    * `operand` - Part of CRN that can be compared with values. Allowable values are: `location`, `service_name`, `service_instance`, `resource_type`, `resource`.
 
-        - `operator` - The operation to be performed between operand and the provided values. Allowable values are: `is`, `in`.
+    * `operator` - The operation to be performed between operand and the provided values. Allowable values are: `is`, `in`.
 
-        - `values` - The provided string values of the operand to be compared with.
-    - `targets` (required): The target uuid for a pre-defined metrics router target.
+    * `values` - The provided string values of the operand to be compared with.
+  * `targets` (required): The target uuid for a pre-defined metrics router target.
 
 ### Example metrics_router_routes
 
@@ -133,22 +134,55 @@ metrics_router_routes = {
     }
 }
 ```
+
 Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-route_rules_definitions&interface=ui) for more information about IBM Cloud Metrics Routing route.
+
+## Metrics Router Settings <a name="metrics_router_settings"></a>
+
+The `metrics_router_settings` input variable allows you to set the account settings for IBM Cloud® Metrics Routing. These settings are set to define where and how metrics are collected, routed, and managed in your account. Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-settings-about&interface=ui) for more information.
+
+* Variable name: `metrics_router_settings`.
+* Type: An object.
+* Default value: null (`null`).
+
+### Options for metrics_router_settings
+
+* `default_targets` (optional): A list of default target locations that is, 1 or more targets in the account, that will collect metrics from supported IBM Cloud Metrics Routing locations where the user have not configured how they want to collect metrics.
+* `permitted_target_regions` (optional): Displays the targets regions where metrics can be sent.
+* `primary_metadata_region` (optional): The location where the IBM Cloud Metrics Routing account configuration metadata is stored. For new accounts, all target/route creation will fail until `primary_metadata_region` is set.
+* `backup_metadata_region` (optional): To backup all your meta data in a different region.
+* `private_api_endpoint_only` (optional): The type of endpoints that are allowed to manage the IBM Cloud Metrics Routing account configuration in the account. If you set this true then you cannot access api through public network.
+
+### Example metrics_router_settings
+
+```hcl
+metrics_router_settings = {
+    default_targets           = [{
+      id = "c3af557f-fb0e-2222-85c3-0889e7fe7bc4"
+    }]
+    primary_metadata_region   = "us-south"
+    backup_metadata_region    = "us-east"
+    permitted_target_regions  = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor"]
+    private_api_endpoint_only = false
+  }
+```
+
+Refer [here](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-settings&interface=ui) for more information about IBM Cloud Metrics Routing settings.
 
 ## at_cos_bucket_retention_policy <a name="at_cos_bucket_retention_policy"></a>
 
 The `at_cos_bucket_retention_policy` input variable allows you to provide the retention policy of the IBM Cloud Activity Tracker Event Routing COS target bucket that will be configured. Refer [here](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-immutable) for more information.
 
-- Variable name: `at_cos_bucket_retention_policy`.
-- Type: An object representing a retention policy.
-- Default value: null (`null`).
+* Variable name: `at_cos_bucket_retention_policy`.
+* Type: An object representing a retention policy.
+* Default value: null (`null`).
 
 ### Options for at_cos_bucket_retention_policy
 
-- `default` (optional): The number of days that an object can remain unmodified in an Object Storage bucket.
-- `maximum` (optional): The maximum number of days that an object can be kept unmodified in the bucket.
-- `minimum` (optional): The minimum number of days that an object must be kept unmodified in the bucket.
-- `permanent` (optional): Whether permanent retention status is enabled for the Object Storage bucket.
+* `default` (optional): The number of days that an object can remain unmodified in an Object Storage bucket.
+* `maximum` (optional): The maximum number of days that an object can be kept unmodified in the bucket.
+* `minimum` (optional): The minimum number of days that an object must be kept unmodified in the bucket.
+* `permanent` (optional): Whether permanent retention status is enabled for the Object Storage bucket.
 
 ### Example at_cos_bucket_retention_policy
 
@@ -165,18 +199,16 @@ at_cos_bucket_retention_policy = {
 
 The `cloud_log_data_bucket_retention_policy` input variable allows you to provide the retention policy of the IBM Cloud Logs data bucket that will be configured. Refer [here](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-immutable) for more information.
 
-- Variable name: `cloud_log_data_bucket_retention_policy`.
-- Type: An object representing a retention policy.
-- Default value: null (`null`).
+* Variable name: `cloud_log_data_bucket_retention_policy`.
+* Type: An object representing a retention policy.
+* Default value: null (`null`).
 
 ### Options for cloud_log_data_bucket_retention_policy
 
-- `default` (optional): The number of days that an object can remain unmodified in an Object Storage bucket.
-- `maximum` (optional): The maximum number of days that an object can be kept unmodified in the bucket.
-- `minimum` (optional): The minimum number of days that an object must be kept unmodified in the bucket.
-- `permanent` (optional): Whether permanent retention status is enabled for the Object Storage bucket.
-
-
+* `default` (optional): The number of days that an object can remain unmodified in an Object Storage bucket.
+* `maximum` (optional): The maximum number of days that an object can be kept unmodified in the bucket.
+* `minimum` (optional): The minimum number of days that an object must be kept unmodified in the bucket.
+* `permanent` (optional): Whether permanent retention status is enabled for the Object Storage bucket.
 
 ### Example cloud_log_data_bucket_retention_policy
 
