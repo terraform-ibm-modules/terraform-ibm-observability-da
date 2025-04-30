@@ -252,7 +252,7 @@ module "cloud_monitoring_crn_parser" {
 module "observability_instance" {
   depends_on        = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source            = "terraform-ibm-modules/observability-instances/ibm"
-  version           = "3.5.1"
+  version           = "3.5.2"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
 
@@ -275,16 +275,26 @@ module "observability_instance" {
   cloud_logs_policies          = var.cloud_logs_policies
   cloud_logs_data_storage = var.cloud_logs_provision ? {
     logs_data = {
-      enabled              = true
-      bucket_crn           = local.cloud_logs_data_bucket_crn
-      bucket_endpoint      = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
-      skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
+      enabled         = true
+      bucket_crn      = local.cloud_logs_data_bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_data_bucket_endpoint != null ? var.existing_cloud_logs_data_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_data_bucket].s3_endpoint_direct
+      # Even though we're only performing a comparison (var.ibmcloud_cos_api_key != null),
+      # Terraform treats the entire value as "tainted" due to sensitivity.
+      # Later, in the cloud_logs module, where the data_storage input variable is used in a for_each loop,
+      # the loop fails with the error: "Sensitive values, or values derived from sensitive values, cannot be used as for_each arguments."
+      # However, since we use nonsensitive() solely for logical comparison, we are not exposing any secret values to logs and it's safe to use. Issue https://github.ibm.com/GoldenEye/issues/issues/13562.
+      skip_cos_auth_policy = nonsensitive(var.ibmcloud_cos_api_key) != null ? true : var.skip_cloud_logs_cos_auth_policy
     },
     metrics_data = {
-      enabled              = true
-      bucket_crn           = local.cloud_log_metrics_bucket_crn
-      bucket_endpoint      = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
-      skip_cos_auth_policy = var.ibmcloud_cos_api_key != null ? true : var.skip_cloud_logs_cos_auth_policy
+      enabled         = true
+      bucket_crn      = local.cloud_log_metrics_bucket_crn
+      bucket_endpoint = var.existing_cloud_logs_metrics_bucket_endpoint != null ? var.existing_cloud_logs_metrics_bucket_endpoint : module.cos_bucket[0].buckets[local.cloud_log_metrics_bucket].s3_endpoint_direct
+      # Even though we're only performing a comparison (var.ibmcloud_cos_api_key != null),
+      # Terraform treats the entire value as "tainted" due to sensitivity.
+      # Later, in the cloud_logs module, where the data_storage input variable is used in a for_each loop,
+      # the loop fails with the error: "Sensitive values, or values derived from sensitive values, cannot be used as for_each arguments."
+      # However, since we use nonsensitive() solely for logical comparison, we are not exposing any secret values to logs and it's safe to use. Issue https://github.ibm.com/GoldenEye/issues/issues/13562.
+      skip_cos_auth_policy = nonsensitive(var.ibmcloud_cos_api_key) != null ? true : var.skip_cloud_logs_cos_auth_policy
     }
   } : null
   cloud_logs_existing_en_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
