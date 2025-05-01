@@ -43,7 +43,7 @@ resource "ibm_is_subnet" "subnet_zone_1" {
 
 module "cos" {
   source            = "terraform-ibm-modules/cos/ibm"
-  version           = "8.21.16"
+  version           = "8.21.17"
   resource_group_id = module.resource_group.resource_group_id
   cos_instance_name = "${var.prefix}-cos"
   cos_tags          = var.resource_tags
@@ -61,7 +61,7 @@ locals {
 
 module "buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.21.16"
+  version = "8.21.17"
   bucket_configs = [
     {
       bucket_name            = local.logs_bucket_name
@@ -86,7 +86,7 @@ module "buckets" {
 
 module "observability_instances" {
   source                             = "terraform-ibm-modules/observability-instances/ibm"
-  version                            = "3.5.1"
+  version                            = "3.5.2"
   resource_group_id                  = module.resource_group.resource_group_id
   region                             = var.region
   cloud_monitoring_plan              = "graduated-tier"
@@ -172,7 +172,7 @@ locals {
 
 module "ocp_base" {
   source               = "terraform-ibm-modules/base-ocp-vpc/ibm"
-  version              = "3.46.8"
+  version              = "3.46.11"
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
   tags                 = var.resource_tags
