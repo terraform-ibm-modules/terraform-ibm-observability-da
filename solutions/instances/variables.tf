@@ -31,7 +31,6 @@ variable "use_existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision resources in."
-  default     = "Default"
 }
 
 variable "cos_resource_group_name" {
@@ -49,7 +48,7 @@ variable "region" {
 variable "prefix" {
   type        = string
   description = "The prefix to add to all resources that this solution creates. To not use any prefix value, you can set this value to `null` or an empty string."
-  default     = "con"
+  default     = "dev"
 }
 
 variable "provider_visibility" {
@@ -240,7 +239,7 @@ variable "metrics_router_settings" {
       id = string
     })))
   })
-  description = "Global settings for Metrics Routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#metrics-router-settings-)"
+  description = "Global settings for Metrics Routing"
   default     = null
 }
 
@@ -286,7 +285,7 @@ variable "cloud_monitoring_tags" {
 variable "enable_platform_metrics" {
   type        = bool
   description = "When set to `true`, the IBM Cloud Monitoring instance collects the platform metrics."
-  default     = false
+  default     = true
 }
 
 ########################################################################################################################
@@ -503,7 +502,7 @@ variable "skip_at_cos_auth_policy" {
 variable "management_endpoint_type_for_bucket" {
   description = "The type of endpoint for the IBM Terraform provider to use to manage Cloud Object Storage buckets (`public`, `private`, or `direct`). If you are using a private endpoint, make sure that you enable virtual routing and forwarding (VRF) in your account, and that the Terraform runtime can access the IBM Cloud Private network."
   type        = string
-  default     = "public"
+  default     = "private"
   validation {
     condition     = contains(["public", "private", "direct"], var.management_endpoint_type_for_bucket)
     error_message = "The specified `management_endpoint_type_for_bucket` is not valid. Specify a valid type of endpoint for the IBM Terraform provider to use to manage Cloud Object Storage buckets."
@@ -516,7 +515,7 @@ variable "management_endpoint_type_for_bucket" {
 
 variable "existing_kms_instance_crn" {
   type        = string
-  default     = "crn:v1:bluemix:public:hs-crypto:us-south:a/abac0df06b644a9cabc6e44f55b3880e:e6dce284-e80f-46e1-a3c1-830f7adff7a9::"
+  default     = null
   description = "The CRN of the key management service (KMS) that is used to create keys for encrypting the Cloud Object Storage bucket. If you are not using an existing KMS root key, you must specify this CRN. If you are using an existing KMS root key, an existing COS instance and auth policy is not set for COS to KMS, you must specify this CRN. If the existing Cloud Object Storage bucket details are passed as an input, this value is not required."
 }
 
@@ -529,7 +528,7 @@ variable "existing_cos_kms_key_crn" {
 variable "kms_endpoint_type" {
   type        = string
   description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_cos_kms_key_crn` is not specified."
-  default     = "public"
+  default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
     error_message = "Valid values for the `kms_endpoint_type_value` are `public` or `private`. "
