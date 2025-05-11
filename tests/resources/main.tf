@@ -90,7 +90,7 @@ module "cloud_monitoring" {
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = var.prefix
-  resource_tags           = var.resource_group
+  resource_tags           = var.resource_tags
   enable_platform_metrics = false
 }
 
