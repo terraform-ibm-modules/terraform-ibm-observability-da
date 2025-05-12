@@ -315,10 +315,10 @@ module "metrics_router" {
   version = "1.2.1"
   metrics_router_targets = var.enable_metrics_routing_to_cloud_monitoring ? [
     {
-      destination_crn                     = var.cloud_monitoring_provision ? module.cloud_monitoring[0].crn : var.existing_cloud_monitoring_crn
-      target_name                         = local.metric_router_target_name
-      target_region                       = var.cloud_monitoring_provision ? var.region : module.cloud_monitoring_crn_parser[0].region
-      skip_mrouter_sysdig_iam_auth_policy = false
+      destination_crn                 = var.cloud_monitoring_provision ? module.cloud_monitoring[0].crn : var.existing_cloud_monitoring_crn
+      target_name                     = local.metric_router_target_name
+      target_region                   = var.cloud_monitoring_provision ? var.region : module.cloud_monitoring_crn_parser[0].region
+      skip_metrics_router_auth_policy = false
     }
   ] : []
   metrics_router_routes   = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
