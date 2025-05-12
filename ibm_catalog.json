@@ -574,7 +574,7 @@
                 },
                 {
                   "dependency_output": "observability_resource_group_name",
-                  "version_input": "existing_resource_group_name"
+                  "version_input": "resource_group_name"
                 }
               ],
               "ignore_auto_referencing": [
