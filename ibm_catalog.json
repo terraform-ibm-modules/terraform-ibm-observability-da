@@ -116,7 +116,7 @@
               "required": true
             },
             {
-              "key": "existing_resource_group_name",
+              "key": "resource_group_name",
               "display_name": "resource_group",
               "required": false,
               "default_value": "Default",
@@ -130,8 +130,9 @@
               }
             },
             {
-              "key": "resource_group_name",
-              "hidden": true
+              "key": "use_existing_resource_group",
+              "hidden": true,
+              "default_value": true
             },
             {
               "custom_config": {
@@ -438,8 +439,7 @@
               "key": "existing_cos_kms_key_crn"
             },
             {
-              "key": "existing_kms_instance_crn",
-              "required": true
+              "key": "existing_kms_instance_crn"
             },
             {
               "key": "cos_key_name"
