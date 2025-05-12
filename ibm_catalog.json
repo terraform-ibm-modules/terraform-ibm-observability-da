@@ -439,7 +439,9 @@
               "key": "existing_cos_kms_key_crn"
             },
             {
-              "key": "existing_kms_instance_crn"
+              "key": "existing_kms_instance_crn",
+              "required": true,
+              "default_value": "__NOT_SET__"
             },
             {
               "key": "cos_key_name"
