@@ -29,6 +29,16 @@ const solutionAgentsDADir = "solutions/agents"
 const solutionTenantsDADir = "solutions/logs-routing"
 const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
+var IgnoreInstanceUpdates = []string{
+	// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
+	"module.metrics_router.ibm_metrics_router_settings.metrics_router_settings[0]",
+}
+
+var IgnoreAgentsUpdates = []string{
+	"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
+	"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
+}
+
 // Currently only including regions that Event Notification support
 var validRegions = []string{
 	"au-syd",
@@ -73,10 +83,7 @@ func TestInstancesInSchematics(t *testing.T) {
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
 		IgnoreUpdates: testhelper.Exemptions{
-			List: []string{
-				// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
-				"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
-			},
+			List: IgnoreInstanceUpdates,
 		},
 	})
 
@@ -110,10 +117,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 		Region:       region,
 		Prefix:       "obs-ins-upg",
 		IgnoreUpdates: testhelper.Exemptions{
-			List: []string{
-				// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
-				"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
-			},
+			List: IgnoreInstanceUpdates,
 		},
 	})
 
@@ -199,10 +203,7 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
 			IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
-				List: []string{
-					"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
-					"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
-				},
+				List: IgnoreAgentsUpdates,
 			},
 		})
 
@@ -303,10 +304,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
 			IgnoreUpdates: testhelper.Exemptions{
-				List: []string{
-					// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
-					"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
-				},
+				List: IgnoreInstanceUpdates,
 			},
 		})
 
@@ -350,10 +348,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			WaitJobCompleteMinutes: 60,
 			Region:                 region,
 			IgnoreUpdates: testhelper.Exemptions{
-				List: []string{
-					// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
-					"module.observability_instance.module.metric_routing.ibm_metrics_router_settings.metrics_router_settings[0]",
-				},
+				List: IgnoreInstanceUpdates,
 			},
 		})
 

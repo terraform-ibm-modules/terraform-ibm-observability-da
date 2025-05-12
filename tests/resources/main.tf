@@ -43,7 +43,7 @@ resource "ibm_is_subnet" "subnet_zone_1" {
 
 module "cos" {
   source            = "terraform-ibm-modules/cos/ibm"
-  version           = "8.21.20"
+  version           = "8.21.22"
   resource_group_id = module.resource_group.resource_group_id
   cos_instance_name = "${var.prefix}-cos"
   cos_tags          = var.resource_tags
@@ -61,7 +61,7 @@ locals {
 
 module "buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "8.21.20"
+  version = "8.21.22"
   bucket_configs = [
     {
       bucket_name            = local.logs_bucket_name
@@ -84,18 +84,24 @@ module "buckets" {
 # - Monitoring instance
 ##############################################################################
 
-module "observability_instances" {
-  source                             = "terraform-ibm-modules/observability-instances/ibm"
-  version                            = "3.5.2"
-  resource_group_id                  = module.resource_group.resource_group_id
-  region                             = var.region
-  cloud_monitoring_plan              = "graduated-tier"
-  cloud_monitoring_service_endpoints = "public-and-private"
-  cloud_monitoring_instance_name     = "${var.prefix}-cloud-monitoring"
-  cloud_logs_instance_name           = "${var.prefix}-cloud-logs"
-  enable_platform_metrics            = false
-  cloud_logs_tags                    = var.resource_tags
-  cloud_logs_data_storage = {
+module "cloud_monitoring" {
+  source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
+  version                 = "1.2.1"
+  region                  = var.region
+  resource_group_id       = module.resource_group.resource_group_id
+  instance_name           = var.prefix
+  resource_tags           = var.resource_tags
+  enable_platform_metrics = false
+}
+
+module "cloud_logs" {
+  source            = "terraform-ibm-modules/cloud-logs/ibm"
+  version           = "1.3.0"
+  region            = var.region
+  resource_group_id = module.resource_group.resource_group_id
+  instance_name     = var.prefix
+  resource_tags     = var.resource_tags
+  data_storage = {
     # logs and metrics buckets must be different
     logs_data = {
       enabled         = true
@@ -172,7 +178,7 @@ locals {
 
 module "ocp_base" {
   source               = "terraform-ibm-modules/base-ocp-vpc/ibm"
-  version              = "3.46.15"
+  version              = "3.46.16"
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
   tags                 = var.resource_tags
