@@ -517,7 +517,7 @@
               "name": "deploy-arch-ibm-kms",
               "description": "Use the create a Key Protect Service instance. This will be used to create a encryption keys for encrypting the Cloud Object Storage buckets. If disabled the default encryption will be used with keys managed by IBM Cloud.",
               "id": "2cad4789-fa90-4886-9c9e-857081c273ee-global",
-              "version": "v5.1.2",
+              "version": "v5.1.3",
               "flavors": [
                 "fully-configurable"
               ],
