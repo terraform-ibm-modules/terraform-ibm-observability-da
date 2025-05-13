@@ -548,7 +548,7 @@
               "name": "deploy-arch-ibm-account-infra-base",
               "description": "Use Accounts Base as a general base layer module for setting up resource groups. If not using this, then manually configure resource groups.",
               "id": "63641cec-6093-4b4f-b7b0-98d2f4185cd6-global",
-              "version": "v3.0.4",
+              "version": "v3.0.7",
               "flavors": [
                 "resource-group-only",
                 "resource-groups-with-account-settings"
