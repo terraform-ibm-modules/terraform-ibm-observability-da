@@ -482,7 +482,6 @@
             }
           ],
           "architecture": {
-            "description": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs instances on IBM Cloud. It also supports the deployment of IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs target.",
             "features": [
               {
                 "title": "Creates a Cloud Logs instance",
@@ -777,7 +776,6 @@
             }
           ],
           "architecture": {
-            "description": "This architecture supports the deployment of IBM Cloud Monitoring and Cloud Logs agent on an existing Red Hat OpenShift cluster.",
             "features": [
               {
                 "title": "Works with any openshift or k8s cluster",
@@ -844,7 +842,6 @@
             }
           ],
           "architecture": {
-            "description": "This architecture supports the deployment of Log Router Tenant for routing logs to cloud logs instance",
             "features": [
               {
                 "title": "Creates Log Router Tenant for routing logs to cloud logs instance",
