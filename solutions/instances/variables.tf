@@ -30,7 +30,7 @@ variable "use_existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or existing resource group to provision resources in."
+  description = "The name of the resource group to provision resources in."
   default     = "Default"
 }
 
