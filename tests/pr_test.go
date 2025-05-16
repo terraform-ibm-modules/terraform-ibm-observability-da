@@ -89,7 +89,7 @@ func TestInstancesInSchematics(t *testing.T) {
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
+		{Name: "resource_group_name", Value: resourceGroup, DataType: "string"},
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "cos_region", Value: region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
@@ -123,7 +123,7 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 
 	options.TerraformVars = map[string]interface{}{
 		"prefix":                              options.Prefix,
-		"resource_group_name":                 options.Prefix,
+		"resource_group_name":                 resourceGroup,
 		"cos_instance_access_tags":            permanentResources["accessTags"],
 		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
 		"kms_endpoint_type":                   "public",
@@ -313,7 +313,6 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "region", Value: region, DataType: "string"},
 			{Name: "cos_region", Value: region, DataType: "string"},
 			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
-			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
 			{Name: "existing_cloud_logs_data_bucket_crn", Value: terraform.Output(t, existingTerraformOptions, "data_bucket_crn"), DataType: "string"},
 			{Name: "existing_at_cos_target_bucket_name", Value: terraform.Output(t, existingTerraformOptions, "bucket_name_at"), DataType: "string"},
 			{Name: "existing_at_cos_target_bucket_endpoint", Value: terraform.Output(t, existingTerraformOptions, "bucket_endpoint_at"), DataType: "string"},
@@ -357,7 +356,6 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "cos_region", Value: region, DataType: "string"},
 			{Name: "prefix", Value: options2.Prefix, DataType: "string"},
 			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
-			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
 			{Name: "kms_endpoint_type", Value: "private", DataType: "string"},
 			{Name: "existing_cos_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "cos_crn"), DataType: "string"},
 			{Name: "management_endpoint_type_for_bucket", Value: "private", DataType: "string"},

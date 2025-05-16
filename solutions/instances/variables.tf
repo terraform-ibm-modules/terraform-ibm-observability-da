@@ -24,13 +24,14 @@ variable "ibmcloud_cos_api_key" {
 
 variable "use_existing_resource_group" {
   type        = bool
-  description = "Whether to use an existing resource group."
-  default     = false
+  description = "Whether to use an existing resource group. Use the `resource_group_name` input to define the group."
+  default     = true
 }
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or existing resource group to provision resources in."
+  description = "The name of the resource group to provision resources in."
+  default     = "Default"
 }
 
 variable "cos_resource_group_name" {
