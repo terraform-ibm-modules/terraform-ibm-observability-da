@@ -109,30 +109,30 @@
             },
             {
               "key": "provider_visibility",
-              "options": [
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
-                }
-              ]
+              "hidden": true
             },
             {
               "key": "prefix",
               "required": true
             },
             {
-              "key": "use_existing_resource_group"
+              "key": "resource_group_name",
+              "display_name": "resource_group",
+              "required": false,
+              "default_value": "Default",
+              "custom_config": {
+                "type": "resource_group",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "identifier": "rg_name"
+                }
+              }
             },
             {
-              "key": "resource_group_name"
+              "key": "use_existing_resource_group",
+              "hidden": true,
+              "default_value": true
             },
             {
               "custom_config": {
@@ -440,7 +440,8 @@
             },
             {
               "key": "existing_kms_instance_crn",
-              "required": true
+              "required": true,
+              "default_value": "__NOT_SET__"
             },
             {
               "key": "cos_key_name"
@@ -509,7 +510,74 @@
                 "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs instance."
               }
             ]
-          }
+          },
+          "dependencies": [
+            {
+              "name": "deploy-arch-ibm-kms",
+              "description": "Enable Cloud Automation for Key Protect when you want services to use your own managed encryption keys. If disabled, it will fall back on IBM Cloud's default service-managed encryption.",
+              "id": "2cad4789-fa90-4886-9c9e-857081c273ee-global",
+              "version": "v5.1.4",
+              "flavors": [
+                "fully-configurable"
+              ],
+              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
+              "optional": true,
+              "on_by_default": true,
+              "input_mapping": [
+                {
+                  "dependency_output": "kms_instance_crn",
+                  "version_input": "existing_kms_instance_crn"
+                },
+                {
+                  "dependency_input": "prefix",
+                  "version_input": "prefix",
+                  "reference_version": true
+                },
+                {
+                  "dependency_input": "region",
+                  "version_input": "region",
+                  "reference_version": true
+                }
+              ],
+              "ignore_auto_referencing": [
+                "*"
+              ]
+            },
+            {
+              "name": "deploy-arch-ibm-account-infra-base",
+              "description": "Cloud automation for Account Configuration organizes your IBM Cloud account with a ready-made set of resource groups by default—and, when you enable the “with Account Settings” option, it also applies baseline security and governance settings.",
+              "id": "63641cec-6093-4b4f-b7b0-98d2f4185cd6-global",
+              "version": "v3.0.7",
+              "flavors": [
+                "resource-group-only",
+                "resource-groups-with-account-settings"
+              ],
+              "default_flavor": "resource-group-only",
+              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
+              "optional": true,
+              "on_by_default": false,
+              "input_mapping": [
+                {
+                  "dependency_input": "prefix",
+                  "version_input": "prefix",
+                  "reference_version": true
+                },
+                {
+                  "version_input": "use_existing_resource_group",
+                  "value": true
+                },
+                {
+                  "dependency_output": "observability_resource_group_name",
+                  "version_input": "resource_group_name"
+                }
+              ],
+              "ignore_auto_referencing": [
+                "*"
+              ]
+            }
+          ],
+          "dependency_version_2": true,
+          "terraform_version": "1.10.5"
         },
         {
           "label": "Agents",
