@@ -119,7 +119,6 @@
               "key": "resource_group_name",
               "display_name": "resource_group",
               "required": false,
-              "default_value": "Default",
               "custom_config": {
                 "type": "resource_group",
                 "grouping": "deployment",
@@ -131,8 +130,7 @@
             },
             {
               "key": "use_existing_resource_group",
-              "hidden": true,
-              "default_value": true
+              "hidden": true
             },
             {
               "custom_config": {
