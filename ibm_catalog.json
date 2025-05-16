@@ -619,6 +619,7 @@
             },
             {
               "key": "provider_visibility",
+              "hidden": true,
               "options": [
                 {
                   "displayname": "private",
@@ -682,7 +683,19 @@
               "required": true
             },
             {
-              "key": "cloud_monitoring_secret_name"
+              "key": "cloud_monitoring_chart"
+            },
+            {
+              "key": "cloud_monitoring_chart_location"
+            },
+            {
+              "key": "cloud_monitoring_chart_version"
+            },
+            {
+              "key": "cloud_monitoring_image_registry"
+            },
+            {
+              "key": "cloud_monitoring_image_tag_digest"
             },
             {
               "key": "cloud_monitoring_instance_region"
@@ -707,12 +720,6 @@
               "key": "cloud_monitoring_container_filter"
             },
             {
-              "key": "cloud_monitoring_agent_tags"
-            },
-            {
-              "key": "cloud_monitoring_add_cluster_name"
-            },
-            {
               "key": "cloud_monitoring_agent_name"
             },
             {
@@ -735,8 +742,22 @@
               "required": true
             },
             {
-              "key": "logs_agent_iam_api_key",
-              "required": true
+              "key": "logs_agent_iam_api_key"
+            },
+            {
+              "key": "logs_agent_chart"
+            },
+            {
+              "key": "logs_agent_chart_location"
+            },
+            {
+              "key": "logs_agent_chart_version"
+            },
+            {
+              "key": "logs_agent_image_version"
+            },
+            {
+              "key": "logs_agent_resources"
             },
             {
               "key": "logs_agent_tolerations"

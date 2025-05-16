@@ -1,18 +1,42 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>terraform-ibm-modules/common-dev-assets:commonRenovateConfig"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update docker image digest to latest in variables.tf",
+      "fileMatch": ["variables.tf$"],
+      "datasourceTemplate": "docker",
+      "matchStrings": [
+        "default\\s*=\\s*\"(?<currentValue>[\\w.-]+)@(?<currentDigest>sha256:[a-f0-9]+)\"\\s*# datasource: (?<depName>[^\\s]+)"
+      ]
+    },
+    {
+      "customType": "regex",
+      "description": "Update sysdig-deploy helm chart version to latest in variables.tf",
+      "fileMatch": ["variables.tf$"],
+      "matchStrings": ["default\\s*=\\s*\"(?<currentValue>.*?)\"\\s*# registryUrl: charts.sysdig.com\\n"],
+      "depNameTemplate": "sysdig-deploy",
+      "datasourceTemplate": "helm",
+      "registryUrlTemplate": "https://charts.sysdig.com"
+    },
+    {
+      "customType": "regex",
+      "description": "Update logs agent agent version to the latest in variables.tf",
+      "fileMatch": ["variables.tf$"],
+      "datasourceTemplate": "docker",
+      "matchStrings": [
+        "default\\s*=\\s*\"(?<currentValue>.*)\"\\s*# datasource: (?<depName>[^\\s]+)"
+      ]
+    }
+  ],
   "packageRules": [
     {
-      "description": "Allow the locked in provider version to be updated to the latest for deployable architectures",
-      "enabled": true,
-      "matchFileNames": ["solutions/**"],
-      "matchManagers": ["terraform"],
-      "matchDepTypes": ["required_provider"],
-      "rangeStrategy": "bump",
-      "semanticCommitType": "fix",
-      "group": true,
-      "groupName": "required_provider",
-      "commitMessageExtra": "to latest for the deployable architecture solution"
+      "description": "Bundle image + helm chart updates into the same PR",
+      "matchPackageNames": ["icr.io/ext/sysdig/agent", "sysdig-deploy"],
+      "groupName": "Charts and Images",
+      "commitMessageExtra": "to latest",
+      "group": true
     }
   ]
 }
