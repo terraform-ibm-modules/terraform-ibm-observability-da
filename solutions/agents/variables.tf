@@ -7,8 +7,8 @@ variable "ibmcloud_api_key" {
 variable "prefix" {
   type        = string
   description = "The prefix to add to all resources that this solution creates. To not use any prefix value, you can set this value to `null` or an empty string."
-  default     = "dev"
 }
+
 variable "provider_visibility" {
   description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
   type        = string
@@ -89,12 +89,13 @@ variable "cloud_monitoring_access_key" {
   default     = null
 }
 
-variable "cloud_monitoring_secret_name" {
-  type        = string
-  description = "The name of the secret that will store the access key. If a prefix input variable is passed, the secret name is prefixed to the value in the `<prefix>-<name>` format."
-  default     = "sysdig-agent"
-  nullable    = false
-}
+# TODO: Uncomment when https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent/issues/65 is addressed
+# variable "cloud_monitoring_secret_name" {
+#   type        = string
+#   description = "The name of the secret that will store the access key. If a prefix input variable is passed, the secret name is prefixed to the value in the `<prefix>-<name>` format."
+#   default     = "sysdig-agent"
+#   nullable    = false
+# }
 
 variable "cloud_monitoring_instance_region" {
   type        = string
@@ -131,18 +132,20 @@ variable "cloud_monitoring_container_filter" {
   default     = [] # [{ type = "exclude", parameter = "kubernetes.namespace.name", name = "kube-system" }]
 }
 
-variable "cloud_monitoring_agent_tags" {
-  type        = list(string)
-  description = "A list of the tags to associate with the metrics that the IBM Cloud Monitoring agent collects. To add the cluster name as a tag, use the `cloud_monitoring_add_cluster_name` variable."
-  default     = []
-  nullable    = false
-}
+# TODO: Uncomment when https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent/issues/65 is addressed
+# variable "cloud_monitoring_agent_tags" {
+#   type        = list(string)
+#   description = "A list of the tags to associate with the metrics that the IBM Cloud Monitoring agent collects. To add the cluster name as a tag, use the `cloud_monitoring_add_cluster_name` variable."
+#   default     = []
+#   nullable    = false
+# }
 
-variable "cloud_monitoring_add_cluster_name" {
-  type        = bool
-  description = "Whether to attach a tag to log messages. Set to `true` to configure the IBM Cloud Monitoring agent to attach a tag that contains the cluster name to all log messages."
-  default     = true
-}
+# TODO: Uncomment when https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent/issues/65 is addressed
+# variable "cloud_monitoring_add_cluster_name" {
+#   type        = bool
+#   description = "Whether to attach a tag to log messages. Set to `true` to configure the IBM Cloud Monitoring agent to attach a tag that contains the cluster name to all log messages."
+#   default     = true
+# }
 
 variable "cloud_monitoring_agent_name" {
   description = "The name of the IBM Cloud Monitoring agent that is used to name the Kubernetes and Helm resources on the cluster. If a prefix input variable is passed, the name of the IBM Cloud Monitoring agent is prefixed to the value in the `<prefix>-<name>` format."
@@ -176,6 +179,36 @@ variable "cloud_monitoring_agent_tolerations" {
   }]
 }
 
+variable "cloud_monitoring_chart" {
+  description = "The name of the Cloud Monitoring agent Helm chart to deploy."
+  type        = string
+  default     = "sysdig-deploy"
+}
+
+variable "cloud_monitoring_chart_location" {
+  description = "The location of the Cloud Monitoring agent helm chart."
+  type        = string
+  default     = "https://charts.sysdig.com"
+}
+
+variable "cloud_monitoring_chart_version" {
+  description = "The version of the Cloud Monitoring agent helm chart to deploy."
+  type        = string
+  default     = "1.83.1" # registryUrl: charts.sysdig.com
+}
+
+variable "cloud_monitoring_image_registry" {
+  description = "The image registry to use for the Cloud Monitoring agent."
+  type        = string
+  default     = "icr.io/ext/sysdig/agent"
+}
+
+variable "cloud_monitoring_image_tag_digest" {
+  description = "The image tag digest to use for the Cloud Monitoring agent."
+  type        = string
+  default     = "13.9.1@sha256:3193987f77dba930cb22c200df9981afcd097e7cd5885b77d13e20ef353dc5b8" # datasource: icr.io/ext/sysdig/agent
+}
+
 ##############################################################################
 # Logs Agents variables
 ##############################################################################
@@ -187,7 +220,7 @@ variable "logs_agent_enabled" {
 }
 
 variable "logs_agent_name" {
-  description = "The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster."
+  description = "The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster. If a prefix input variable is passed, the secret name is prefixed to the value in the `<prefix>-<name>` format."
   type        = string
   default     = "logs-agent"
   nullable    = false
@@ -292,4 +325,53 @@ variable "cloud_logs_ingress_port" {
   type        = number
   default     = 3443
   description = "The target port for the IBM Cloud Logs ingestion endpoint. The port must be 443 if you connect by using a VPE gateway, or port 3443 when you connect by using CSEs."
+}
+
+variable "logs_agent_chart" {
+  description = "The name of the Log agent Helm chart to deploy."
+  type        = string
+  default     = "logs-agent-helm"
+}
+
+variable "logs_agent_chart_location" {
+  description = "The location of the Logs agent helm chart."
+  type        = string
+  default     = "oci://icr.io/ibm/observe"
+}
+
+variable "logs_agent_chart_version" {
+  description = "The version of the Logs agent Helm chart to deploy."
+  type        = string
+  default     = "1.5.2" # datasource: icr.io/ibm/observe/logs-agent-helm
+}
+
+variable "logs_agent_image_version" {
+  description = "The version of the Logs agent image to deploy (NOTE: This does not yet support using a SHA digest value)."
+  type        = string
+  default     = "1.5.2" # datasource: icr.io/ibm/observe/logs-agent-helm
+  nullable    = false
+}
+
+variable "logs_agent_resources" {
+  description = "The Logs agent resources configuration for cpu/memory/storage. [Learn More](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-agent-helm-template-clusters#agent-helm-template-clusters-chart-options-resources)."
+  type = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+  })
+  default = {
+    limits = {
+      cpu    = "500m"
+      memory = "3Gi"
+    }
+    requests = {
+      cpu    = "100m"
+      memory = "1Gi"
+    }
+  }
 }
