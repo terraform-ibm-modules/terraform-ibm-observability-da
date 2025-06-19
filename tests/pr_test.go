@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/IBM/go-sdk-core/v5/core"
 	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -17,6 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testaddons"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testschematic"
 )
@@ -439,4 +441,78 @@ func TestTenantsUpgradeTest(t *testing.T) {
 
 	_, err := options.RunTestUpgrade()
 	assert.Nil(t, err, "This should not have errored")
+}
+
+// TestRunAddonTests runs addon tests in parallel using a matrix approach
+func TestRunAddonInstanceTests(t *testing.T) {
+
+	testCases := []testaddons.AddonTestCase{
+		{
+			Name:   "Default",
+			Prefix: "obsadd",
+		},
+		{
+			Name:                         "ValidateRGOnlyOn",
+			Prefix:                       "obsadd",
+			SkipInfrastructureDeployment: true, // Validate complex dependencies without deployment cost
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-account-infra-base",
+					OfferingFlavor: "resource-groups-only",
+					Enabled:        core.BoolPtr(true),
+				},
+			},
+		},
+		{
+			Name:                         "ValidateRGWithAccountSettingsOn",
+			Prefix:                       "obsadd",
+			SkipInfrastructureDeployment: true, // Validate complex dependencies without deployment cost
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-account-infra-base",
+					OfferingFlavor: "resource-groups-with-account-settings",
+					Enabled:        core.BoolPtr(true),
+				},
+			},
+		},
+		{
+			Name:                         "ValidateKMSOff",
+			Prefix:                       "obsadd",
+			SkipInfrastructureDeployment: true, // Validate complex dependencies without deployment cost
+			Inputs: map[string]interface{}{
+				"existing_kms_instance_crn": permanentResources["hpcs_south_crn"],
+			},
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-kms",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+		},
+	}
+
+	matrix := testaddons.AddonTestMatrix{
+		TestCases: testCases,
+		BaseSetupFunc: func(testCase testaddons.AddonTestCase) *testaddons.TestAddonOptions {
+			return testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
+				Testing:       t,
+				Prefix:        testCase.Prefix,
+				ResourceGroup: resourceGroup,
+			})
+		},
+		AddonConfigFunc: func(options *testaddons.TestAddonOptions, testCase testaddons.AddonTestCase) cloudinfo.AddonConfig {
+			return cloudinfo.NewAddonConfigTerraform(
+				options.Prefix,
+				"deploy-arch-ibm-observability",
+				"instances",
+				map[string]interface{}{
+					"prefix": options.Prefix,
+					"region": "us-south",
+				},
+			)
+		},
+	}
+
+	testaddons.RunAddonTestMatrix(t, matrix)
 }
