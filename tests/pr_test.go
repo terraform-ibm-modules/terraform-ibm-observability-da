@@ -507,8 +507,9 @@ func TestRunAddonInstanceTests(t *testing.T) {
 				"deploy-arch-ibm-observability",
 				"instances",
 				map[string]interface{}{
-					"prefix": options.Prefix,
-					"region": "us-south",
+					"prefix":                  options.Prefix,
+					"region":                  "us-south",
+					"enable_platform_metrics": false,
 				},
 			)
 		},
