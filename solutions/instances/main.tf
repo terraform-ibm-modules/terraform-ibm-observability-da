@@ -154,7 +154,7 @@ locals {
 
   # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
   cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
-    instance_crn        = var.existing_en_instance_crn
+    crn                 = var.existing_en_instance_crn
     integration_name    = var.en_integration_name
     skip_en_auth_policy = var.skip_en_auth_policy
   }] : [])
@@ -266,7 +266,7 @@ module "cloud_monitoring" {
 module "cloud_logs" {
   count             = var.cloud_logs_provision ? 1 : 0
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.3.8"
+  version           = "1.5.0"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = local.cloud_logs_instance_name
@@ -300,9 +300,8 @@ module "cloud_logs" {
     }
   } : null
   existing_event_notifications_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
-    en_instance_id      = module.en_crn_parser[index]["service_instance"]
-    en_region           = module.en_crn_parser[index]["region"]
-    en_integration_name = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
+    crn                 = module.en_crn_parser[index]["service_instance"]
+    integration_name    = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
     skip_en_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_en_auth_policy"]
   }]
   logs_routing_tenant_regions   = var.logs_routing_tenant_regions
