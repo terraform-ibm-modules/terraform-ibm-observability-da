@@ -154,9 +154,9 @@ locals {
 
   # https://github.ibm.com/GoldenEye/issues/issues/10928#issuecomment-93550079
   cloud_logs_existing_en_instances = concat(var.cloud_logs_existing_en_instances, var.existing_en_instance_crn != null ? [{
-    crn                 = var.existing_en_instance_crn
-    integration_name    = var.en_integration_name
-    skip_en_auth_policy = var.skip_en_auth_policy
+    crn                  = var.existing_en_instance_crn
+    integration_name     = var.en_integration_name
+    skip_iam_auth_policy = var.skip_en_auth_policy
   }] : [])
 }
 
@@ -300,9 +300,9 @@ module "cloud_logs" {
     }
   } : null
   existing_event_notifications_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
-    crn                 = module.en_crn_parser[index]["service_instance"]
-    integration_name    = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
-    skip_en_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_en_auth_policy"]
+    crn                  = module.en_crn_parser[index]["service_instance"]
+    integration_name     = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
+    skip_iam_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_iam_auth_policy"]
   }]
   logs_routing_tenant_regions   = var.logs_routing_tenant_regions
   skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
