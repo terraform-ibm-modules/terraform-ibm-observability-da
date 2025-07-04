@@ -239,7 +239,7 @@ module "en_crn_parser" {
   count   = length(local.cloud_logs_existing_en_instances)
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
   version = "1.1.0"
-  crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
+  crn     = local.cloud_logs_existing_en_instances[count.index]["crn"]
 }
 
 module "cloud_monitoring_crn_parser" {
