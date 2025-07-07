@@ -235,13 +235,6 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
   }
 }
 
-module "en_crn_parser" {
-  count   = length(local.cloud_logs_existing_en_instances)
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.1.0"
-  crn     = local.cloud_logs_existing_en_instances[count.index]["crn"]
-}
-
 module "cloud_monitoring_crn_parser" {
   count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
@@ -300,7 +293,7 @@ module "cloud_logs" {
     }
   } : null
   existing_event_notifications_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
-    crn                  = module.en_crn_parser[index]["service_instance"]
+    crn                  = local.cloud_logs_existing_en_instances[count.index]["crn"]
     integration_name     = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
     skip_iam_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_iam_auth_policy"]
   }]
