@@ -271,8 +271,9 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 
 	cloud_logs_existing_en_instances := []map[string]interface{}{
 		{
-			"crn":              terraform.Output(t, existingTerraformOptions, "en_crn_2"),
-			"integration_name": "en-2",
+			"crn":                  terraform.Output(t, existingTerraformOptions, "en_crn_2"),
+			"integration_name":     "en-2",
+			"skip_iam_auth_policy": true,
 		},
 	}
 
