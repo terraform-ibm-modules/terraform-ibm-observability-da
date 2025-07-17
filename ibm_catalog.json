@@ -8,8 +8,9 @@
         "ibm_created",
         "target_terraform",
         "terraform",
+        "solution",
         "logging_monitoring",
-        "solution"
+        "converged_infra"
       ],
       "keywords": [
         "IaC",
