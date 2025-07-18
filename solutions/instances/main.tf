@@ -235,13 +235,6 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
   }
 }
 
-module "en_crn_parser" {
-  count   = length(local.cloud_logs_existing_en_instances)
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.2.0"
-  crn     = local.cloud_logs_existing_en_instances[count.index]["instance_crn"]
-}
-
 module "cloud_monitoring_crn_parser" {
   count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
@@ -300,10 +293,9 @@ module "cloud_logs" {
     }
   } : null
   existing_event_notifications_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
-    en_instance_id      = module.en_crn_parser[index]["service_instance"]
-    en_region           = module.en_crn_parser[index]["region"]
-    en_integration_name = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
-    skip_en_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_en_auth_policy"]
+    crn = local.cloud_logs_existing_en_instances[index]["instance_crn"]
+    integration_name = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
+    skip_iam_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_en_auth_policy"]
   }]
   logs_routing_tenant_regions   = var.logs_routing_tenant_regions
   skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
