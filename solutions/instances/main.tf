@@ -293,8 +293,8 @@ module "cloud_logs" {
     }
   } : null
   existing_event_notifications_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
-    crn = local.cloud_logs_existing_en_instances[index]["instance_crn"]
-    integration_name = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
+    crn                  = local.cloud_logs_existing_en_instances[index]["instance_crn"]
+    integration_name     = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
     skip_iam_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_en_auth_policy"]
   }]
   logs_routing_tenant_regions   = var.logs_routing_tenant_regions
