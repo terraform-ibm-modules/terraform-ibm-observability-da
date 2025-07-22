@@ -166,7 +166,7 @@ locals {
 
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.2.0"
+  version                      = "1.2.1"
   resource_group_name          = var.use_existing_resource_group == false ? (try("${local.prefix}-${var.resource_group_name}", var.resource_group_name)) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
@@ -177,7 +177,7 @@ module "cos_resource_group" {
     ibm = ibm.cos
   }
   source              = "terraform-ibm-modules/resource-group/ibm"
-  version             = "1.2.0"
+  version             = "1.2.1"
   resource_group_name = try("${local.prefix}-${var.cos_resource_group_name}", var.cos_resource_group_name)
 }
 
@@ -238,14 +238,14 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
 module "cloud_monitoring_crn_parser" {
   count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.1.0"
+  version = "1.2.0"
   crn     = var.existing_cloud_monitoring_crn
 }
 
 module "cloud_monitoring" {
   count                   = var.cloud_monitoring_provision ? 1 : 0
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.2.13"
+  version                 = "1.4.0"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = local.cloud_monitoring_instance_name
@@ -259,7 +259,7 @@ module "cloud_monitoring" {
 module "cloud_logs" {
   count             = var.cloud_logs_provision ? 1 : 0
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.5.0"
+  version           = "1.5.11"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = local.cloud_logs_instance_name
@@ -293,9 +293,9 @@ module "cloud_logs" {
     }
   } : null
   existing_event_notifications_instances = [for index, _ in local.cloud_logs_existing_en_instances : {
-    crn                  = local.cloud_logs_existing_en_instances[count.index]["crn"]
+    crn                  = local.cloud_logs_existing_en_instances[index]["instance_crn"]
     integration_name     = try("${local.prefix}-${local.cloud_logs_existing_en_instances[index]["integration_name"]}", local.cloud_logs_existing_en_instances[index]["integration_name"])
-    skip_iam_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_iam_auth_policy"]
+    skip_iam_auth_policy = local.cloud_logs_existing_en_instances[index]["skip_en_auth_policy"]
   }]
   logs_routing_tenant_regions   = var.logs_routing_tenant_regions
   skip_logs_routing_auth_policy = var.skip_logs_routing_auth_policy
@@ -304,7 +304,7 @@ module "cloud_logs" {
 
 module "metrics_router" {
   source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
-  version = "1.2.13"
+  version = "1.4.0"
   metrics_router_targets = var.enable_metrics_routing_to_cloud_monitoring ? [
     {
       destination_crn                 = var.cloud_monitoring_provision ? module.cloud_monitoring[0].crn : var.existing_cloud_monitoring_crn
@@ -320,7 +320,7 @@ module "metrics_router" {
 module "activity_tracker" {
   depends_on = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source     = "terraform-ibm-modules/activity-tracker/ibm"
-  version    = "1.0.0"
+  version    = "1.1.6"
   cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
@@ -366,7 +366,7 @@ resource "ibm_iam_authorization_policy" "atracker_cos" {
 module "kms_instance_crn_parser" {
   count   = var.existing_kms_instance_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.1.0"
+  version = "1.2.0"
   crn     = var.existing_kms_instance_crn
 }
 
@@ -376,7 +376,7 @@ module "kms" {
   }
   count                       = (var.existing_cos_kms_key_crn != null || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "5.1.7"
+  version                     = "5.1.13"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_crn   = var.existing_kms_instance_crn
