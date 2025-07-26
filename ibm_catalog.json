@@ -148,6 +148,9 @@
               "required": true
             },
             {
+              "key": "enable_platform_metrics"
+            },
+            {
               "key": "cloud_logs_provision"
             },
             {
@@ -466,9 +469,6 @@
                   "value": "private"
                 }
               ]
-            },
-            {
-              "key": "enable_platform_metrics"
             },
             {
               "key": "enable_metrics_routing_to_cloud_monitoring"
