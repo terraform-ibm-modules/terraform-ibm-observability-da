@@ -799,7 +799,8 @@
                 "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
               }
             ]
-          }
+          },
+          "terraform_version": "1.10.5"
         },
         {
           "label": "Logs Routing",
@@ -857,7 +858,8 @@
                 "description": "Log Router Tenant for routing logs to cloud logs instance"
               }
             ]
-          }
+          },
+          "terraform_version": "1.10.5"
         }
       ]
     }
