@@ -282,7 +282,7 @@ variable "cloud_monitoring_tags" {
 
 variable "enable_platform_metrics" {
   type        = bool
-  description = "When set to `true`, the IBM Cloud Monitoring instance collects the platform metrics."
+  description = "When set to `true`, the IBM Cloud Monitoring instance collects the platform metrics. Note: It should not be set to `true` if there is an existing platform metrics instance in the target region."
   default     = true
 }
 
