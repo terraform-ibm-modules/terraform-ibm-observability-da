@@ -155,9 +155,7 @@ The `metrics_router_settings` input variable allows you to set the account setti
 
 ```hcl
 metrics_router_settings = {
-    default_targets           = [{
-      id = "c3af557f-fb0e-2222-85c3-0889e7fe7bc4"
-    }]
+    default_targets           = ["c3af557f-fb0e-2222-85c3-0889e7fe7bc4"]
     primary_metadata_region   = "us-south"
     backup_metadata_region    = "us-east"
     permitted_target_regions  = ["us-south", "eu-de", "us-east", "eu-es", "eu-gb", "au-syd", "br-sao", "ca-tor"]

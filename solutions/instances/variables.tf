@@ -231,13 +231,11 @@ variable "enable_metrics_routing_to_cloud_monitoring" {
 
 variable "metrics_router_settings" {
   type = object({
-    permitted_target_regions  = optional(list(string))
+    permitted_target_regions  = optional(list(string), [])
     primary_metadata_region   = optional(string)
     backup_metadata_region    = optional(string)
     private_api_endpoint_only = optional(bool, false)
-    default_targets = optional(list(object({
-      id = string
-    })))
+    default_targets           = optional(list(string), [])
   })
   description = "Global settings for Metrics Routing. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/solutions/instances/DA-types.md#metrics-router-settings-)."
   default     = null
