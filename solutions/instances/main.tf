@@ -177,7 +177,7 @@ module "cos_resource_group" {
     ibm = ibm.cos
   }
   source              = "terraform-ibm-modules/resource-group/ibm"
-  version             = "1.2.1"
+  version             = "1.3.0"
   resource_group_name = try("${local.prefix}-${var.cos_resource_group_name}", var.cos_resource_group_name)
 }
 
