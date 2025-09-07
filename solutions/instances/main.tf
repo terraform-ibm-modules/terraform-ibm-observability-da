@@ -320,7 +320,7 @@ module "metrics_router" {
 module "activity_tracker" {
   depends_on = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source     = "terraform-ibm-modules/activity-tracker/ibm"
-  version    = "1.2.29"
+  version    = "1.2.30"
   cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
