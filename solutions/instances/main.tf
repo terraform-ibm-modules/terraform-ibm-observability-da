@@ -259,7 +259,7 @@ module "cloud_monitoring" {
 module "cloud_logs" {
   count             = var.cloud_logs_provision ? 1 : 0
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.7.4"
+  version           = "1.8.0"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = local.cloud_logs_instance_name
