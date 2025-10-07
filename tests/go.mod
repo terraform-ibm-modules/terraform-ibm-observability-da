@@ -2,7 +2,7 @@ module github.com/terraform-ibm-modules/terraform-ibm-observability-da
 
 go 1.24.0
 
-toolchain go1.25.1
+toolchain go1.25.2
 
 require (
 	github.com/gruntwork-io/terratest v0.51.0
