@@ -2,7 +2,7 @@
 
 This architecture supports creating Cloud Logs tenants.
 
-![logs-routing-deployable-architecture](../../reference-architecture/deployable-architecture-logs-routing.svg)
+![logs-routing-deployable-architecture](../../reference-architectures/deployable-architecture-logs-routing.svg)
 
 ## Before you begin
 

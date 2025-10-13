@@ -503,7 +503,7 @@
               {
                 "diagram": {
                   "caption": "Observability instances on IBM Cloud",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architectures/deployable-architecture-observability-instances.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs instance."
@@ -794,7 +794,7 @@
               {
                 "diagram": {
                   "caption": "Observability agents on a Red Hat OpenShift cluster",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architectures/deployable-architecture-observability-agents.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
@@ -854,7 +854,7 @@
               {
                 "diagram": {
                   "caption": "logs-router",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-logs-routing.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architectures/deployable-architecture-logs-routing.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "Log Router Tenant for routing logs to cloud logs instance"
