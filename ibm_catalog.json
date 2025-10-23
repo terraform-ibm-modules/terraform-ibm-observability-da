@@ -424,7 +424,7 @@
                 {
                   "type": "regex",
                   "description": "The value provided for 'existing_cos_instance_crn' is not valid.",
-                  "value": "^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                  "value": "^__NULL__$|^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
                 }
               ]
             },
@@ -440,7 +440,7 @@
                 {
                   "type": "regex",
                   "description": "The value provided for 'existing_cloud_logs_data_bucket_crn' is not valid.",
-                  "value": "^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:bucket:[a-z0-9\\-]+$"
+                  "value": "^__NULL__$|^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:bucket:[a-z0-9\\-]+$"
                 }
               ]
             },
@@ -453,7 +453,7 @@
                 {
                   "type": "regex",
                   "description": "The value provided for 'existing_cloud_logs_metrics_bucket_crn' is not valid.",
-                  "value": "^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:bucket:[a-z0-9\\-]+$"
+                  "value": "^__NULL__$|^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:bucket:[a-z0-9\\-]+$"
                 }
               ]
             },
