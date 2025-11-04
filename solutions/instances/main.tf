@@ -245,7 +245,7 @@ module "cloud_monitoring_crn_parser" {
 module "cloud_monitoring" {
   count                   = var.cloud_monitoring_provision ? 1 : 0
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.10.6"
+  version                 = "1.10.7"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = local.cloud_monitoring_instance_name
