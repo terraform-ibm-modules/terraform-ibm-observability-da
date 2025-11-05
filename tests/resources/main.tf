@@ -4,7 +4,7 @@
 
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.3.0"
+  version = "1.4.0"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -43,7 +43,7 @@ resource "ibm_is_subnet" "subnet_zone_1" {
 
 module "cos" {
   source            = "terraform-ibm-modules/cos/ibm"
-  version           = "10.4.1"
+  version           = "10.5.5"
   resource_group_id = module.resource_group.resource_group_id
   cos_instance_name = "${var.prefix}-cos"
   cos_tags          = var.resource_tags
@@ -61,7 +61,7 @@ locals {
 
 module "buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "10.4.1"
+  version = "10.5.5"
   bucket_configs = [
     {
       bucket_name            = local.logs_bucket_name
@@ -86,7 +86,7 @@ module "buckets" {
 
 module "cloud_monitoring" {
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.8.7"
+  version                 = "1.10.6"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = var.prefix
@@ -96,7 +96,7 @@ module "cloud_monitoring" {
 
 module "cloud_logs" {
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.8.7"
+  version           = "1.9.10"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = var.prefix
@@ -180,7 +180,7 @@ locals {
 
 module "ocp_base" {
   source               = "terraform-ibm-modules/base-ocp-vpc/ibm"
-  version              = "3.64.0"
+  version              = "3.71.0"
   ocp_version          = "4.17"
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
