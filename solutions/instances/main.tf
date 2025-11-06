@@ -304,7 +304,7 @@ module "cloud_logs" {
 
 module "metrics_router" {
   source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
-  version = "1.10.6"
+  version = "1.10.7"
   metrics_router_targets = var.enable_metrics_routing_to_cloud_monitoring ? [
     {
       destination_crn                 = var.cloud_monitoring_provision ? module.cloud_monitoring[0].crn : var.existing_cloud_monitoring_crn
