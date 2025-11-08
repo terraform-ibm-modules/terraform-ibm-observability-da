@@ -1,7 +1,7 @@
 module "icl_crn_parser" {
   for_each = { for idx, tenant in var.tenant_configuration : idx => tenant }
   source   = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version  = "1.2.0"
+  version  = "1.3.0"
   crn      = each.value.log_sink_crn
 }
 
