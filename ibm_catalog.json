@@ -25,7 +25,7 @@
         "observability agents"
       ],
       "short_description": "Configures IBM Cloud Observability resources",
-      "long_description": "Solutions that support configuring IBM Cloud Observability resources for logging, monitoring, and activity tracking.",
+      "long_description": "Solutions that support configuring IBM Cloud Observability resources for logging, monitoring, and activity tracking. \n\nLeverage [Terraform IBM Modules](https://github.com/terraform-ibm-modules) to shape and scale your solutions. You can integrate Terraform IBM Modules (TIM) to extend functionality and design a solution tailored to your environment and operations needs. These modules offer reusable, customizable elements that follow IBM Cloud's recommended practices. You can access the [source code and documentation](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da) and use it to extend your current architecture or create new solutions.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
       "provider_name": "IBM",
@@ -41,6 +41,10 @@
         {
           "title": "Configures IBM Cloud Activity Tracker Event Routing",
           "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage and Cloud Logs target."
+        },
+        {
+          "title": "Composable and Extensible Architecture",
+          "description": "This architecture illustrates how Terraform IBM Modules(TIM) can be integrated to deliver a complete solution on IBM Cloud. Each module is a reusable, and validated component for security, compliance, and operational IBM best practices. You can deploy this architecture as-is or configure it as code by leveraging the underlying modules to fit your specific requirements. Explore the [source code and documentation](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da) to adapt, extend, or create entirely new solutions using these building blocks."
         }
       ],
       "support_details": "This product is in the community registry and support is handled in the source repo. You can open an issue at [https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues). Support is not offered through IBM Cloud Support.",
