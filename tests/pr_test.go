@@ -65,14 +65,13 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestInstancesInSchematics(t *testing.T) {
-	t.Parallel()
-
-	var region = validRegions[rand.Intn(len(validRegions))]
+func setupInstanceDAOptions(t *testing.T, prefix string) *testschematic.TestSchematicOptions {
+	// Pick random region from validRegions
+	region := validRegions[rand.Intn(len(validRegions))]
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
-		Prefix:  "instance-da",
+		Prefix:  prefix,
 		TarIncludePatterns: []string{
 			"*.tf",
 			solutionInstanceDADir + "/*.tf",
@@ -87,6 +86,7 @@ func TestInstancesInSchematics(t *testing.T) {
 		},
 	})
 
+	// Terraform Variables
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: resourceGroup, DataType: "string"},
@@ -99,11 +99,34 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "cloud_log_data_bucket_access_tag", Value: permanentResources["accessTags"], DataType: "list(string)"},
-		{Name: "prefix", Value: options.Prefix, DataType: "string"},
+		{Name: "prefix", Value: prefix, DataType: "string"},
 	}
 
+	return options
+}
+
+/*************************************************************
+ * TESTS FOR TERRAFORM-BASED INSTANCE DEPLOYABLE ARCHITECTURE
+ *************************************************************/
+
+// Instance schematic test
+func TestRunInstanceDASchematics(t *testing.T) {
+	t.Parallel()
+
+	options := setupInstanceDAOptions(t, "instance-da")
 	err := options.RunSchematicTest()
-	assert.Nil(t, err, "This should not have errored")
+	assert.NoError(t, err, "Schematics test should complete without errors")
+}
+
+// Schematic upgrade test
+func TestRunInstanceDAUpgradeSchematics(t *testing.T) {
+	t.Parallel()
+
+	options := setupInstanceDAOptions(t, "instance-da-upg")
+	err := options.RunSchematicUpgradeTest()
+	if !options.UpgradeTestSkipped {
+		assert.NoError(t, err, "Upgrade test should complete without errors")
+	}
 }
 
 func TestRunUpgradeSolutionInstances(t *testing.T) {
@@ -151,10 +174,9 @@ func TestRunUpgradeSolutionInstances(t *testing.T) {
 	}
 }
 
-func TestAgentsSolutionInSchematics(t *testing.T) {
-	t.Parallel()
-
-	var region = validRegions[rand.Intn(len(validRegions))]
+// setupAgentsOptions prepares and returns TestSchematicOptions and the underlying Terraform options
+func setupAgentsOptions(t *testing.T) (*testschematic.TestSchematicOptions, *terraform.Options) {
+	region := validRegions[rand.Intn(len(validRegions))]
 
 	// ------------------------------------------------------------------------------------------------------
 	// Deploy SLZ ROKS Cluster and Observability instances since it is needed to deploy Observability Agents
@@ -162,15 +184,17 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 
 	prefix := fmt.Sprintf("slz-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := "./resources"
-	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
-
+	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(
+		realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())),
+	)
 	// Verify ibmcloud_api_key variable is set
 	checkVariable := "TF_VAR_ibmcloud_api_key"
 	val, present := os.LookupEnv(checkVariable)
 	require.True(t, present, checkVariable+" environment variable not set")
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 
-	logger.Log(t, "Tempdir: ", tempTerraformDir)
+	logger.Log(t, "Tempdir:", tempTerraformDir)
+
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: tempTerraformDir,
 		Vars: map[string]interface{}{
@@ -186,51 +210,87 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 	_, existErr := terraform.InitAndApplyE(t, existingTerraformOptions)
 
 	if existErr != nil {
-		assert.True(t, existErr == nil, "Init and Apply of temp resources (SLZ-ROKS and Observability Instances) failed")
-	} else {
-
-		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
-			Testing: t,
-			Prefix:  "obs-agents",
-			TarIncludePatterns: []string{
-				solutionAgentsDADir + "/*.*",
-				agentsKubeconfigDir + "/*.*",
-			},
-			ResourceGroup:          resourceGroup,
-			TemplateFolder:         solutionAgentsDADir,
-			Tags:                   []string{"test-schematic"},
-			DeleteWorkspaceOnFail:  false,
-			WaitJobCompleteMinutes: 60,
-			Region:                 region,
-			IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
-				List: IgnoreAgentsUpdates,
-			},
-		})
-
-		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
-			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-			{Name: "cloud_monitoring_instance_region", Value: region, DataType: "string"},
-			{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_id"), DataType: "string"},
-			{Name: "logs_agent_trusted_profile", Value: terraform.Output(t, existingTerraformOptions, "trusted_profile_id"), DataType: "string"},
-			{Name: "cloud_logs_ingress_endpoint", Value: terraform.Output(t, existingTerraformOptions, "cloud_logs_ingress_private_endpoint"), DataType: "string"},
-			{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "resource_group_id"), DataType: "string"},
-			{Name: "cloud_monitoring_access_key", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_access_key"), DataType: "string", Secure: true},
-			{Name: "prefix", Value: options.Prefix, DataType: "string"},
-		}
-
-		err := options.RunSchematicTest()
-		assert.Nil(t, err, "This should not have errored")
+		assert.True(t, existErr == nil, "Init and Apply of temp resources failed")
+		return nil, nil
 	}
 
-	// Check if "DO_NOT_DESTROY_ON_FAILURE" is set
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing: t,
+		Prefix:  "obs-agents",
+		TarIncludePatterns: []string{
+			solutionAgentsDADir + "/*.*",
+			agentsKubeconfigDir + "/*.*",
+		},
+		ResourceGroup:          resourceGroup,
+		TemplateFolder:         solutionAgentsDADir,
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
+		Region:                 region,
+		IgnoreUpdates:          testhelper.Exemptions{List: IgnoreAgentsUpdates}, // Ignore for consistency check
+	})
+
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "cloud_monitoring_instance_region", Value: region, DataType: "string"},
+		{Name: "cluster_id", Value: terraform.Output(t, existingTerraformOptions, "cluster_id"), DataType: "string"},
+		{Name: "logs_agent_trusted_profile", Value: terraform.Output(t, existingTerraformOptions, "trusted_profile_id"), DataType: "string"},
+		{Name: "cloud_logs_ingress_endpoint", Value: terraform.Output(t, existingTerraformOptions, "cloud_logs_ingress_private_endpoint"), DataType: "string"},
+		{Name: "cluster_resource_group_id", Value: terraform.Output(t, existingTerraformOptions, "resource_group_id"), DataType: "string"},
+		{Name: "cloud_monitoring_access_key", Value: terraform.Output(t, existingTerraformOptions, "cloud_monitoring_access_key"), DataType: "string", Secure: true},
+		{Name: "prefix", Value: options.Prefix, DataType: "string"},
+	}
+
+	return options, existingTerraformOptions
+}
+
+// Test for Agents solution deployable architecture in Schematics
+func TestAgentsSolutionInSchematics(t *testing.T) {
+	t.Parallel()
+
+	options, existingTerraformOptions := setupAgentsOptions(t)
+	if options == nil || existingTerraformOptions == nil {
+		t.Fatal("Failed to create agent schematic options (prerequisite Terraform deployment failed)")
+	}
+
+	err := options.RunSchematicTest()
+	assert.Nil(t, err, "This should not have errored")
+
 	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
-	// Destroy the temporary existing resources if required
 	if t.Failed() && strings.ToLower(envVal) == "true" {
 		fmt.Println("Terratest failed. Debug the test and delete resources manually.")
 	} else {
 		logger.Log(t, "START: Destroy (existing resources)")
 		terraform.Destroy(t, existingTerraformOptions)
-		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
+		terraform.WorkspaceDelete(t, existingTerraformOptions, options.Prefix)
+		logger.Log(t, "END: Destroy (existing resources)")
+	}
+}
+
+// TestAgentsSolutionUpgradeInSchematics runs an upgrade schematic test for the Observability Agents solution.
+func TestAgentsSolutionUpgradeInSchematics(t *testing.T) {
+	t.Parallel()
+
+	// Use the shared setup function to prepare agent schematic options and Terraform prereqs
+	options, existingTerraformOptions := setupAgentsOptions(t)
+	if options == nil || existingTerraformOptions == nil {
+		t.Fatal("Failed to create agent schematic options (prerequisite Terraform deployment failed)")
+	}
+
+	// Run the upgrade schematic test
+	err := options.RunSchematicUpgradeTest()
+	if !options.UpgradeTestSkipped {
+		assert.NoError(t, err, "Upgrade test should complete without errors")
+	}
+
+	// Cleanup the prerequisite Terraform resources
+	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
+	if t.Failed() && strings.ToLower(envVal) == "true" {
+		fmt.Println("Terratest failed. Debug the test and delete resources manually.")
+	} else {
+		logger.Log(t, "START: Destroy (existing resources)")
+		terraform.Destroy(t, existingTerraformOptions)
+		terraform.WorkspaceDelete(t, existingTerraformOptions, options.Prefix)
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
 }
