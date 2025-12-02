@@ -106,7 +106,7 @@ func setupInstanceDAOptions(t *testing.T, prefix string) *testschematic.TestSche
 }
 
 /*************************************************************
- * TESTS FOR TERRAFORM-BASED INSTANCE DEPLOYABLE ARCHITECTURE
+ * Observability Instance Deployable Architecture Tests
  *************************************************************/
 
 // Instance schematic test
@@ -165,7 +165,7 @@ func setupAgentsOptions(t *testing.T, prefix string) (*testschematic.TestSchemat
 	_, existErr := terraform.InitAndApplyE(t, existingTerraformOptions)
 
 	if existErr != nil {
-		assert.True(t, existErr == nil, "Init and Apply of temp resources failed")
+		assert.True(t, existErr == nil, "Init and Apply of temp resources (SLZ-ROKS and Observability Instances)")
 		return nil, nil
 	}
 
