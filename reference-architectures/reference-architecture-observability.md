@@ -17,7 +17,7 @@ version: 2.4.1
 # See https://test.cloud.ibm.com/docs/get-coding?topic=get-coding-deploy-button
 deployment-url: https://cloud.ibm.com/catalog/7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3/architecture/deploy-arch-ibm-observability-a3137d28-79e0-479d-8a24-758ebd5a0eab-global
 
-image_source: https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/reference-architecture/deployable-architecture-observability-instances.svg
+image_source: https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/reference-architectures/deployable-architecture-observability-instances.svg
 
 use-case:
   - Observability

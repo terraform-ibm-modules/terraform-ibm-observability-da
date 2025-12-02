@@ -14,7 +14,11 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 module "observability_agents" {
   source                       = "terraform-ibm-modules/observability-agents/ibm"
+<<<<<<< HEAD
   version                      = "2.9.1"
+=======
+  version                      = "2.9.8"
+>>>>>>> 017e02fa30e03cf18dd9dd8507325c315ba3c5f8
   cluster_id                   = var.cluster_id
   cluster_resource_group_id    = var.cluster_resource_group_id
   cluster_config_endpoint_type = var.cluster_config_endpoint_type

@@ -10,7 +10,7 @@
         "terraform",
         "solution",
         "logging_monitoring",
-        "converged_infra"
+        "platform_engineering"
       ],
       "keywords": [
         "IaC",
@@ -25,7 +25,7 @@
         "observability agents"
       ],
       "short_description": "Configures IBM Cloud Observability resources",
-      "long_description": "Solutions that support configuring IBM Cloud Observability resources for logging, monitoring, and activity tracking.",
+      "long_description": "Solutions that support configuring IBM Cloud Observability resources for logging, monitoring, and activity tracking. \n\nLeverage [Terraform IBM Modules](https://github.com/terraform-ibm-modules) to shape and scale your solutions. You can integrate Terraform IBM Modules (TIM) to extend functionality and design a solution tailored to your environment and operations needs. These modules offer reusable, customizable elements that follow IBM Cloud's recommended practices. You can access the [source code and documentation](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da) and use it to extend your current architecture or create new solutions.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
       "provider_name": "IBM",
@@ -41,6 +41,10 @@
         {
           "title": "Configures IBM Cloud Activity Tracker Event Routing",
           "description": "Configures an IBM Cloud Activity Tracker route with a Cloud Object Storage and Cloud Logs target."
+        },
+        {
+          "title": "Composable and Extensible Architecture",
+          "description": "This architecture illustrates how Terraform IBM Modules(TIM) can be integrated to deliver a complete solution on IBM Cloud. Each module is a reusable, and validated component for security, compliance, and operational IBM best practices. You can deploy this architecture as-is or configure it as code by leveraging the underlying modules to fit your specific requirements. Explore the [source code and documentation](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da) to adapt, extend, or create entirely new solutions using these building blocks."
         }
       ],
       "support_details": "This product is in the community registry and support is handled in the source repo. You can open an issue at [https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/issues). Support is not offered through IBM Cloud Support.",
@@ -95,15 +99,6 @@
               "service_name": "logs"
             }
           ],
-          "compliance": {
-            "authority": "scc-v3",
-            "profiles": [
-              {
-                "profile_name": "IBM Cloud Framework for Financial Services",
-                "profile_version": "1.7.0"
-              }
-            ]
-          },
           "configuration": [
             {
               "key": "ibmcloud_api_key"
@@ -197,7 +192,14 @@
               "key": "cloud_logs_existing_en_instances"
             },
             {
-              "key": "existing_en_instance_crn"
+              "key": "existing_en_instance_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_en_instance_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}event-notifications:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             },
             {
               "key": "en_integration_name"
@@ -218,7 +220,14 @@
               "key": "cloud_monitoring_provision"
             },
             {
-              "key": "existing_cloud_monitoring_crn"
+              "key": "existing_cloud_monitoring_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_cloud_monitoring_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}sysdig-monitor:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             },
             {
               "key": "cloud_monitoring_instance_name"
@@ -405,7 +414,14 @@
               ]
             },
             {
-              "key": "existing_cos_instance_crn"
+              "key": "existing_cos_instance_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_cos_instance_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             },
             {
               "key": "existing_at_cos_target_bucket_name"
@@ -414,13 +430,27 @@
               "key": "existing_at_cos_target_bucket_endpoint"
             },
             {
-              "key": "existing_cloud_logs_data_bucket_crn"
+              "key": "existing_cloud_logs_data_bucket_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_cloud_logs_data_bucket_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:bucket:[a-z0-9\\-]+$"
+                }
+              ]
             },
             {
               "key": "existing_cloud_logs_data_bucket_endpoint"
             },
             {
-              "key": "existing_cloud_logs_metrics_bucket_crn"
+              "key": "existing_cloud_logs_metrics_bucket_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_cloud_logs_metrics_bucket_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}cloud-object-storage:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:bucket:[a-z0-9\\-]+$"
+                }
+              ]
             },
             {
               "key": "existing_cloud_logs_metrics_bucket_endpoint"
@@ -435,12 +465,26 @@
               "key": "skip_at_cos_auth_policy"
             },
             {
-              "key": "existing_cos_kms_key_crn"
+              "key": "existing_cos_kms_key_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_cos_kms_key_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}(kms|hs-crypto):(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:key:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                }
+              ]
             },
             {
               "key": "existing_kms_instance_crn",
               "required": true,
-              "default_value": "__NOT_SET__"
+              "default_value": "__NOT_SET__",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_kms_instance_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}(kms|hs-crypto):(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             },
             {
               "key": "cos_key_name"
@@ -503,7 +547,7 @@
               {
                 "diagram": {
                   "caption": "Observability instances on IBM Cloud",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-instances.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architectures/deployable-architecture-observability-instances.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "This architecture supports creating and configuring IBM Cloud Observability instances and IBM Cloud Activity Tracker Event Routing to an Object Storage bucket and Cloud Logs instance."
@@ -576,7 +620,8 @@
             }
           ],
           "dependency_version_2": true,
-          "terraform_version": "1.10.5"
+          "terraform_version": "1.12.2",
+          "ignore_readme": true
         },
         {
           "label": "Agents",
@@ -794,14 +839,15 @@
               {
                 "diagram": {
                   "caption": "Observability agents on a Red Hat OpenShift cluster",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-observability-agents.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architectures/deployable-architecture-observability-agents.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
               }
             ]
           },
-          "terraform_version": "1.10.5"
+          "terraform_version": "1.12.2",
+          "ignore_readme": true
         },
         {
           "label": "Logs Routing",
@@ -854,14 +900,15 @@
               {
                 "diagram": {
                   "caption": "logs-router",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architecture/deployable-architecture-logs-routing.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/reference-architectures/deployable-architecture-logs-routing.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "Log Router Tenant for routing logs to cloud logs instance"
               }
             ]
           },
-          "terraform_version": "1.10.5"
+          "terraform_version": "1.12.2",
+          "ignore_readme": true
         }
       ]
     }
