@@ -56,7 +56,7 @@ The `cloud_logs_policies` input variable allows you to provide a list of policie
 
 * `logs_policy_name` (required): The unique policy name.
 * `logs_policy_description` (optional): The description of the policy to create.
-* `logs_policy_priority` (required): The priority to determine the pipeline for the logs. Allowed values are: type_unspecified, type_block, type_low, type_medium, type_high. High (priority value) sent to 'Priority insights' (TCO pipleine), Medium to 'Analyze and alert', Low to 'Store and search', Blocked are not sent to any pipeline.
+* `logs_policy_priority` (required): The priority to determine the pipeline for the logs. Allowed values are: type_unspecified, type_block, type_low, type_medium, type_high. High (priority value) sent to 'Priority insights' (TCO pipeline), Medium to 'Analyze and alert', Low to 'Store and search', Blocked are not sent to any pipeline.
 * `application_rule` (optional): The rules to include in the policy configuration for matching applications.
 * `subsystem_rule` (optional): The subsystem rules to include in the policy configuration for matching applications.
 * `log_rules` (required): The log severities to include in the policy configuration.
@@ -68,7 +68,7 @@ The `cloud_logs_policies` input variable allows you to provide a list of policie
 cloud_logs_policies = [
   {
     logs_policy_name     = "logs-policy-1"
-    logs_policy_description = "Send info and debug logs of the application (name starts with `test-system-app`) and the subsytem (name starts with `test-sub-system`) logs to Store nad search pipeline"
+    logs_policy_description = "Send info and debug logs of the application (name starts with `test-system-app`) and the subsystem (name starts with `test-sub-system`) logs to Store nad search pipeline"
     logs_policy_priority = "type_low"
     application_rule = [{
       name         = "test-system-app"

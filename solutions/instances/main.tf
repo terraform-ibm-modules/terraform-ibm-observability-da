@@ -362,7 +362,7 @@ resource "ibm_iam_authorization_policy" "atracker_cos" {
 # KMS Key
 #######################################################################################################################
 
-# If existing KMS intance CRN passed, parse details from it
+# If existing KMS instance CRN passed, parse details from it
 module "kms_instance_crn_parser" {
   count   = var.existing_kms_instance_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
