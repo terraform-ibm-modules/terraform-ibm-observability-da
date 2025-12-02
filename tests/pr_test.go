@@ -119,7 +119,7 @@ func TestRunInstanceDASchematics(t *testing.T) {
 }
 
 // Schematic upgrade test
-func TestRunInstanceDAUpgradeSchematics(t *testing.T) {
+func TestRunInstanceDASchematicsUpgrade(t *testing.T) {
 	t.Parallel()
 
 	options := setupInstanceDAOptions(t, "instance-da-upg")
@@ -129,60 +129,15 @@ func TestRunInstanceDAUpgradeSchematics(t *testing.T) {
 	}
 }
 
-func TestRunUpgradeSolutionInstances(t *testing.T) {
-	t.Parallel()
+/*************************************************************/
 
-	var region = validRegions[rand.Intn(len(validRegions))]
-
-	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-		Testing:      t,
-		TerraformDir: solutionInstanceDADir,
-		Region:       region,
-		Prefix:       "obs-ins-upg",
-		IgnoreUpdates: testhelper.Exemptions{
-			List: IgnoreInstanceUpdates,
-		},
-	})
-
-	options.TerraformVars = map[string]interface{}{
-		"prefix":                              options.Prefix,
-		"resource_group_name":                 resourceGroup,
-		"cos_instance_access_tags":            permanentResources["accessTags"],
-		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
-		"kms_endpoint_type":                   "public",
-		"provider_visibility":                 "public",
-		"management_endpoint_type_for_bucket": "public",
-		"enable_platform_metrics":             "false",
-		"region":                              options.Region,
-		"cloud_logs_policies": []map[string]interface{}{
-			{
-				"logs_policy_name":     "upg-test-policy",
-				"logs_policy_priority": "type_low",
-				"log_rules": []map[string]interface{}{
-					{
-						"severities": []string{"info", "debug"},
-					},
-				},
-			},
-		},
-	}
-
-	output, err := options.RunTestUpgrade()
-	if !options.UpgradeTestSkipped {
-		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output, "Expected some output")
-	}
-}
-
-// setupAgentsOptions prepares and returns TestSchematicOptions and the underlying Terraform options
-func setupAgentsOptions(t *testing.T) (*testschematic.TestSchematicOptions, *terraform.Options) {
+// Setup function to prepare options for Agents solution schematic tests
+func setupAgentsOptions(t *testing.T, prefix string) (*testschematic.TestSchematicOptions, *terraform.Options) {
 	region := validRegions[rand.Intn(len(validRegions))]
 
 	// ------------------------------------------------------------------------------------------------------
 	// Deploy SLZ ROKS Cluster and Observability instances since it is needed to deploy Observability Agents
 	// ------------------------------------------------------------------------------------------------------
-
-	prefix := fmt.Sprintf("slz-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := "./resources"
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(
 		realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())),
@@ -216,7 +171,7 @@ func setupAgentsOptions(t *testing.T) (*testschematic.TestSchematicOptions, *ter
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
-		Prefix:  "obs-agents",
+		Prefix:  prefix,
 		TarIncludePatterns: []string{
 			solutionAgentsDADir + "/*.*",
 			agentsKubeconfigDir + "/*.*",
@@ -247,8 +202,8 @@ func setupAgentsOptions(t *testing.T) (*testschematic.TestSchematicOptions, *ter
 // Test for Agents solution deployable architecture in Schematics
 func TestAgentsSolutionInSchematics(t *testing.T) {
 	t.Parallel()
-
-	options, existingTerraformOptions := setupAgentsOptions(t)
+	prefix := fmt.Sprintf("slz-%s", strings.ToLower(random.UniqueId()))
+	options, existingTerraformOptions := setupAgentsOptions(t, prefix)
 	if options == nil || existingTerraformOptions == nil {
 		t.Fatal("Failed to create agent schematic options (prerequisite Terraform deployment failed)")
 	}
@@ -262,35 +217,36 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 	} else {
 		logger.Log(t, "START: Destroy (existing resources)")
 		terraform.Destroy(t, existingTerraformOptions)
-		terraform.WorkspaceDelete(t, existingTerraformOptions, options.Prefix)
+		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
 }
 
 // TestAgentsSolutionUpgradeInSchematics runs an upgrade schematic test for the Observability Agents solution.
-func TestAgentsSolutionUpgradeInSchematics(t *testing.T) {
+func TestAgentsSolutionInSchematicsUpgrade(t *testing.T) {
 	t.Parallel()
 
 	// Use the shared setup function to prepare agent schematic options and Terraform prereqs
-	options, existingTerraformOptions := setupAgentsOptions(t)
+	prefix := fmt.Sprintf("slz-upg-%s", strings.ToLower(random.UniqueId()))
+	options, existingTerraformOptions := setupAgentsOptions(t, prefix)
+
 	if options == nil || existingTerraformOptions == nil {
 		t.Fatal("Failed to create agent schematic options (prerequisite Terraform deployment failed)")
 	}
+	options.CheckApplyResultForUpgrade = true
 
-	// Run the upgrade schematic test
 	err := options.RunSchematicUpgradeTest()
 	if !options.UpgradeTestSkipped {
 		assert.NoError(t, err, "Upgrade test should complete without errors")
 	}
 
-	// Cleanup the prerequisite Terraform resources
 	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
 	if t.Failed() && strings.ToLower(envVal) == "true" {
 		fmt.Println("Terratest failed. Debug the test and delete resources manually.")
 	} else {
 		logger.Log(t, "START: Destroy (existing resources)")
 		terraform.Destroy(t, existingTerraformOptions)
-		terraform.WorkspaceDelete(t, existingTerraformOptions, options.Prefix)
+		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
 }
