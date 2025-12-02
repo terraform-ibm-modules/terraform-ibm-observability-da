@@ -211,7 +211,9 @@ func TestAgentsSolutionInSchematics(t *testing.T) {
 	err := options.RunSchematicTest()
 	assert.Nil(t, err, "This should not have errored")
 
+	// Check if "DO_NOT_DESTROY_ON_FAILURE" is set
 	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
+	// Destroy the temporary existing resources if required
 	if t.Failed() && strings.ToLower(envVal) == "true" {
 		fmt.Println("Terratest failed. Debug the test and delete resources manually.")
 	} else {
@@ -240,7 +242,9 @@ func TestAgentsSolutionInSchematicsUpgrade(t *testing.T) {
 		assert.NoError(t, err, "Upgrade test should complete without errors")
 	}
 
+	// Check if "DO_NOT_DESTROY_ON_FAILURE" is set
 	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
+	// Destroy the temporary existing resources if required
 	if t.Failed() && strings.ToLower(envVal) == "true" {
 		fmt.Println("Terratest failed. Debug the test and delete resources manually.")
 	} else {
