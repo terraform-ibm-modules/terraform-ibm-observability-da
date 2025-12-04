@@ -659,7 +659,7 @@
           "name": "agents",
           "install_type": "extension",
           "working_directory": "solutions/agents",
-          "short_description": "Ideal for users who wants to configure observability agent on a Red Hat Openshift cluster.",
+          "short_description": "Ideal for users who wants to configure observability agent (it supports the logging agent and the monitoring agent) on a Red Hat Openshift or kubernetes cluster.",
           "iam_permissions": [
             {
               "service_name": "containers-kubernetes",
