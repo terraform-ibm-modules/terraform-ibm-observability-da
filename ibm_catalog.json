@@ -55,6 +55,7 @@
           "install_type": "fullstack",
           "index": 1,
           "working_directory": "solutions/instances",
+          "short_description": "Ideal for users who wants to configures IBM Cloud Observability resources for Logging, Monitoring, and Activity Tracking Event Routing.",
           "iam_permissions": [
             {
               "service_name": "atracker",
@@ -146,7 +147,17 @@
               "key": "cloud_logs_provision"
             },
             {
-              "key": "cloud_logs_policies"
+              "key": "cloud_logs_policies",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             },
             {
               "key": "cloud_logs_instance_name"
@@ -189,7 +200,17 @@
               "key": "logs_routing_tenant_regions"
             },
             {
-              "key": "cloud_logs_existing_en_instances"
+              "key": "cloud_logs_existing_en_instances",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             },
             {
               "key": "existing_en_instance_crn",
@@ -518,7 +539,17 @@
               "key": "enable_metrics_routing_to_cloud_monitoring"
             },
             {
-              "key": "metrics_router_routes"
+              "key": "metrics_router_routes",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             },
             {
               "key": "metrics_router_settings"
@@ -628,6 +659,7 @@
           "name": "agents",
           "install_type": "extension",
           "working_directory": "solutions/agents",
+          "short_description": "Ideal for users who wants to configure observability agent (it supports the logging agent and the monitoring agent) on a Red Hat Openshift or kubernetes cluster.",
           "iam_permissions": [
             {
               "service_name": "containers-kubernetes",
@@ -748,10 +780,30 @@
               ]
             },
             {
-              "key": "cloud_monitoring_metrics_filter"
+              "key": "cloud_monitoring_metrics_filter",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             },
             {
-              "key": "cloud_monitoring_container_filter"
+              "key": "cloud_monitoring_container_filter",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             },
             {
               "key": "cloud_monitoring_agent_tags"
@@ -766,7 +818,17 @@
               "key": "cloud_monitoring_agent_namespace"
             },
             {
-              "key": "cloud_monitoring_agent_tolerations"
+              "key": "cloud_monitoring_agent_tolerations",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             },
             {
               "key": "logs_agent_enabled"
@@ -786,7 +848,17 @@
               "required": true
             },
             {
-              "key": "logs_agent_tolerations"
+              "key": "logs_agent_tolerations",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             },
             {
               "key": "logs_agent_additional_log_source_paths"
@@ -807,7 +879,17 @@
               "key": "logs_agent_iam_environment"
             },
             {
-              "key": "logs_agent_additional_metadata"
+              "key": "logs_agent_additional_metadata",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             },
             {
               "key": "logs_agent_enable_scc"
@@ -855,6 +937,7 @@
           "install_type": "fullstack",
           "index": 2,
           "working_directory": "solutions/logs-routing",
+          "short_description": "Ideal for user who wants to configure Cloud Logs tenants.",
           "iam_permissions": [
             {
               "service_name": "logs-router",
@@ -886,7 +969,17 @@
               "hidden": true
             },
             {
-              "key": "tenant_configuration"
+              "key": "tenant_configuration",
+              "custom_config": {
+                "type": "code_editor",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
+              }
             }
           ],
           "architecture": {
