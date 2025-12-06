@@ -170,7 +170,7 @@ func setupAgentsOptions(t *testing.T, prefix string) (*testschematic.TestSchemat
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
-		Prefix:  prefix,
+		Prefix:  "obs-agents",
 		TarIncludePatterns: []string{
 			solutionAgentsDADir + "/*.*",
 			agentsKubeconfigDir + "/*.*",
