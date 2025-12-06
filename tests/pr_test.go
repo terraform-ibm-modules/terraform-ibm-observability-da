@@ -4,7 +4,6 @@ package test
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"strings"
 	"testing"
@@ -67,7 +66,7 @@ func TestMain(m *testing.M) {
 
 func setupInstanceDAOptions(t *testing.T, prefix string) *testschematic.TestSchematicOptions {
 	// Pick random region from validRegions
-	region := validRegions[rand.Intn(len(validRegions))]
+	var region = validRegions[common.CryptoIntn(len(validRegions))]
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
@@ -133,7 +132,7 @@ func TestRunInstanceDASchematicsUpgrade(t *testing.T) {
 
 // Setup function to prepare options for Agents solution schematic tests
 func setupAgentsOptions(t *testing.T, prefix string) (*testschematic.TestSchematicOptions, *terraform.Options) {
-	region := validRegions[rand.Intn(len(validRegions))]
+	var region = validRegions[common.CryptoIntn(len(validRegions))]
 
 	// ------------------------------------------------------------------------------------------------------
 	// Deploy SLZ ROKS Cluster and Observability instances since it is needed to deploy Observability Agents
@@ -267,7 +266,7 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 	tags := common.GetTagsFromTravis()
 
-	var region = validRegions[rand.Intn(len(validRegions))]
+	var region = validRegions[common.CryptoIntn(len(validRegions))]
 
 	// Verify ibmcloud_api_key variable is set
 	checkVariable := "TF_VAR_ibmcloud_api_key"
