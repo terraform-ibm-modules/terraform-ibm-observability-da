@@ -166,7 +166,7 @@ locals {
 
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.4.1"
+  version                      = "1.4.2"
   resource_group_name          = var.use_existing_resource_group == false ? (try("${local.prefix}-${var.resource_group_name}", var.resource_group_name)) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
@@ -177,7 +177,7 @@ module "cos_resource_group" {
     ibm = ibm.cos
   }
   source              = "terraform-ibm-modules/resource-group/ibm"
-  version             = "1.4.1"
+  version             = "1.4.2"
   resource_group_name = try("${local.prefix}-${var.cos_resource_group_name}", var.cos_resource_group_name)
 }
 
@@ -238,7 +238,7 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
 module "cloud_monitoring_crn_parser" {
   count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.3.1"
+  version = "1.3.2"
   crn     = var.existing_cloud_monitoring_crn
 }
 
@@ -366,7 +366,7 @@ resource "ibm_iam_authorization_policy" "atracker_cos" {
 module "kms_instance_crn_parser" {
   count   = var.existing_kms_instance_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.3.1"
+  version = "1.3.2"
   crn     = var.existing_kms_instance_crn
 }
 
