@@ -122,6 +122,7 @@ func TestRunInstanceDASchematicsUpgrade(t *testing.T) {
 	t.Parallel()
 
 	options := setupInstanceDAOptions(t, "instance-da-upg")
+	options.CheckApplyResultForUpgrade = true
 	err := options.RunSchematicUpgradeTest()
 	if !options.UpgradeTestSkipped {
 		assert.NoError(t, err, "Upgrade test should complete without errors")
