@@ -68,6 +68,18 @@ func setupInstanceDAOptions(t *testing.T, prefix string) *testschematic.TestSche
 	// Pick random region from validRegions
 	var region = validRegions[common.CryptoIntn(len(validRegions))]
 
+	cloud_logs_policies := []map[string]interface{}{
+		{
+			"logs_policy_name":     "test-policy",
+			"logs_policy_priority": "type_low",
+			"log_rules": []map[string]interface{}{
+				{
+					"severities": []string{"info"},
+				},
+			},
+		},
+	}
+
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
 		Prefix:  prefix,
@@ -98,6 +110,10 @@ func setupInstanceDAOptions(t *testing.T, prefix string) *testschematic.TestSche
 		{Name: "cos_instance_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "at_cos_bucket_access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
 		{Name: "cloud_log_data_bucket_access_tag", Value: permanentResources["accessTags"], DataType: "list(string)"},
+		{Name: "kms_endpoint_type", Value: "public", DataType: "string"},
+		{Name: "provider_visibility", Value: "public", DataType: "string"},
+		{Name: "management_endpoint_type_for_bucket", Value: "public", DataType: "string"},
+		{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
 		{Name: "prefix", Value: prefix, DataType: "string"},
 	}
 
