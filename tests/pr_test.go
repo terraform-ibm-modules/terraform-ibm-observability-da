@@ -139,9 +139,7 @@ func TestRunInstanceDASchematicsUpgrade(t *testing.T) {
 	options.TerraformVars = append(
 		options.TerraformVars,
 		[]testschematic.TestSchematicTerraformVar{
-			{Name: "kms_endpoint_type", Value: "private", DataType: "string"},
 			{Name: "provider_visibility", Value: "private", DataType: "string"},
-			{Name: "management_endpoint_type_for_bucket", Value: "direct", DataType: "string"},
 			{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
 		}...,
 	)
