@@ -16,7 +16,7 @@ module "resource_group" {
 
 module "cos" {
   source                 = "terraform-ibm-modules/cos/ibm"
-  version                = "10.8.0"
+  version                = "10.8.1"
   resource_group_id      = module.resource_group.resource_group_id
   region                 = var.region
   cos_instance_name      = "${var.prefix}-cos"
@@ -28,7 +28,7 @@ module "cos" {
 
 module "additional_cos_bucket" {
   source                   = "terraform-ibm-modules/cos/ibm"
-  version                  = "10.8.0"
+  version                  = "10.8.1"
   region                   = var.region
   create_cos_instance      = false
   existing_cos_instance_id = module.cos.cos_instance_id
@@ -38,7 +38,7 @@ module "additional_cos_bucket" {
 
 module "cloud_log_buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "10.8.0"
+  version = "10.8.1"
   bucket_configs = [
     {
       bucket_name            = "${var.prefix}-data-bucket"
@@ -62,7 +62,7 @@ module "cloud_log_buckets" {
 
 module "cloud_monitoring" {
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.12.7"
+  version                 = "1.12.8"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = var.prefix
@@ -76,7 +76,7 @@ module "cloud_monitoring" {
 
 module "event_notification_1" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "2.10.24"
+  version           = "2.10.25"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en-1"
   tags              = var.resource_tags
@@ -87,7 +87,7 @@ module "event_notification_1" {
 
 module "event_notification_2" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "2.10.24"
+  version           = "2.10.25"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en-2"
   tags              = var.resource_tags
