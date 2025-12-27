@@ -86,7 +86,7 @@ module "buckets" {
 
 module "cloud_monitoring" {
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.12.6"
+  version                 = "1.12.7"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = var.prefix
@@ -96,7 +96,7 @@ module "cloud_monitoring" {
 
 module "cloud_logs" {
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.10.10"
+  version           = "1.10.11"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = var.prefix
