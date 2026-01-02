@@ -86,7 +86,7 @@ module "buckets" {
 
 module "cloud_monitoring" {
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.12.13"
+  version                 = "1.12.14"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = var.prefix
@@ -96,7 +96,7 @@ module "cloud_monitoring" {
 
 module "cloud_logs" {
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.10.16"
+  version           = "1.10.17"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = var.prefix
@@ -180,7 +180,7 @@ locals {
 
 module "ocp_base" {
   source               = "terraform-ibm-modules/base-ocp-vpc/ibm"
-  version              = "3.76.0"
+  version              = "3.76.1"
   ocp_version          = "4.17"
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
