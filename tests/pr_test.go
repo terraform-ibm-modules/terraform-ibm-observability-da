@@ -81,9 +81,6 @@ func setupInstanceDAOptions(t *testing.T, prefix string) *testschematic.TestSche
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
-		IgnoreUpdates: testhelper.Exemptions{
-			List: IgnoreInstanceUpdates,
-		},
 	})
 
 	// Terraform Variables
