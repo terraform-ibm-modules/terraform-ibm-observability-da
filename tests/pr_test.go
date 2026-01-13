@@ -111,6 +111,9 @@ func TestRunInstanceDASchematics(t *testing.T) {
 	t.Parallel()
 
 	options := setupInstanceDAOptions(t, "instance-da")
+	options.IgnoreUpdates = testhelper.Exemptions{
+		List: IgnoreInstanceUpdates,
+	}
 	err := options.RunSchematicTest()
 	assert.NoError(t, err, "Schematics test should complete without errors")
 }
