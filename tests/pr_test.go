@@ -64,14 +64,14 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestInstancesInSchematics(t *testing.T) {
-	t.Parallel()
-
+func setupInstanceDAOptions(t *testing.T, prefix string) *testschematic.TestSchematicOptions {
+	// Pick random region from validRegions
 	var region = validRegions[common.CryptoIntn(len(validRegions))]
 
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
-		Prefix:  "instance-da",
+		Prefix:  prefix,
+		Region:  region,
 		TarIncludePatterns: []string{
 			"*.tf",
 			solutionInstanceDADir + "/*.tf",
@@ -81,16 +81,14 @@ func TestInstancesInSchematics(t *testing.T) {
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
-		IgnoreUpdates: testhelper.Exemptions{
-			List: IgnoreInstanceUpdates,
-		},
 	})
 
+	// Terraform Variables
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: resourceGroup, DataType: "string"},
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
-		{Name: "cos_region", Value: region, DataType: "string"},
+		{Name: "cos_region", Value: options.Region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_logs_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_monitoring_tags", Value: options.Tags, DataType: "list(string)"},
@@ -101,52 +99,53 @@ func TestInstancesInSchematics(t *testing.T) {
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
 	}
 
-	err := options.RunSchematicTest()
-	assert.Nil(t, err, "This should not have errored")
+	return options
 }
 
-func TestRunUpgradeSolutionInstances(t *testing.T) {
+/*************************************************************
+ * Observability Instance Deployable Architecture Tests
+ *************************************************************/
+
+// Instance schematic test
+func TestRunInstanceDASchematics(t *testing.T) {
 	t.Parallel()
 
-	var region = validRegions[common.CryptoIntn(len(validRegions))]
+	options := setupInstanceDAOptions(t, "instance-da")
+	options.IgnoreUpdates = testhelper.Exemptions{
+		List: IgnoreInstanceUpdates,
+	}
+	err := options.RunSchematicTest()
+	assert.NoError(t, err, "Schematics test should complete without errors")
+}
 
-	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-		Testing:      t,
-		TerraformDir: solutionInstanceDADir,
-		Region:       region,
-		Prefix:       "obs-ins-upg",
-		IgnoreUpdates: testhelper.Exemptions{
-			List: IgnoreInstanceUpdates,
-		},
-	})
+// Schematic upgrade test
+func TestRunInstanceDASchematicsUpgrade(t *testing.T) {
+	t.Parallel()
 
-	options.TerraformVars = map[string]interface{}{
-		"prefix":                              options.Prefix,
-		"resource_group_name":                 resourceGroup,
-		"cos_instance_access_tags":            permanentResources["accessTags"],
-		"existing_kms_instance_crn":           permanentResources["hpcs_south_crn"],
-		"kms_endpoint_type":                   "public",
-		"provider_visibility":                 "public",
-		"management_endpoint_type_for_bucket": "public",
-		"enable_platform_metrics":             "false",
-		"region":                              options.Region,
-		"cloud_logs_policies": []map[string]interface{}{
-			{
-				"logs_policy_name":     "upg-test-policy",
-				"logs_policy_priority": "type_low",
-				"log_rules": []map[string]interface{}{
-					{
-						"severities": []string{"info", "debug"},
-					},
+	cloud_logs_policies := []map[string]interface{}{
+		{
+			"logs_policy_name":     "test-policy",
+			"logs_policy_priority": "type_low",
+			"log_rules": []map[string]interface{}{
+				{
+					"severities": []string{"info"},
 				},
 			},
 		},
 	}
 
-	output, err := options.RunTestUpgrade()
+	options := setupInstanceDAOptions(t, "instance-da-upg")
+	options.CheckApplyResultForUpgrade = true
+	options.TerraformVars = append(
+		options.TerraformVars,
+		[]testschematic.TestSchematicTerraformVar{
+			{Name: "provider_visibility", Value: "private", DataType: "string"},
+			{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
+		}...,
+	)
+	err := options.RunSchematicUpgradeTest()
 	if !options.UpgradeTestSkipped {
-		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output, "Expected some output")
+		assert.NoError(t, err, "Upgrade test should complete without errors")
 	}
 }
 
