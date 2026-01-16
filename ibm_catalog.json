@@ -26,7 +26,8 @@
       ],
       "short_description": "Configures IBM Cloud Observability resources",
       "long_description": "Solutions that support configuring IBM Cloud Observability resources for logging, monitoring, and activity tracking. \n\nLeverage [Terraform IBM Modules](https://github.com/terraform-ibm-modules) to shape and scale your solutions. You can integrate Terraform IBM Modules (TIM) to extend functionality and design a solution tailored to your environment and operations needs. These modules offer reusable, customizable elements that follow IBM Cloud's recommended practices. You can access the [source code and documentation](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da) and use it to extend your current architecture or create new solutions.",
-      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/blob/main/README.md",
+      "offering_docs_url": "https://cloud.ibm.com/docs/ibm-cloud-provider-for-terraform?topic=ibm-cloud-provider-for-terraform-about-tim",
+      "release_notes_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/releases",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
       "provider_name": "IBM",
       "features": [
