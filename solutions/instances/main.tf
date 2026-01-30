@@ -245,7 +245,7 @@ module "cloud_monitoring_crn_parser" {
 module "cloud_monitoring" {
   count                   = var.cloud_monitoring_provision ? 1 : 0
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.13.0"
+  version                 = "1.13.1"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = local.cloud_monitoring_instance_name
@@ -259,7 +259,7 @@ module "cloud_monitoring" {
 module "cloud_logs" {
   count             = var.cloud_logs_provision ? 1 : 0
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.10.31"
+  version           = "1.10.32"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = local.cloud_logs_instance_name
@@ -304,7 +304,7 @@ module "cloud_logs" {
 
 module "metrics_router" {
   source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
-  version = "1.13.0"
+  version = "1.13.1"
   metrics_router_targets = var.enable_metrics_routing_to_cloud_monitoring ? [
     {
       destination_crn                 = var.cloud_monitoring_provision ? module.cloud_monitoring[0].crn : var.existing_cloud_monitoring_crn
@@ -320,7 +320,7 @@ module "metrics_router" {
 module "activity_tracker" {
   depends_on = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source     = "terraform-ibm-modules/activity-tracker/ibm"
-  version    = "1.6.6"
+  version    = "1.6.7"
   cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
