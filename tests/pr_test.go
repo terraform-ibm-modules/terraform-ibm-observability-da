@@ -327,7 +327,6 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "existing_en_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "en_crn_1"), DataType: "string"},
 			{Name: "prefix", Value: options.Prefix, DataType: "string"},
 			{Name: "management_endpoint_type_for_bucket", Value: "direct", DataType: "string"},
-			{Name: "provider_visibility", Value: "public", DataType: "string"},
 			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
 			{Name: "cloud_logs_existing_en_instances", Value: cloud_logs_existing_en_instances, DataType: "list(object)"},
 			{Name: "cloud_logs_policies", Value: cloud_logs_policies, DataType: "list(object)"},
