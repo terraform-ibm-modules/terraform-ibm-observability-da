@@ -69,13 +69,6 @@ locals {
       inclusion_filters = []
     }]
   }] : []
-  metrics_router_settings = {
-    default_targets           = []
-    primary_metadata_region   = var.region
-    backup_metadata_region    = null
-    permitted_target_regions  = []
-    private_api_endpoint_only = false
-  }
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -302,6 +295,11 @@ module "cloud_logs" {
   policies                      = var.cloud_logs_policies
 }
 
+module "primary_metadata_region" {
+  source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/get_primary_metadata_region"
+  version = "1.15.1"
+}
+
 module "metrics_router" {
   source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
   version = "1.15.1"
@@ -314,7 +312,7 @@ module "metrics_router" {
     }
   ] : []
   metrics_router_routes   = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
-  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? (var.metrics_router_settings != null ? var.metrics_router_settings : local.metrics_router_settings) : null
+  metrics_router_settings = length(module.primary_metadata_region.primary_metadata_region) != 0 ? null : { primary_metadata_region = var.region }
 }
 
 module "activity_tracker" {
@@ -466,7 +464,7 @@ module "cos_instance" {
   }
   count                    = var.existing_cos_instance_crn == null && length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "10.15.1"
+  version                  = "10.9.10"
   resource_group_id        = local.cos_resource_group_id
   create_cos_instance      = true
   cos_instance_name        = try("${local.prefix}-${var.cos_instance_name}", var.cos_instance_name)
@@ -483,7 +481,7 @@ module "cos_bucket" {
   }
   count   = length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "10.15.1"
+  version = "10.9.10"
   bucket_configs = [
     for value in local.buckets_config :
     {
