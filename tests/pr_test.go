@@ -139,6 +139,9 @@ func TestRunInstanceDASchematicsUpgrade(t *testing.T) {
 	}
 
 	options := setupInstanceDAOptions(t, "instance-da-upg")
+	options.IgnoreUpdates = testhelper.Exemptions{
+		List: IgnoreInstanceUpdates,
+	}
 	options.CheckApplyResultForUpgrade = true
 	options.TerraformVars = append(
 		options.TerraformVars,
