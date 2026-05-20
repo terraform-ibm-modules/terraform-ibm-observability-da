@@ -4,7 +4,7 @@
 
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.4.7"
+  version = "1.6.0"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -86,7 +86,7 @@ module "buckets" {
 
 module "cloud_monitoring" {
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.13.3"
+  version                 = "1.15.1"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = var.prefix
@@ -96,7 +96,7 @@ module "cloud_monitoring" {
 
 module "cloud_logs" {
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.10.36"
+  version           = "1.13.0"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = var.prefix
@@ -127,7 +127,7 @@ locals {
 
 module "trusted_profile" {
   source                      = "terraform-ibm-modules/trusted-profile/ibm"
-  version                     = "3.2.17"
+  version                     = "4.0.0"
   trusted_profile_name        = "${var.prefix}-profile"
   trusted_profile_description = "Logs agent Trusted Profile"
   # As a `Sender`, you can send logs to your IBM Cloud Logs service instance - but not query or tail logs. This role is meant to be used by agents and routers sending logs.
@@ -180,7 +180,7 @@ locals {
 
 module "ocp_base" {
   source               = "terraform-ibm-modules/base-ocp-vpc/ibm"
-  version              = "3.78.7"
+  version              = "3.83.3"
   ocp_version          = "4.17"
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
