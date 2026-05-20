@@ -70,6 +70,14 @@ locals {
     }]
   }] : []
 
+  metrics_router_settings = {
+    default_targets           = []
+    primary_metadata_region   = var.region
+    backup_metadata_region    = null
+    permitted_target_regions  = []
+    private_api_endpoint_only = false
+  }
+
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
     name  = local.log_archive_cos_bucket_name
@@ -295,11 +303,6 @@ module "cloud_logs" {
   policies                      = var.cloud_logs_policies
 }
 
-module "primary_metadata_region" {
-  source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/get_primary_metadata_region"
-  version = "1.15.1"
-}
-
 module "metrics_router" {
   source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
   version = "1.15.1"
@@ -312,7 +315,7 @@ module "metrics_router" {
     }
   ] : []
   metrics_router_routes   = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
-  metrics_router_settings = length(module.primary_metadata_region.primary_metadata_region) != 0 ? null : { primary_metadata_region = var.region }
+  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? (var.metrics_router_settings != null ? var.metrics_router_settings : local.metrics_router_settings) : null
 }
 
 module "activity_tracker" {
