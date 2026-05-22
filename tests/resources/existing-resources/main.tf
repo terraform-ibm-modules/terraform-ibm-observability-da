@@ -38,7 +38,7 @@ module "additional_cos_bucket" {
 
 module "cloud_log_buckets" {
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "10.15.1"
+  version = "10.9.10"
   bucket_configs = [
     {
       bucket_name            = "${var.prefix}-data-bucket"
@@ -62,7 +62,7 @@ module "cloud_log_buckets" {
 
 module "cloud_monitoring" {
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.15.1"
+  version                 = "1.15.4"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = var.prefix
@@ -76,10 +76,10 @@ module "cloud_monitoring" {
 
 module "event_notification_1" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "2.12.2"
+  version           = "2.12.9"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en-1"
-  tags              = var.resource_tags
+  resource_tags     = var.resource_tags
   plan              = "standard"
   service_endpoints = "public"
   region            = var.region
@@ -87,10 +87,10 @@ module "event_notification_1" {
 
 module "event_notification_2" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "2.12.2"
+  version           = "2.12.9"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en-2"
-  tags              = var.resource_tags
+  resource_tags     = var.resource_tags
   plan              = "standard"
   service_endpoints = "public"
   region            = var.region
