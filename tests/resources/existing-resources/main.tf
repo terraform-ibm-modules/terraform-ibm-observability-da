@@ -79,7 +79,7 @@ module "event_notification_1" {
   version           = "2.12.9"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en-1"
-  tags              = var.resource_tags
+  resource_tags     = var.resource_tags
   plan              = "standard"
   service_endpoints = "public"
   region            = var.region
@@ -90,7 +90,7 @@ module "event_notification_2" {
   version           = "2.12.9"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en-2"
-  tags              = var.resource_tags
+  resource_tags     = var.resource_tags
   plan              = "standard"
   service_endpoints = "public"
   region            = var.region
