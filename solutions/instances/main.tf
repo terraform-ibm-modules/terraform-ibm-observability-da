@@ -167,7 +167,7 @@ locals {
 
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.6.0"
+  version                      = "1.6.1"
   resource_group_name          = var.use_existing_resource_group == false ? (try("${local.prefix}-${var.resource_group_name}", var.resource_group_name)) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
@@ -178,7 +178,7 @@ module "cos_resource_group" {
     ibm = ibm.cos
   }
   source              = "terraform-ibm-modules/resource-group/ibm"
-  version             = "1.6.0"
+  version             = "1.6.1"
   resource_group_name = try("${local.prefix}-${var.cos_resource_group_name}", var.cos_resource_group_name)
 }
 
@@ -239,14 +239,14 @@ resource "ibm_iam_authorization_policy" "cos_policy" {
 module "cloud_monitoring_crn_parser" {
   count   = var.existing_cloud_monitoring_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.5.0"
+  version = "1.6.1"
   crn     = var.existing_cloud_monitoring_crn
 }
 
 module "cloud_monitoring" {
   count                   = var.cloud_monitoring_provision ? 1 : 0
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.15.4"
+  version                 = "1.15.8"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = local.cloud_monitoring_instance_name
@@ -260,7 +260,7 @@ module "cloud_monitoring" {
 module "cloud_logs" {
   count             = var.cloud_logs_provision ? 1 : 0
   source            = "terraform-ibm-modules/cloud-logs/ibm"
-  version           = "1.13.4"
+  version           = "1.13.12"
   region            = var.region
   resource_group_id = module.resource_group.resource_group_id
   instance_name     = local.cloud_logs_instance_name
@@ -305,7 +305,7 @@ module "cloud_logs" {
 
 module "metrics_router" {
   source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
-  version = "1.15.4"
+  version = "1.15.8"
   metrics_router_targets = var.enable_metrics_routing_to_cloud_monitoring ? [
     {
       destination_crn                 = var.cloud_monitoring_provision ? module.cloud_monitoring[0].crn : var.existing_cloud_monitoring_crn
@@ -321,7 +321,7 @@ module "metrics_router" {
 module "activity_tracker" {
   depends_on = [time_sleep.wait_for_atracker_cos_authorization_policy]
   source     = "terraform-ibm-modules/activity-tracker/ibm"
-  version    = "1.8.2"
+  version    = "1.8.9"
   cos_targets = var.enable_at_event_routing_to_cos_bucket ? [
     {
       bucket_name                       = local.cos_target_bucket_name
@@ -367,7 +367,7 @@ resource "ibm_iam_authorization_policy" "atracker_cos" {
 module "kms_instance_crn_parser" {
   count   = var.existing_kms_instance_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.5.0"
+  version = "1.6.1"
   crn     = var.existing_kms_instance_crn
 }
 
@@ -467,7 +467,7 @@ module "cos_instance" {
   }
   count                    = var.existing_cos_instance_crn == null && length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "10.9.10"
+  version                  = "10.16.5"
   resource_group_id        = local.cos_resource_group_id
   create_cos_instance      = true
   cos_instance_name        = try("${local.prefix}-${var.cos_instance_name}", var.cos_instance_name)
@@ -484,7 +484,7 @@ module "cos_bucket" {
   }
   count   = length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "10.9.10"
+  version = "10.16.5"
   bucket_configs = [
     for value in local.buckets_config :
     {
