@@ -70,13 +70,19 @@ locals {
     }]
   }] : []
 
-  metrics_router_settings = {
-    default_targets           = []
-    primary_metadata_region   = var.region
-    backup_metadata_region    = null
+
+  # Get the current primary metadata region if it exists
+  # This prevents unnecessary updates when metrics_router_settings is not provided
+  get_existing_primary_metadata_region = var.enable_metrics_routing_to_cloud_monitoring && var.metrics_router_settings == null
+
+  # Only set primary_metadata_region if it's not already configured
+  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring && var.metrics_router_settings == null ? {
     permitted_target_regions  = []
+    primary_metadata_region   = module.get_primary_metadata_region[0].primary_metadata_region != null ? null : var.region
+    backup_metadata_region    = null
     private_api_endpoint_only = false
-  }
+    default_targets           = []
+  } : var.metrics_router_settings
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -303,9 +309,17 @@ module "cloud_logs" {
   policies                      = var.cloud_logs_policies
 }
 
-module "metrics_router" {
-  source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
+# Get the current primary metadata region to avoid unnecessary updates
+module "get_primary_metadata_region" {
+  count   = local.get_existing_primary_metadata_region ? 1 : 0
+  source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/get_primary_metadata_region"
   version = "1.15.4"
+}
+
+module "metrics_router" {
+  depends_on = [module.get_primary_metadata_region]
+  source     = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
+  version    = "1.15.4"
   metrics_router_targets = var.enable_metrics_routing_to_cloud_monitoring ? [
     {
       destination_crn                 = var.cloud_monitoring_provision ? module.cloud_monitoring[0].crn : var.existing_cloud_monitoring_crn
@@ -315,7 +329,7 @@ module "metrics_router" {
     }
   ] : []
   metrics_router_routes   = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
-  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? (var.metrics_router_settings != null ? var.metrics_router_settings : local.metrics_router_settings) : null
+  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? local.metrics_router_settings : null
 }
 
 module "activity_tracker" {
