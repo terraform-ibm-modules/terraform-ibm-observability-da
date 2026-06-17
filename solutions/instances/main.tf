@@ -76,9 +76,9 @@ locals {
   get_existing_primary_metadata_region = var.enable_metrics_routing_to_cloud_monitoring && var.metrics_router_settings == null
 
   # Only set primary_metadata_region if it's not already configured
-  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring && var.metrics_router_settings == null ? {
+  metrics_router_settings = local.get_existing_primary_metadata_region ? {
     permitted_target_regions  = []
-    primary_metadata_region   = module.get_primary_metadata_region[0].primary_metadata_region != null ? null : var.region
+    primary_metadata_region   = length(module.get_primary_metadata_region[0].primary_metadata_region) != 0 ? null : var.region
     backup_metadata_region    = null
     private_api_endpoint_only = false
     default_targets           = []
@@ -311,9 +311,10 @@ module "cloud_logs" {
 
 # Get the current primary metadata region to avoid unnecessary updates
 module "get_primary_metadata_region" {
-  count   = local.get_existing_primary_metadata_region ? 1 : 0
-  source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/get_primary_metadata_region"
-  version = "1.15.4"
+  count                = local.get_existing_primary_metadata_region ? 1 : 0
+  source               = "terraform-ibm-modules/cloud-monitoring/ibm//modules/get_primary_metadata_region"
+  version              = "1.15.4"
+  use_private_endpoint = var.provider_visibility == "private" ? true : false
 }
 
 module "metrics_router" {
