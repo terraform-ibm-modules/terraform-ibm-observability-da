@@ -73,16 +73,7 @@ locals {
 
   # Get the current primary metadata region if it exists
   # This prevents unnecessary updates when metrics_router_settings is not provided
-  get_existing_primary_metadata_region = var.enable_metrics_routing_to_cloud_monitoring && var.metrics_router_settings == null
-
-  # Only set primary_metadata_region if it's not already configured
-  metrics_router_settings = local.get_existing_primary_metadata_region ? {
-    permitted_target_regions  = []
-    primary_metadata_region   = length(module.get_primary_metadata_region[0].primary_metadata_region) != 0 ? null : var.region
-    backup_metadata_region    = null
-    private_api_endpoint_only = false
-    default_targets           = []
-  } : var.metrics_router_settings
+  has_primary_metadata_region = length(module.get_primary_metadata_region.primary_metadata_region) > 0
 
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
@@ -310,7 +301,6 @@ module "cloud_logs" {
 }
 
 module "get_primary_metadata_region" {
-  count                = local.get_existing_primary_metadata_region ? 1 : 0
   source               = "terraform-ibm-modules/cloud-monitoring/ibm//modules/get_primary_metadata_region"
   version              = "1.15.4"
   use_private_endpoint = var.use_private_endpoint
@@ -329,7 +319,13 @@ module "metrics_router" {
     }
   ] : []
   metrics_router_routes   = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
-  metrics_router_settings = var.enable_metrics_routing_to_cloud_monitoring ? local.metrics_router_settings : null
+  metrics_router_settings = !var.enable_metrics_routing_to_cloud_monitoring ? null : var.metrics_router_settings != null ? var.metrics_router_settings : local.has_primary_metadata_region ? null : {
+    primary_metadata_region   = var.region
+    backup_metadata_region    = null
+    permitted_target_regions  = []
+    private_api_endpoint_only = false
+    default_targets           = []
+  }
 }
 
 module "activity_tracker" {

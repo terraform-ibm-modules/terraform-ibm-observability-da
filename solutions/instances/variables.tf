@@ -62,7 +62,7 @@ variable "provider_visibility" {
   }
 }
 variable "use_private_endpoint" {
-  description = "Set to true to use private endpoints for the metrics router API calls."
+  description = "Set to true to use the private endpoints instead of public endpoints for IBM Cloud Metrics Routing service. When true, the script queries the private Metrics Routing endpoint. [Learn more](https://cloud.ibm.com/docs/metrics-router?topic=metrics-router-endpoints)"
   type        = bool
   default     = false
 }
