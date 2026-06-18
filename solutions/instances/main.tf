@@ -75,7 +75,7 @@ locals {
   # This prevents unnecessary updates when metrics_router_settings is not provided
   has_primary_metadata_region = length(module.get_primary_metadata_region.primary_metadata_region) > 0
 
-  # Default metrics router settings to use when user doesn't provide settings and region is not yet configured
+  # Default metrics router settings to use when user doesn't provide settings and 'primary_metadata_region' is not yet configured
   default_metrics_router_settings = {
     primary_metadata_region   = var.region
     backup_metadata_region    = null
