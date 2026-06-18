@@ -309,12 +309,11 @@ module "cloud_logs" {
   policies                      = var.cloud_logs_policies
 }
 
-# Get the current primary metadata region to avoid unnecessary updates
 module "get_primary_metadata_region" {
   count                = local.get_existing_primary_metadata_region ? 1 : 0
   source               = "terraform-ibm-modules/cloud-monitoring/ibm//modules/get_primary_metadata_region"
   version              = "1.15.4"
-  use_private_endpoint = var.provider_visibility == "private" ? true : false
+  use_private_endpoint = var.use_private_endpoint
 }
 
 module "metrics_router" {

@@ -61,6 +61,12 @@ variable "provider_visibility" {
     error_message = "Invalid visibility option. Allowed values are 'public', 'private', or 'public-and-private'."
   }
 }
+variable "use_private_endpoint" {
+  description = "Set to true to use private endpoints for the metrics router API calls."
+  type        = bool
+  default     = false
+}
+
 
 ##############################################################################
 # IBM Cloud Logs
