@@ -75,6 +75,15 @@ locals {
   # This prevents unnecessary updates when metrics_router_settings is not provided
   has_primary_metadata_region = length(module.get_primary_metadata_region.primary_metadata_region) > 0
 
+  # Default metrics router settings to use when user doesn't provide settings and region is not yet configured
+  default_metrics_router_settings = {
+    primary_metadata_region   = var.region
+    backup_metadata_region    = null
+    permitted_target_regions  = []
+    private_api_endpoint_only = false
+    default_targets           = []
+  }
+
   archive_bucket_config = var.manage_log_archive_cos_bucket ? {
     class = var.log_archive_cos_bucket_class
     name  = local.log_archive_cos_bucket_name
@@ -319,13 +328,7 @@ module "metrics_router" {
     }
   ] : []
   metrics_router_routes   = var.enable_metrics_routing_to_cloud_monitoring ? (length(var.metrics_router_routes) != 0 ? var.metrics_router_routes : local.default_metrics_router_route) : []
-  metrics_router_settings = !var.enable_metrics_routing_to_cloud_monitoring ? null : var.metrics_router_settings != null ? var.metrics_router_settings : local.has_primary_metadata_region ? null : {
-    primary_metadata_region   = var.region
-    backup_metadata_region    = null
-    permitted_target_regions  = []
-    private_api_endpoint_only = false
-    default_targets           = []
-  }
+  metrics_router_settings = !var.enable_metrics_routing_to_cloud_monitoring ? null : var.metrics_router_settings != null ? var.metrics_router_settings : local.has_primary_metadata_region ? null : local.default_metrics_router_settings
 }
 
 module "activity_tracker" {
