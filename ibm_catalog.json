@@ -110,6 +110,10 @@
               "hidden": true
             },
             {
+              "key": "use_private_endpoint",
+              "hidden": true
+            },
+            {
               "key": "prefix",
               "required": true
             },
