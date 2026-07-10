@@ -46,7 +46,7 @@ module "cos" {
   version           = "10.17.3"
   resource_group_id = module.resource_group.resource_group_id
   cos_instance_name = "${var.prefix}-cos"
-  cos_tags          = var.resource_tags
+  resource_tags     = var.resource_tags
   create_cos_bucket = false
 }
 
