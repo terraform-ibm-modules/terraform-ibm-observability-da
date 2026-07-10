@@ -471,7 +471,7 @@ module "cos_instance" {
   resource_group_id        = local.cos_resource_group_id
   create_cos_instance      = true
   cos_instance_name        = try("${local.prefix}-${var.cos_instance_name}", var.cos_instance_name)
-  cos_tags                 = var.cos_instance_tags
+  resource_tags            = var.cos_instance_tags
   existing_cos_instance_id = var.existing_cos_instance_crn
   access_tags              = var.cos_instance_access_tags
   cos_plan                 = "standard"
