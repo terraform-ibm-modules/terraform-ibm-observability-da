@@ -2,10 +2,6 @@
 # Outputs
 ##############################################################################
 
-output "deprecation_notice" {
-  description = "DEPRECATION WARNING"
-  value       = local.msg
-}
 
 output "resource_group_name" {
   value       = module.resource_group.resource_group_name

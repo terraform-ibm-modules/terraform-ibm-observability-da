@@ -1,5 +1,7 @@
 # IBM Cloud Observability solution
 
+**Warning: This module is no longer supported and is not actively maintained. No new features, bug fixes, or security updates will be provided.**
+
 [![Graduated (Supported)](https://img.shields.io/badge/Status-Graduated%20(Supported)-brightgreen)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
 [![latest release](https://img.shields.io/github/v/release/terraform-ibm-modules/terraform-ibm-observability-da?logo=GitHub&sort=semver)](https://github.com/terraform-ibm-modules/terraform-ibm-observability-da/releases/latest)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
