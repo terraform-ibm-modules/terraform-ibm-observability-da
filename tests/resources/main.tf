@@ -184,7 +184,7 @@ module "ocp_base" {
   ocp_version          = "4.17"
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
-  tags                 = var.resource_tags
+  resource_tags        = var.resource_tags
   cluster_name         = var.prefix
   force_delete_storage = true
   use_existing_cos     = true
