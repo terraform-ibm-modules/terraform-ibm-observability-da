@@ -32,6 +32,7 @@ const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 var IgnoreInstanceUpdates = []string{
 	// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
 	"module.metrics_router.ibm_metrics_router_settings.metrics_router_settings[0]",
+	"terraform_data.deprecation_notice",
 }
 
 var IgnoreAgentsUpdates = []string{

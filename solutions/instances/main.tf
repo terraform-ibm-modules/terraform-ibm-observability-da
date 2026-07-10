@@ -5,6 +5,18 @@ locals {
   prefix = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
 }
 
+# Add deprecation notice
+locals {
+  msg = "[WARNING]: This module has been deprecated. Please see https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances/blob/main/README.md"
+}
+
+resource "terraform_data" "deprecation_notice" {
+  input = timestamp() # always run to print deprecation notice
+  provisioner "local-exec" {
+    command = "echo \"${local.msg}\""
+  }
+}
+
 locals {
 
   # tflint-ignore: terraform_unused_declarations

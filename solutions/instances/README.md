@@ -1,5 +1,14 @@
 # IBM Cloud observability instances deployable architecture
 
+## :warning: Deprecation notice:
+This module has been deprecated and will be archived on the 15th April 2026. See the below steps on how to [migrate](#migration) to the replacement modules. [Learn more](https://terraform-ibm-modules.github.io/documentation/#/deprecation.md) about the official terraform-ibm-modules deprecation policy.
+
+### Migration:
+Please migrate to the following modules:
+- [terraform-ibm-cloud-logs](https://github.com/terraform-ibm-modules/terraform-ibm-cloud-logs)
+- [terraform-ibm-cloud-monitoring](https://github.com/terraform-ibm-modules/terraform-ibm-cloud-monitoring)
+- [terraform-ibm-activity-tracker](https://github.com/terraform-ibm-modules/terraform-ibm-activity-tracker)
+
 This deployable architecture creates observability instances in IBM Cloud and supports provisioning the following resources:
 
 * A resource group, if one is not passed in.
