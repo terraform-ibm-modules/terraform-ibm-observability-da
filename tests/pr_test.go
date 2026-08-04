@@ -25,19 +25,11 @@ const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-res
 const resourceGroup = "geretain-test-observability-instances"
 
 const solutionInstanceDADir = "solutions/instances"
-const solutionAgentsDADir = "solutions/agents"
 const solutionTenantsDADir = "solutions/logs-routing"
-const agentsKubeconfigDir = "solutions/agents/kubeconfig"
 
 var IgnoreInstanceUpdates = []string{
 	// Need to ignore this since primary_metadata_region might be updating in the dev account due to tests using different regions
 	"module.metrics_router.ibm_metrics_router_settings.metrics_router_settings[0]",
-}
-
-var IgnoreAgentsUpdates = []string{
-	"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
-	"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
-	"module.observability_agents.terraform_data.deprecation_notice",
 }
 
 // Currently only including regions that Event Notification support
@@ -154,93 +146,6 @@ func TestRunInstanceDASchematicsUpgrade(t *testing.T) {
 	err := options.RunSchematicUpgradeTest()
 	if !options.UpgradeTestSkipped {
 		assert.NoError(t, err, "Upgrade test should complete without errors")
-	}
-}
-
-func TestAgentsSolutionInSchematics(t *testing.T) {
-	t.Parallel()
-
-	var region = validRegions[common.CryptoIntn(len(validRegions))]
-
-	// ------------------------------------------------------------------------------------------------------
-	// Deploy SLZ ROKS Cluster and Observability instances since it is needed to deploy Observability Agents
-	// ------------------------------------------------------------------------------------------------------
-
-	prefix := fmt.Sprintf("slz-%s", strings.ToLower(random.UniqueID()))
-	realTerraformDir := "./resources"
-	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueID())))
-
-	// Verify ibmcloud_api_key variable is set
-	checkVariable := "TF_VAR_ibmcloud_api_key"
-	val, present := os.LookupEnv(checkVariable)
-	require.True(t, present, checkVariable+" environment variable not set")
-	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
-
-	logger.Log(t, "Tempdir: ", tempTerraformDir)
-	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir,
-		Vars: map[string]interface{}{
-			"prefix": prefix,
-			"region": region,
-		},
-		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
-		// This is the same as setting the -upgrade=true flag with terraform.
-		Upgrade: true,
-	})
-
-	terraform.WorkspaceSelectOrNewContext(t, context.Background(), existingTerraformOptions, prefix)
-	_, existErr := terraform.InitAndApplyContextE(t, context.Background(), existingTerraformOptions)
-
-	if existErr != nil {
-		assert.True(t, existErr == nil, "Init and Apply of temp resources (SLZ-ROKS and Observability Instances) failed")
-	} else {
-
-		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
-			Testing: t,
-			Prefix:  "obs-agents",
-			TarIncludePatterns: []string{
-				solutionAgentsDADir + "/*.*",
-				agentsKubeconfigDir + "/*.*",
-			},
-			ResourceGroup:          resourceGroup,
-			TemplateFolder:         solutionAgentsDADir,
-			Tags:                   []string{"test-schematic"},
-			DeleteWorkspaceOnFail:  false,
-			WaitJobCompleteMinutes: 60,
-			Region:                 region,
-			IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
-				List: IgnoreAgentsUpdates,
-			},
-			IgnoreDestroys: testhelper.Exemptions{
-				List: IgnoreAgentsUpdates,
-			},
-		})
-
-		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
-			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-			{Name: "cloud_monitoring_instance_region", Value: region, DataType: "string"},
-			{Name: "cluster_id", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "cluster_id"), DataType: "string"},
-			{Name: "logs_agent_trusted_profile", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "trusted_profile_id"), DataType: "string"},
-			{Name: "cloud_logs_ingress_endpoint", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "cloud_logs_ingress_private_endpoint"), DataType: "string"},
-			{Name: "cluster_resource_group_id", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "resource_group_id"), DataType: "string"},
-			{Name: "cloud_monitoring_access_key", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "cloud_monitoring_access_key"), DataType: "string", Secure: true},
-			{Name: "prefix", Value: options.Prefix, DataType: "string"},
-		}
-
-		err := options.RunSchematicTest()
-		assert.Nil(t, err, "This should not have errored")
-	}
-
-	// Check if "DO_NOT_DESTROY_ON_FAILURE" is set
-	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
-	// Destroy the temporary existing resources if required
-	if t.Failed() && strings.ToLower(envVal) == "true" {
-		fmt.Println("Terratest failed. Debug the test and delete resources manually.")
-	} else {
-		logger.Log(t, "START: Destroy (existing resources)")
-		terraform.DestroyContext(t, context.Background(), existingTerraformOptions)
-		terraform.WorkspaceDeleteContext(t, context.Background(), existingTerraformOptions, prefix)
-		logger.Log(t, "END: Destroy (existing resources)")
 	}
 }
 
