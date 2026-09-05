@@ -32,12 +32,8 @@ locals {
     (!var.manage_log_archive_cos_bucket && !var.enable_at_event_routing_to_cos_bucket && !var.cloud_logs_provision)) ? null :
   var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_instance : tobool("The CRN of the existing KMS instance is not provided."))
 
-  # get KMS service type : Key Protect (kms) or Hyper Protect Crypto Services(hs-crypto)
-  kms_service = var.existing_kms_instance_crn != null ? (
-    can(regex(".*kms.*", var.existing_kms_instance_crn)) ? "kms" : (
-      can(regex(".*hs-crypto.*", var.existing_kms_instance_crn)) ? "hs-crypto" : null
-    )
-  ) : null
+  # get KMS service type : parsed from existing KMS instance CRN
+  kms_service = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : null
 
   # fetch KMS region from existing_kms_instance_crn if KMS resources are required and existing_cos_kms_key_crn is not provided
   kms_region = ((length(coalesce(local.buckets_config, [])) != 0) ?
