@@ -519,7 +519,7 @@ variable "existing_kms_instance_crn" {
       can(regex("^crn:(.*:){3}kms:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$", var.existing_kms_instance_crn)),
       var.existing_kms_instance_crn == null,
     ])
-    error_message = "The provided KMS instance CRN in the input 'existing_kms_instance_crn' in not valid."
+    error_message = "The provided KMS instance CRN in the input 'existing_kms_instance_crn' is not valid."
   }
 }
 
@@ -530,7 +530,7 @@ variable "existing_cos_kms_key_crn" {
   validation {
     condition = anytrue([
       var.existing_cos_kms_key_crn == null,
-      can(regex("^crn:v\\d:(.*:){2}(kms):(.*:)([aos]\\/[\\w_\\-]+):[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:key:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.existing_cos_kms_key_crn))
+      can(regex("^crn:(.*:){3}kms:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:key:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.existing_cos_kms_key_crn))
     ])
     error_message = "The provided KMS key CRN in the input 'existing_cos_kms_key_crn' is not valid."
   }
