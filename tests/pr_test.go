@@ -84,7 +84,7 @@ func setupInstanceDAOptions(t *testing.T, prefix string) *testschematic.TestSche
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: resourceGroup, DataType: "string"},
-		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+		{Name: "existing_kms_instance_crn", Value: permanentResources["kp_dedicated_us_south_crn"], DataType: "string"},
 		{Name: "cos_region", Value: options.Region, DataType: "string"},
 		{Name: "cos_instance_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "cloud_logs_tags", Value: options.Tags, DataType: "list(string)"},
@@ -273,8 +273,8 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 			{Name: "existing_cos_instance_crn", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "cos_crn"), DataType: "string"},
 			{Name: "management_endpoint_type_for_bucket", Value: "direct", DataType: "string"},
 			{Name: "enable_platform_metrics", Value: false, DataType: "bool"},
-			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
-			{Name: "existing_cos_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
+			{Name: "existing_kms_instance_crn", Value: permanentResources["kp_dedicated_us_south_crn"], DataType: "string"},
+			{Name: "existing_cos_kms_key_crn", Value: permanentResources["kp_dedicated_us_south_root_key_crn"], DataType: "string"},
 		}
 
 		err = options2.RunSchematicTest()
