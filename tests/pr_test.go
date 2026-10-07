@@ -41,6 +41,22 @@ var validRegions = []string{
 	"us-south",
 }
 
+// All regions where IBM Logs Router tenants can be created.
+// Only one account-level tenant may exist per region, so tests must target a
+// region that is currently unoccupied in the test account.
+var logsRouterSupportedRegions = []string{
+	"au-syd",
+	"br-sao",
+	"ca-tor",
+	"eu-de",
+	"eu-es",
+	"eu-gb",
+	"jp-osa",
+	"jp-tok",
+	"us-east",
+	"us-south",
+}
+
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
 var permanentResources map[string]interface{}
@@ -295,12 +311,17 @@ func TestRunExistingResourcesInstancesSchematics(t *testing.T) {
 }
 
 func TestTenantsInSchematics(t *testing.T) {
-	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
 	t.Parallel()
+
+	// Query the account and pick the first region that has no existing logging
+	// tenant to avoid collisions when multiple tests run against the same account.
+	availableRegions, err := sharedInfoSvc.GetRegionWithoutLoggingTenant(logsRouterSupportedRegions...)
+	require.NoError(t, err, "Could not find an available region for logs routing tenant")
+	tenantRegion := availableRegions[0]
 
 	tenant_configuration := []map[string]interface{}{
 		{
-			"tenant_region": "jp-osa",
+			"tenant_region": tenantRegion,
 			"tenant_name":   "test-tenant",
 			"target_name":   "test-target",
 			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
@@ -324,17 +345,22 @@ func TestTenantsInSchematics(t *testing.T) {
 		{Name: "tenant_configuration", Value: tenant_configuration, DataType: "list(object)"},
 	}
 
-	err := options.RunSchematicTest()
+	err = options.RunSchematicTest()
 	assert.Nil(t, err, "This should not have errored")
 }
 
 func TestTenantsUpgradeTest(t *testing.T) {
-	t.Skip("Skipping test until https://github.ibm.com/GoldenEye/issues/issues/10676 is complete")
 	t.Parallel()
+
+	// Query the account and pick the first region that has no existing logging
+	// tenant to avoid collisions when multiple tests run against the same account.
+	availableRegions, err := sharedInfoSvc.GetRegionWithoutLoggingTenant(logsRouterSupportedRegions...)
+	require.NoError(t, err, "Could not find an available region for logs routing tenant")
+	tenantRegion := availableRegions[0]
 
 	tenant_configuration := []map[string]interface{}{
 		{
-			"tenant_region": "br-sao",
+			"tenant_region": tenantRegion,
 			"tenant_name":   "test-tenant",
 			"target_name":   "test-target",
 			"log_sink_crn":  permanentResources["cloud_logs_instance_crn"],
@@ -350,6 +376,6 @@ func TestTenantsUpgradeTest(t *testing.T) {
 		"tenant_configuration": tenant_configuration,
 	}
 
-	_, err := options.RunTestUpgrade()
+	_, err = options.RunTestUpgrade()
 	assert.Nil(t, err, "This should not have errored")
 }
