@@ -14,7 +14,7 @@ require (
 	github.com/IBM-Cloud/power-go-client v1.17.0 // indirect
 	github.com/IBM/cloud-databases-go-sdk v0.8.2 // indirect
 	github.com/IBM/go-sdk-core/v5 v5.25.1 // indirect
-	github.com/IBM/networking-go-sdk v0.56.0 // indirect
+	github.com/IBM/networking-go-sdk v0.56.1 // indirect
 	github.com/IBM/platform-services-go-sdk v0.103.5 // indirect
 	github.com/IBM/project-go-sdk v0.4.0 // indirect
 	github.com/IBM/schematics-go-sdk v0.4.1 // indirect
