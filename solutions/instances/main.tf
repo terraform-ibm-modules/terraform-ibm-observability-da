@@ -242,7 +242,7 @@ module "cloud_monitoring_crn_parser" {
 module "cloud_monitoring" {
   count                   = var.cloud_monitoring_provision ? 1 : 0
   source                  = "terraform-ibm-modules/cloud-monitoring/ibm"
-  version                 = "1.16.4"
+  version                 = "1.16.5"
   region                  = var.region
   resource_group_id       = module.resource_group.resource_group_id
   instance_name           = local.cloud_monitoring_instance_name
@@ -301,7 +301,7 @@ module "cloud_logs" {
 
 module "metrics_router" {
   source  = "terraform-ibm-modules/cloud-monitoring/ibm//modules/metrics_routing"
-  version = "1.16.4"
+  version = "1.16.5"
   metrics_router_targets = var.enable_metrics_routing_to_cloud_monitoring ? [
     {
       destination_crn                 = var.cloud_monitoring_provision ? module.cloud_monitoring[0].crn : var.existing_cloud_monitoring_crn
@@ -373,7 +373,7 @@ module "kms" {
   }
   count                       = (var.existing_cos_kms_key_crn != null || (length(coalesce(local.buckets_config, [])) == 0)) ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "5.6.15"
+  version                     = "5.6.16"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_crn   = var.existing_kms_instance_crn
@@ -463,7 +463,7 @@ module "cos_instance" {
   }
   count                    = var.existing_cos_instance_crn == null && length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS instance
   source                   = "terraform-ibm-modules/cos/ibm//modules/fscloud"
-  version                  = "11.2.1"
+  version                  = "11.2.2"
   resource_group_id        = local.cos_resource_group_id
   create_cos_instance      = true
   cos_instance_name        = try("${local.prefix}-${var.cos_instance_name}", var.cos_instance_name)
@@ -480,7 +480,7 @@ module "cos_bucket" {
   }
   count   = length(coalesce(local.buckets_config, [])) != 0 ? 1 : 0 # no need to call COS module if consumer is using existing COS bucket
   source  = "terraform-ibm-modules/cos/ibm//modules/buckets"
-  version = "11.2.1"
+  version = "11.2.2"
   bucket_configs = [
     for value in local.buckets_config :
     {
